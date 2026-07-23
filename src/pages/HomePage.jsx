@@ -1,56 +1,161 @@
 /**
  * HomePage — Main landing/browse page for the RentIt marketplace.
  *
- * Displays a hero section, search bar, category + sort filters, a listing
- * grid, and a floating "create listing" button for authenticated users.
+ * Displays a hero section, search bar, full filter bar (category,
+ * location, price range, sort), pagination, a listing grid, and a
+ * floating "create listing" button for authenticated users.
  *
- * Search state is synced to URL query params (?q=...) so results are
- * shareable and bookmarkable.
+ * All filter state is persisted in URL query params so results are
+ * shareable, bookmarkable, and back-button friendly.
+ *
+ * Search input is debounced (300ms) to avoid firing a query on
+ * every keystroke. Other filters update the URL immediately.
+ *
+ * URL is the single source of truth — filter state is derived from
+ * searchParams on every render. No separate filters state is kept.
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { SlidersHorizontal } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useListings } from "../hooks/useListings";
-import { SORT_OPTIONS } from "../lib/constants";
+import { SORT_OPTIONS, DEFAULT_FILTERS } from "../lib/constants";
 import CategoryFilter from "../components/listings/CategoryFilter";
+import PriceFilter from "../components/listings/PriceFilter";
+import LocationFilter from "../components/listings/LocationFilter";
 import ListingGrid from "../components/listings/ListingGrid";
+import Pagination from "../components/listings/Pagination";
+import MobileFilterDrawer from "../components/listings/MobileFilterDrawer";
+import ActiveFilters from "../components/listings/ActiveFilters";
+
+// ── Helpers ──────────────────────────────────────────────────────
+
+/** Read filter values from URL search params, falling back to defaults. */
+function readFiltersFromURL(sp) {
+  return {
+    search: sp.get("q") || DEFAULT_FILTERS.search,
+    category: sp.get("category") || DEFAULT_FILTERS.category,
+    location: sp.get("location") || DEFAULT_FILTERS.location,
+    minPrice: sp.get("minPrice") || DEFAULT_FILTERS.minPrice,
+    maxPrice: sp.get("maxPrice") || DEFAULT_FILTERS.maxPrice,
+    sort: sp.get("sort") || DEFAULT_FILTERS.sort,
+    page: parseInt(sp.get("page"), 10) || DEFAULT_FILTERS.page,
+  };
+}
+
+/** Build URL search params from filter state; omit defaults/empty values. */
+function filtersToParams(filters) {
+  const sp = new URLSearchParams();
+  if (filters.search) sp.set("q", filters.search);
+  if (filters.category && filters.category !== "All") sp.set("category", filters.category);
+  if (filters.location) sp.set("location", filters.location);
+  if (filters.minPrice) sp.set("minPrice", filters.minPrice);
+  if (filters.maxPrice) sp.set("maxPrice", filters.maxPrice);
+  if (filters.sort && filters.sort !== "newest") sp.set("sort", filters.sort);
+  if (filters.page > 1) sp.set("page", String(filters.page));
+  return sp;
+}
 
 /**
- * @returns {JSX.Element} The home/browse page with search, filters, and listing grid.
+ * @returns {JSX.Element} The home/browse page with search, filters, pagination, and listing grid.
  */
 export default function HomePage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Search is seeded from the URL so deep-links work out of the box.
-  const [search, setSearch] = useState(searchParams.get("q") || "");
-  const [category, setCategory] = useState("All");
-  const [sort, setSort] = useState("newest");
+  // ── Filters derived from URL (single source of truth) ────
+  const filters = useMemo(() => readFiltersFromURL(searchParams), [searchParams]);
 
-  // Memoize filters to avoid unnecessary re-renders in useListings.
-  const filters = useMemo(
-    () => ({ search, category, sort }),
-    [search, category, sort]
+  // ── Local search input (for responsive typing) ───────────
+  const [searchInput, setSearchInput] = useState(filters.search);
+
+  // ── Refs for debounce and tracking committed values ───────
+  const timerRef = useRef(null);
+  const filtersRef = useRef(filters);
+  const committedSearchRef = useRef(filters.search);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Keep filtersRef in sync
+  filtersRef.current = filters;
+
+  // ── Render-time sync: when URL changes externally (back/forward),
+  // sync searchInput and cancel any pending debounce. ──────────────
+  if (filters.search !== committedSearchRef.current) {
+    committedSearchRef.current = filters.search;
+    setSearchInput(filters.search);
+    clearTimeout(timerRef.current);
+  }
+
+  // ── Data fetching ────────────────────────────────────────
+  const { listings, loading, error, totalCount, totalPages } = useListings(filters);
+
+  // ── Handlers ─────────────────────────────────────────────
+
+  /** Push new filter values to the URL (the source of truth). */
+  const commitFilters = useCallback(
+    (newFilters) => {
+      const sp = filtersToParams(newFilters);
+      setSearchParams(sp, { replace: true });
+    },
+    [setSearchParams]
   );
 
-  const { listings, loading, error } = useListings(filters);
+  /** Handle search input change — debounce 300ms before updating URL. */
+  const handleSearchChange = useCallback(
+    (value) => {
+      setSearchInput(value);
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        committedSearchRef.current = value;
+        commitFilters({ ...filtersRef.current, search: value, page: 1 });
+      }, 300);
+    },
+    [commitFilters]
+  );
 
-  /**
-   * Syncs the search query to the URL when the user submits the form.
-   * Empty queries remove the param entirely for cleaner URLs.
-   * @param {React.FormEvent} e
-   */
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const q = search.trim();
-    if (q) {
-      setSearchParams({ q });
-    } else {
-      setSearchParams({});
-    }
-  };
+  /** Set a single filter key immediately (no debounce). */
+  const setFilter = useCallback(
+    (key, value) => {
+      commitFilters({ ...filtersRef.current, [key]: value, page: 1 });
+    },
+    [commitFilters]
+  );
 
+  /** Apply filters from the mobile drawer. */
+  const handleDrawerApply = useCallback(
+    (draft) => {
+      commitFilters(draft);
+      setSearchInput(draft.search);
+      committedSearchRef.current = draft.search;
+      clearTimeout(timerRef.current);
+    },
+    [commitFilters]
+  );
+
+  /** Reset all filters and URL to defaults. */
+  const handleClearAll = useCallback(() => {
+    commitFilters({ ...DEFAULT_FILTERS });
+    setSearchInput("");
+    committedSearchRef.current = "";
+    clearTimeout(timerRef.current);
+  }, [commitFilters]);
+
+  /** Remove a single filter chip by key. */
+  const handleRemoveFilter = useCallback(
+    (key) => {
+      const newFilters = { ...filtersRef.current, [key]: DEFAULT_FILTERS[key], page: 1 };
+      commitFilters(newFilters);
+      if (key === "search") {
+        setSearchInput("");
+        committedSearchRef.current = "";
+        clearTimeout(timerRef.current);
+      }
+    },
+    [commitFilters]
+  );
+
+  // ── Render ───────────────────────────────────────────────
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
       {/* Hero section */}
@@ -64,7 +169,7 @@ export default function HomePage() {
       </div>
 
       {/* Search bar */}
-      <form onSubmit={handleSearch} className="mb-6">
+      <div className="mb-6">
         <div className="relative max-w-xl">
           <svg
             className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none"
@@ -81,27 +186,82 @@ export default function HomePage() {
           </svg>
           <input
             type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchInput}
+            onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search rentals..."
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
           />
         </div>
-      </form>
+      </div>
 
-      {/* Filters row: category chips on the left, sort dropdown on the right */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <CategoryFilter value={category} onChange={setCategory} />
+      {/* Active filter chips (shown when filters are active) */}
+      <ActiveFilters
+        filters={filters}
+        onClear={handleClearAll}
+        onRemove={handleRemoveFilter}
+      />
+
+      {/* Desktop filter bar: category chips + price + location + sort */}
+      <div className="hidden lg:flex items-center gap-3 mb-8 flex-wrap">
+        <CategoryFilter value={filters.category} onChange={(v) => setFilter("category", v)} />
+
+        <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
+
+        <div className="w-48">
+          <LocationFilter value={filters.location} onChange={(v) => setFilter("location", v)} />
+        </div>
+
+        <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
+
+        <div className="w-56">
+          <PriceFilter
+            min={filters.minPrice}
+            max={filters.maxPrice}
+            onChange={(min, max) => {
+              commitFilters({ ...filtersRef.current, minPrice: min, maxPrice: max, page: 1 });
+            }}
+          />
+        </div>
+
+        <div className="ml-auto flex items-center gap-3">
+          <span className="text-xs text-text-secondary">
+            {totalCount} {totalCount === 1 ? "result" : "results"}
+          </span>
+
+          <select
+            value={filters.sort}
+            onChange={(e) => setFilter("sort", e.target.value)}
+            className="px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Mobile/tablet: filter toggle + sort + result count */}
+      <div className="flex lg:hidden items-center justify-between gap-3 mb-6">
+        <button
+          onClick={() => setMobileDrawerOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          aria-label="Open filters"
+        >
+          <SlidersHorizontal size={16} />
+          Filters
+        </button>
+
+        <span className="text-xs text-text-secondary">
+          {totalCount} {totalCount === 1 ? "result" : "results"}
+        </span>
 
         <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="flex-shrink-0 px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+          value={filters.sort}
+          onChange={(e) => setFilter("sort", e.target.value)}
+          className="px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
         >
           {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
       </div>
@@ -112,6 +272,22 @@ export default function HomePage() {
         loading={loading}
         error={error}
         emptyMessage="No listings match your filters."
+        onClearFilters={handleClearAll}
+      />
+
+      {/* Server-side pagination */}
+      <Pagination
+        page={filters.page}
+        totalPages={totalPages}
+        onPageChange={(p) => setFilter("page", p)}
+      />
+
+      {/* Mobile filter drawer (bottom sheet) */}
+      <MobileFilterDrawer
+        open={mobileDrawerOpen}
+        onClose={() => setMobileDrawerOpen(false)}
+        onApply={handleDrawerApply}
+        filters={filters}
       />
 
       {/* Floating action button — only visible to authenticated users */}

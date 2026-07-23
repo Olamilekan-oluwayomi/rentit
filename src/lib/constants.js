@@ -36,3 +36,21 @@ export const MAX_IMAGE_SIZE_MB = 5;
 
 /** MIME types accepted for listing images. */
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+// ── Pagination ──────────────────────────────────────────────────────
+
+/** Number of listings displayed per page. */
+export const LISTINGS_PER_PAGE = 12;
+
+// ── Default filter state ────────────────────────────────────────────
+// Centralised so the page and URL-sync logic stay in sync.
+
+export const DEFAULT_FILTERS = {
+  search: "",
+  category: "All",
+  location: "",
+  minPrice: "",
+  maxPrice: "",
+  sort: "newest",
+  page: 1,
+};
