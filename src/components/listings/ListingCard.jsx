@@ -11,7 +11,7 @@ export default function ListingCard({ listing }) {
       to={`/listings/${listing.id}`}
       className="bg-surface rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
     >
-      <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+      <div className="aspect-4/3 bg-gray-100 overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}

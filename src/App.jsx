@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage'
 import NewListingPage from './pages/NewListingPage'
 import ListingDetailPage from './pages/ListingDetailPage'
 import EditListingPage from './pages/EditListingPage'
+import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import GuestRoute from './components/common/GuestRoute'
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/confirm" element={<EmailConfirmationPage />} />
         <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
         <Route path="/listings/:id" element={<ListingDetailPage />} />
         <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
