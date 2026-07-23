@@ -1,318 +1,169 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
+import { useListing } from "../hooks/useListing";
 import { supabase } from "../lib/supabase";
-
-const CATEGORIES = [
-  "Tools",
-  "Cameras & Photography",
-  "Sports & Outdoors",
-  "Electronics",
-  "Musical Instruments",
-  "Party & Events",
-  "Vehicles",
-  "Gaming",
-  "Other",
-];
-
-const MAX_IMAGES = 5;
+import { MAX_LISTING_IMAGES } from "../lib/constants";
+import ListingForm from "../components/listings/ListingForm";
+import ListingSkeleton from "../components/listings/ListingSkeleton";
 
 export default function EditListingPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [existingImages, setExistingImages] = useState([]);
-  const [newImages, setNewImages] = useState([]);
+  const { addToast } = useToast();
+  const { listing, loading, error } = useListing(id);
+  const [submitting, setSubmitting] = useState(false);
   const [removedImages, setRemovedImages] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
 
-  const fetchListing = async () => {
-    setFetching(true);
-    const { data, error } = await supabase
-      .from("listings")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      setError(error.message);
-      setFetching(false);
-      return;
-    }
-
-    if (data.owner_id !== user.id) {
-      navigate(`/listings/${id}`);
-      return;
-    }
-
-    setTitle(data.title);
-    setDescription(data.description);
-    setPrice(data.daily_price.toString());
-    setCategory(data.category);
-    setLocation(data.location);
-    setExistingImages(data.images || []);
-    setFetching(false);
-  };
-
-  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
+  // Redirect non-owners
   useEffect(() => {
-    fetchListing();
-  }, [id]);
-  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
+    if (!loading && listing && user && listing.owner_id !== user.id) {
+      navigate(`/listings/${id}`);
+    }
+  }, [loading, listing, user, id, navigate]);
 
-  const handleNewImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const total = existingImages.length + newImages.length + files.length;
+  const handleExistingRemove = (path) => {
+    setRemovedImages((prev) => [...prev, path]);
+  };
 
-    if (total > MAX_IMAGES) {
-      setError(`You can have up to ${MAX_IMAGES} images total.`);
+  const onSubmit = async (data) => {
+    if (!user || !listing) return;
+
+    // Guard: don't allow saving a listing with zero images.
+    const keptExisting = listing.images.filter(
+      (img) => !removedImages.includes(img)
+    );
+    const willHaveImages = keptExisting.length + data.images.length;
+
+    if (willHaveImages === 0) {
+      addToast("A listing needs at least 1 image. Please keep or add one before saving.", "error");
       return;
     }
 
-    setError(null);
-    setNewImages((prev) => [...prev, ...files]);
-  };
+    setSubmitting(true);
 
-  const removeExistingImage = (index) => {
-    setRemovedImages((prev) => [...prev, existingImages[index]]);
-    setExistingImages((prev) => prev.filter((_, i) => i !== index));
-  };
+    try {
+      // 1. Remove deleted images from storage
+      let removalFailed = false;
+      if (removedImages.length > 0) {
+        const { error: removeError } = await supabase.storage
+          .from("listing-images")
+          .remove(removedImages);
 
-  const removeNewImage = (index) => {
-    setNewImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    for (const url of removedImages) {
-      const parts = url.split("/listing-images/");
-      if (parts[1]) {
-        await supabase.storage.from("listing-images").remove([parts[1]]);
+        if (removeError) {
+          removalFailed = true;
+        }
       }
-    }
 
-    let allImageUrls = [...existingImages];
+      // 2. Upload new images
+      const newImagePaths = [...keptExisting];
 
-    if (newImages.length > 0) {
-      const uploadedUrls = await Promise.all(
-        newImages.map(async (file) => {
-          const filePath = `${user.id}/${id}/${file.name}`;
-          const { error: uploadError } = await supabase.storage
-            .from("listing-images")
-            .upload(filePath, file);
+      for (let i = 0; i < data.images.length && newImagePaths.length < MAX_LISTING_IMAGES; i++) {
+        const file = data.images[i];
+        const ext = file.name.split(".").pop();
+        const filePath = `${user.id}/${listing.id}/${Date.now()}-${i}.${ext}`;
 
-          if (uploadError) throw uploadError;
+        const { error: uploadError } = await supabase.storage
+          .from("listing-images")
+          .upload(filePath, file);
 
-          const { data: urlData } = supabase.storage
-            .from("listing-images")
-            .getPublicUrl(filePath);
+        if (uploadError) {
+          addToast(`Failed to upload ${file.name}: ${uploadError.message}`, "error");
+          continue;
+        }
 
-          return urlData.publicUrl;
+        newImagePaths.push(filePath);
+      }
+
+      // Guard again post-upload: if all uploads failed and no existing images remain, abort before saving.
+      if (newImagePaths.length === 0) {
+        addToast("A listing needs at least 1 image. Save cancelled.", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // 3. Update listing
+      const { error: updateError } = await supabase
+        .from("listings")
+        .update({
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          daily_price: data.daily_price,
+          location: data.location,
+          images: newImagePaths,
         })
-      );
+        .eq("id", listing.id);
 
-      allImageUrls = [...allImageUrls, ...uploadedUrls];
-    }
+      if (updateError) {
+        addToast(updateError.message, "error");
+        setSubmitting(false);
+        return;
+      }
 
-    const { error: updateError } = await supabase
-      .from("listings")
-      .update({
-        title,
-        description,
-        daily_price: parseFloat(price),
-        category,
-        location,
-        images: allImageUrls,
-      })
-      .eq("id", id);
+      if (removalFailed) {
+        addToast(
+          "Listing updated, but some old images couldn't be deleted from storage.",
+          "error"
+        );
+      } else {
+        addToast("Listing updated!");
+      }
 
-    if (updateError) {
-      setError(updateError.message);
-      setLoading(false);
-    } else {
-      navigate(`/listings/${id}`);
+      navigate(`/listings/${listing.id}`);
+    } catch (err) {
+      addToast(err?.message || "Something went wrong. Please try again.", "error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (fetching) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
+        <ListingSkeleton count={1} />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8">
-        <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">
-          Edit Listing
-        </h1>
-
-        {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none resize-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Price per day ($)
-            </label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-              min="0"
-              step="0.01"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Category
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Location
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Images ({existingImages.length + newImages.length}/{MAX_IMAGES})
-            </label>
-
-            {existingImages.length > 0 && (
-              <div className="flex gap-2 flex-wrap mb-3">
-                {existingImages.map((url, idx) => (
-                  <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeExistingImage(idx)}
-                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
-                    >
-                      &times;
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {newImages.length > 0 && (
-              <div className="flex gap-2 flex-wrap mb-3">
-                {newImages.map((file, idx) => (
-                  <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeNewImage(idx)}
-                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
-                    >
-                      &times;
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {existingImages.length + newImages.length < MAX_IMAGES && (
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleNewImageChange}
-                className="w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-accent file:text-white hover:file:opacity-90 file:cursor-pointer"
-              />
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
-          >
-            {loading ? "Saving changes..." : "Save Changes"}
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-text-secondary mt-6">
-          <Link
-            to={`/listings/${id}`}
-            className="text-accent hover:underline font-medium"
-          >
-            Cancel
-          </Link>
+  if (error || !listing) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16 text-center">
+        <p className="text-text-secondary">
+          {error || "Listing not found."}
         </p>
+      </div>
+    );
+  }
+
+  const existingImages = listing.images?.filter(
+    (img) => !removedImages.includes(img)
+  ) || [];
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
+      <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8">
+        Edit Listing
+      </h1>
+
+      <div className="bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 p-6 sm:p-8">
+        <ListingForm
+          defaultValues={{
+            title: listing.title,
+            description: listing.description,
+            category: listing.category,
+            daily_price: listing.daily_price,
+            location: listing.location,
+          }}
+          existingImages={existingImages}
+          isEdit
+          onSubmit={onSubmit}
+          onExistingRemove={handleExistingRemove}
+          submitting={submitting}
+          submitLabel="Save Changes"
+        />
       </div>
     </div>
   );

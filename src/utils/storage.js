@@ -10,3 +10,14 @@ export function getAvatarUrl(path) {
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);
   return data.publicUrl;
 }
+
+/**
+ * Converts a stored listing image path into a full public URL.
+ * @param {string|null} path - The storage path (e.g. "user-id/listing-id/image.jpg")
+ * @returns {string|null} The full public URL or null if no path
+ */
+export function getListingImageUrl(path) {
+  if (!path) return null;
+  const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+  return data.publicUrl;
+}

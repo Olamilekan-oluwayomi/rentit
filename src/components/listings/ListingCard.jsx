@@ -1,58 +1,74 @@
 import { Link } from "react-router-dom";
+import { MapPin } from "lucide-react";
+import { getListingImageUrl } from "../../utils/storage";
 
+/**
+ * Modern listing card with hover lift, lazy images, and category pill.
+ * @param {{ listing: object }}
+ */
 export default function ListingCard({ listing }) {
-  const imageUrl =
-    listing.images && listing.images.length > 0
-      ? listing.images[0]
-      : null;
+  const imageUrl = getListingImageUrl(listing.images?.[0]);
 
   return (
     <Link
       to={`/listings/${listing.id}`}
-      className="bg-surface rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+      className="group bg-surface rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="aspect-4/3 bg-gray-100 overflow-hidden">
+      {/* Image */}
+      <div className="aspect-4/3 overflow-hidden bg-gray-100 dark:bg-white/5">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={listing.title}
-            className="w-full h-full object-cover"
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-secondary">
-            <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <div className="w-full h-full flex items-center justify-center">
+            <svg
+              className="w-10 h-10 text-text-secondary/30"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V5.25a1.5 1.5 0 00-1.5-1.5H3.75a1.5 1.5 0 00-1.5 1.5v14.25a1.5 1.5 0 001.5 1.5z"
+              />
             </svg>
           </div>
         )}
       </div>
 
+      {/* Content */}
       <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-heading font-semibold text-text-primary truncate">
-            {listing.title}
-          </h3>
-          <span className="text-accent font-bold whitespace-nowrap">
-            ${listing.daily_price}
-            <span className="text-xs font-normal text-text-secondary">/day</span>
+        {/* Price */}
+        <p className="text-lg font-heading font-bold text-accent mb-1">
+          ${listing.daily_price}
+          <span className="text-xs font-normal text-text-secondary font-body">
+            {" "}
+            / day
           </span>
-        </div>
-
-        <p className="text-sm text-text-secondary truncate mb-2">
-          {listing.description}
         </p>
 
-        <div className="flex items-center gap-2 text-xs text-text-secondary">
-          <span className="bg-gray-100 px-2 py-0.5 rounded-full">
+        {/* Title */}
+        <h3 className="text-sm font-medium text-text-primary line-clamp-1 mb-2">
+          {listing.title}
+        </h3>
+
+        {/* Category pill + location */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent/10 text-accent">
             {listing.category}
           </span>
-          <span className="flex items-center gap-1">
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            {listing.location}
-          </span>
+          {listing.location && (
+            <span className="flex items-center gap-1 text-xs text-text-secondary truncate">
+              <MapPin size={12} className="flex-shrink-0" />
+              {listing.location}
+            </span>
+          )}
         </div>
       </div>
     </Link>
