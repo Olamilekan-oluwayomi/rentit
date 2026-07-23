@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { signIn, signInWithOAuth } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,6 +22,7 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
+      addToast("Welcome back!");
       navigate("/");
     }
   };
@@ -66,6 +69,12 @@ export default function LoginPage() {
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
             />
+          </div>
+
+          <div className="flex justify-end">
+            <Link to="/forgot-password" className="text-sm text-accent hover:underline">
+              Forgot password?
+            </Link>
           </div>
 
           <button

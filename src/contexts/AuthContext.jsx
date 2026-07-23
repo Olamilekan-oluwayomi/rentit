@@ -22,12 +22,17 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = (email, password, fullName) =>
-    supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    }); 
+ const signUp = (email, password, fullName) =>
+  supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+      },
+      emailRedirectTo: `${window.location.origin}/confirm`,
+    },
+  });
 
   const signIn = (email, password) =>
     supabase.auth.signInWithPassword({ email, password });
