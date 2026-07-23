@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 export default function EmailConfirmationPage() {
-  const [searchParams] = useSearchParams();
   const [status, setStatus] = useState("loading");
 
   useEffect(() => {
-    const token_hash = searchParams.get("token_hash");
-    const type = searchParams.get("type");
+    const hash = window.location.hash;
 
-    if (token_hash && type) {
-      supabase.auth.verifyOtp({ token_hash, type }).then(({ error }) => {
-        setStatus(error ? "error" : "success");
-      });
+    if (hash && hash.includes("access_token")) {
+      const params = new URLSearchParams(hash.substring(1));
+      const access_token = params.get("access_token");
+      const refresh_token = params.get("refresh_token");
+
+      if (access_token && refresh_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(({ error }) => {
+            setStatus(error ? "error" : "success");
+          });
+      } else {
+        setStatus("error");
+      }
     } else {
       setStatus("error");
     }
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
