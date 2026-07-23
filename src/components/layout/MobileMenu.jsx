@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useProfileContext } from "../../contexts/ProfileContext";
+import { getAvatarUrl } from "../../utils/storage";
 import Logo from "./Logo";
 
 const navLinkClass = ({ isActive }) =>
@@ -12,7 +14,9 @@ const navLinkClass = ({ isActive }) =>
 
 export default function MobileMenu({ open, onClose }) {
   const { user, signOut } = useAuth();
+  const { profile } = useProfileContext();
   const navigate = useNavigate();
+  const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
   useEffect(() => {
     if (open) {
@@ -75,19 +79,27 @@ export default function MobileMenu({ open, onClose }) {
         {user && (
           <div className="px-4 py-4 border-b border-gray-100 dark:border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold">
-                {user?.user_metadata?.full_name
-                  ? user.user_metadata.full_name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2)
-                  : user?.email?.[0]?.toUpperCase() || "U"}
+              <div className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden">
+                {avatarSrc ? (
+                  <img
+                    src={avatarSrc}
+                    alt={`${profile?.full_name || user?.user_metadata?.full_name || "User"}'s avatar`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  profile?.full_name || user?.user_metadata?.full_name
+                    ? (profile?.full_name || user.user_metadata.full_name)
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)
+                    : user?.email?.[0]?.toUpperCase() || "U"
+                )}
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-text-primary truncate">
-                  {user?.user_metadata?.full_name || "User"}
+                  {profile?.full_name || user?.user_metadata?.full_name || "User"}
                 </p>
                 <p className="text-xs text-text-secondary truncate">
                   {user?.email}
@@ -104,6 +116,19 @@ export default function MobileMenu({ open, onClose }) {
             </svg>
             Home
           </NavLink>
+
+          {user && (
+            <NavLink
+              to="/profile"
+              className={navLinkClass}
+              onClick={handleNavClick}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              My Profile
+            </NavLink>
+          )}
 
           {user && (
             <NavLink

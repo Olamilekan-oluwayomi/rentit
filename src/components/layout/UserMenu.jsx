@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useProfileContext } from "../../contexts/ProfileContext";
+import { getAvatarUrl } from "../../utils/storage";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const { user, signOut } = useAuth();
+  const { profile } = useProfileContext();
   const navigate = useNavigate();
+  const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -33,32 +37,39 @@ export default function UserMenu() {
     navigate("/");
   };
 
-  const initials = user?.user_metadata?.full_name
-    ? user.user_metadata.full_name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : user?.email?.[0]?.toUpperCase() || "U";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+        className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 overflow-hidden"
         aria-label="User menu"
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {initials}
+        {avatarSrc ? (
+          <img
+            src={avatarSrc}
+            alt={`${displayName}'s avatar`}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          initials
+        )}
       </button>
 
       {open && (
         <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-gray-100 dark:border-white/10 py-2 z-50 animate-fade-in">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10">
             <p className="text-sm font-medium text-text-primary truncate">
-              {user?.user_metadata?.full_name || "User"}
+              {displayName}
             </p>
             <p className="text-xs text-text-secondary truncate mt-0.5">
               {user?.email}

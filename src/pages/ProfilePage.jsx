@@ -7,7 +7,6 @@ import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 export default function ProfilePage() {
   const {
     profile,
-    loading,
     saving,
     uploading,
     updateProfile,
@@ -16,8 +15,8 @@ export default function ProfilePage() {
   } = useProfile();
   const { addToast } = useToast();
   const [avatarError, setAvatarError] = useState(null);
+  const [editing, setEditing] = useState(false);
 
-  // ── Handle avatar upload ───────────────────────────────────────
   const handleUploadAvatar = async (file, validationError) => {
     setAvatarError(null);
 
@@ -36,7 +35,6 @@ export default function ProfilePage() {
     }
   };
 
-  // ── Handle avatar delete ───────────────────────────────────────
   const handleDeleteAvatar = async () => {
     setAvatarError(null);
     const result = await deleteAvatar();
@@ -47,17 +45,17 @@ export default function ProfilePage() {
     }
   };
 
-  // ── Handle profile save ────────────────────────────────────────
   const handleSaveProfile = async (updates) => {
     const result = await updateProfile(updates);
     if (result.error) {
       addToast(result.error, "error");
     } else {
       addToast("Profile updated!");
+      setEditing(false);
     }
   };
 
-  if (loading) {
+  if (saving || uploading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <ProfileSkeleton />
@@ -77,9 +75,11 @@ export default function ProfilePage() {
           saving={saving}
           uploading={uploading}
           avatarError={avatarError}
+          editing={editing}
           onUploadAvatar={handleUploadAvatar}
           onDeleteAvatar={handleDeleteAvatar}
           onSaveProfile={handleSaveProfile}
+          onEditToggle={() => setEditing((prev) => !prev)}
         />
       </div>
     </div>
