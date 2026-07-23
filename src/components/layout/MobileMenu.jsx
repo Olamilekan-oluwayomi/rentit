@@ -7,7 +7,7 @@ const navLinkClass = ({ isActive }) =>
   `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
     isActive
       ? "bg-accent/10 text-accent"
-      : "text-text-primary hover:bg-gray-50"
+      : "text-text-primary hover:bg-gray-100 dark:hover:bg-white/10"
   }`;
 
 export default function MobileMenu({ open, onClose }) {
@@ -59,11 +59,11 @@ export default function MobileMenu({ open, onClose }) {
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
           <Logo />
           <button
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
             aria-label="Close menu"
           >
             <svg className="w-5 h-5 text-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -73,7 +73,7 @@ export default function MobileMenu({ open, onClose }) {
         </div>
 
         {user && (
-          <div className="px-4 py-4 border-b border-gray-100">
+          <div className="px-4 py-4 border-b border-gray-100 dark:border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold">
                 {user?.user_metadata?.full_name
@@ -132,11 +132,11 @@ export default function MobileMenu({ open, onClose }) {
           )}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-white/10">
           {user ? (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -147,7 +147,7 @@ export default function MobileMenu({ open, onClose }) {
             <div className="space-y-2">
               <NavLink
                 to="/login"
-                className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-text-primary hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-full px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/20 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                 onClick={handleNavClick}
               >
                 Log In
