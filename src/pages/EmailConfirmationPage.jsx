@@ -1,3 +1,11 @@
+/**
+ * EmailConfirmationPage — Handles the email verification callback.
+ *
+ * Extracts access/refresh tokens from the URL hash, establishes
+ * the Supabase session, then auto-redirects to login after 2s.
+ * Displays loading, success, or error states as appropriate.
+ */
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -6,6 +14,10 @@ export default function EmailConfirmationPage() {
   const [status, setStatus] = useState("loading");
   const navigate = useNavigate();
 
+  /**
+   * On mount, extracts tokens from the URL hash, establishes
+   * the Supabase session, and strips tokens from the URL.
+   */
   useEffect(() => {
     const confirmEmail = async () => {
       const hash = window.location.hash;
@@ -43,6 +55,7 @@ export default function EmailConfirmationPage() {
     confirmEmail();
   }, []);
 
+  /** Auto-redirect to login 2s after successful confirmation. */
   useEffect(() => {
     if (status !== "success") return;
 

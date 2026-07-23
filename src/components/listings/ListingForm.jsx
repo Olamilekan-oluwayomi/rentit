@@ -6,7 +6,7 @@
  * with Zod validation, geolocation detection, and image upload integration.
  * Dynamically switches between create/edit validation schemas via `isEdit`.
  */
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPinned } from "lucide-react";
 import { listingFormSchema, listingEditFormSchema } from "../../lib/validations";
@@ -36,7 +36,6 @@ export default function ListingForm({
     register,
     handleSubmit,
     control,
-    watch,
     setValue,
     formState: { errors },
   } = useForm({
@@ -51,9 +50,10 @@ export default function ListingForm({
     },
   });
 
-  // Watched values for live character counters in the UI.
-  const titleValue = watch("title") || "";
-  const descValue = watch("description") || "";
+  // useWatch is React Compiler-safe (unlike watch() which triggers
+  // the incompatible-library lint warning).
+  const titleValue = useWatch({ control, name: "title" }) || "";
+  const descValue = useWatch({ control, name: "description" }) || "";
 
   // Geolocation hook — provides browser-based location detection.
   const { getCurrentLocation, loading: locationLoading } = useCurrentLocation();

@@ -19,6 +19,7 @@ import { supabase } from "../lib/supabase";
 import ImageGallery from "../components/listings/ImageGallery";
 import OwnerCard from "../components/listings/OwnerCard";
 import ConfirmDialog from "../components/listings/ConfirmDialog";
+import AvailabilityCalendar from "../components/bookings/AvailabilityCalendar";
 
 /**
  * @returns {JSX.Element} The listing detail page with gallery, info, owner card, and actions.
@@ -132,6 +133,17 @@ export default function ListingDetailPage() {
     );
   }
 
+  // ── Booking request handler (renter mode) ────────────────
+  // Called when a non-owner selects a range and clicks "Request to Book".
+  // Scoped to availability/calendar only — the actual booking insert
+  // will be implemented in a separate feature.
+  const handleRangeConfirmed = (startDate, endDate, totalPrice) => {
+    addToast(
+      `Booking request: ${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()} ($${totalPrice})`,
+      "info"
+    );
+  };
+
   const createdDate = new Date(listing.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -142,6 +154,30 @@ export default function ListingDetailPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
       {/* Image gallery */}
       <ImageGallery images={listing.images || []} />
+
+      {/* Availability calendar — positioned below the image gallery */}
+      <div className="mt-8">
+        {user ? (
+          <AvailabilityCalendar
+            listingId={listing.id}
+            dailyPrice={listing.daily_price}
+            isOwner={isOwner}
+            onRangeConfirmed={handleRangeConfirmed}
+          />
+        ) : (
+          <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-6 text-center">
+            <p className="text-sm text-text-secondary mb-3">
+              Log in to check availability and book this listing.
+            </p>
+            <a
+              href="/login"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
+            >
+              Log in to Book
+            </a>
+          </div>
+        )}
+      </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content — takes 2/3 width on desktop */}

@@ -15,7 +15,7 @@
  * searchParams on every render. No separate filters state is kept.
  */
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -76,16 +76,18 @@ export default function HomePage() {
   const committedSearchRef = useRef(filters.search);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Keep filtersRef in sync
-  filtersRef.current = filters;
+  // ── Sync refs and local state when URL changes externally
+  // (e.g. browser back/forward). Runs as an effect to avoid
+  // writing refs during render. ──────────────────────────────
+  useEffect(() => {
+    filtersRef.current = filters;
 
-  // ── Render-time sync: when URL changes externally (back/forward),
-  // sync searchInput and cancel any pending debounce. ──────────────
-  if (filters.search !== committedSearchRef.current) {
-    committedSearchRef.current = filters.search;
-    setSearchInput(filters.search);
-    clearTimeout(timerRef.current);
-  }
+    if (filters.search !== committedSearchRef.current) {
+      committedSearchRef.current = filters.search;
+      setSearchInput(filters.search);
+      clearTimeout(timerRef.current);
+    }
+  }, [filters]);
 
   // ── Data fetching ────────────────────────────────────────
   const { listings, loading, error, totalCount, totalPages } = useListings(filters);

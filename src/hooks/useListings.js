@@ -138,7 +138,7 @@ export function useListings(filters = {}) {
     filters.minPrice,
     filters.maxPrice,
     filters.sort,
-    filters.page,
+    page,
     limit,
   ]);
 

@@ -1,3 +1,12 @@
+/**
+ * LoginPage — Email/password and Google OAuth sign-in page.
+ *
+ * Provides email + password authentication via Supabase Auth,
+ * plus a Google OAuth button. On successful sign-in the user is
+ * redirected to the home page. Includes a link to the forgot
+ * password flow for password recovery.
+ */
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -12,6 +21,11 @@ export default function LoginPage() {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
+  /**
+   * Validates email and password, then calls signIn.
+   * On success, shows a welcome toast and navigates to home.
+   * @param {React.FormEvent} e - The form submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -27,6 +41,10 @@ export default function LoginPage() {
     }
   };
 
+  /**
+   * Initiates OAuth sign-in for the given provider (e.g. "google").
+   * @param {string} provider - The OAuth provider identifier.
+   */
   const handleOAuth = async (provider) => {
     setError(null);
     const { error } = await signInWithOAuth(provider);

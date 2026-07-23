@@ -1,3 +1,11 @@
+/**
+ * ForgotPasswordPage — Password reset request page.
+ *
+ * Collects the user's email and sends a Supabase password reset
+ * link via resetPasswordForEmail. Displays a confirmation screen
+ * after submission and a back-to-login link.
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -8,6 +16,11 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  /**
+   * Sends a password reset email via Supabase Auth.
+   * The redirect URL points to /reset-password on the current origin.
+   * @param {React.FormEvent} e - The form submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);

@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components -- Provider + hook in same file is idiomatic for context modules. */
+
 /**
  * AuthContext — Provides authentication state and methods to the component tree.
  *

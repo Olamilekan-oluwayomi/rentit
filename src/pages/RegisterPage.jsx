@@ -1,3 +1,11 @@
+/**
+ * RegisterPage — New user account creation page.
+ *
+ * Provides email/password registration with Supabase Auth.
+ * On success the user sees a "check your email" confirmation
+ * screen. Handles inline error display for failed sign-ups.
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -11,6 +19,11 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const { signUp } = useAuth();
 
+  /**
+   * Calls signUp with email, password, and full name.
+   * On success, switches to the submitted confirmation view.
+   * @param {React.FormEvent} e - The form submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);

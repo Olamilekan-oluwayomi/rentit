@@ -1,3 +1,12 @@
+/**
+ * ResetPasswordPage — New password form after clicking a reset link.
+ *
+ * Extracts access/refresh tokens from the URL hash fragment and
+ * establishes a Supabase session. Validates the session, then
+ * presents a password update form. On success the user is
+ * redirected to the home page.
+ */
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -12,6 +21,11 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
   const { addToast } = useToast();
 
+  /**
+   * On mount, parses access_token and refresh_token from the URL hash
+   * and uses them to establish an authenticated Supabase session.
+   * Sets validSession to true on success, error on failure.
+   */
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const hash = window.location.hash;
@@ -37,6 +51,11 @@ export default function ResetPasswordPage() {
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  /**
+   * Updates the authenticated user's password via Supabase Auth.
+   * On success, shows a toast and navigates to the home page.
+   * @param {React.FormEvent} e - The form submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
