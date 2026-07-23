@@ -1,3 +1,11 @@
+/**
+ * ListingForm.jsx
+ * ----------------
+ * Reusable form component for creating and editing rental listings.
+ * Handles all listing fields (title, description, category, price, location)
+ * with Zod validation, geolocation detection, and image upload integration.
+ * Dynamically switches between create/edit validation schemas via `isEdit`.
+ */
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPinned } from "lucide-react";
@@ -9,7 +17,9 @@ import ImageUpload from "./ImageUpload";
 
 /**
  * Reusable listing form (create + edit).
- * @param {{ defaultValues, existingImages, isEdit, onSubmit, onExistingRemove, submitting, submitLabel }}
+ * Uses react-hook-form + Zod for validation. When `isEdit` is true, the edit
+ * schema is used which allows partial field updates and treats images as optional.
+ * @param {{ defaultValues: object, existingImages: string[], isEdit: boolean, onSubmit: (data: any) => void, onExistingRemove: (path: string) => void, submitting: boolean, submitLabel: string }} props
  */
 export default function ListingForm({
   defaultValues = {},
@@ -20,6 +30,8 @@ export default function ListingForm({
   submitting = false,
   submitLabel = "Publish Listing",
 }) {
+  // react-hook-form setup — selects the correct Zod schema based on create vs. edit mode.
+  // Edit mode uses a less strict schema (e.g., images are optional when editing).
   const {
     register,
     handleSubmit,
@@ -39,24 +51,31 @@ export default function ListingForm({
     },
   });
 
+  // Watched values for live character counters in the UI.
   const titleValue = watch("title") || "";
   const descValue = watch("description") || "";
 
+  // Geolocation hook — provides browser-based location detection.
   const { getCurrentLocation, loading: locationLoading } = useCurrentLocation();
   const { addToast } = useToast();
 
+  /**
+   * Triggers browser geolocation and populates the location field.
+   * Displays a toast on failure so the user knows to enter it manually.
+   */
   const handleDetectLocation = async () => {
     const { location: detected, error } = await getCurrentLocation();
     if (error) {
       addToast(error, "error");
       return;
     }
+    // shouldValidate triggers Zod validation on the populated value.
     setValue("location", detected, { shouldValidate: true });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Title */}
+      {/* ── Title Field ──────────────────────────────────────────── */}
       <div>
         <label
           htmlFor="title"
@@ -72,6 +91,7 @@ export default function ListingForm({
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
         />
         <div className="flex items-center justify-between mt-1">
+          {/* Show validation error or empty span to keep layout stable */}
           {errors.title ? (
             <p className="text-xs text-red-500">{errors.title.message}</p>
           ) : (
@@ -81,7 +101,7 @@ export default function ListingForm({
         </div>
       </div>
 
-      {/* Description */}
+      {/* ── Description Field ────────────────────────────────────── */}
       <div>
         <label
           htmlFor="description"
@@ -109,8 +129,9 @@ export default function ListingForm({
         </div>
       </div>
 
-      {/* Category + Price row */}
+      {/* ── Category + Price Row (side-by-side on larger screens) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Category dropdown */}
         <div>
           <label
             htmlFor="category"
@@ -137,6 +158,7 @@ export default function ListingForm({
           )}
         </div>
 
+        {/* Daily price input with dollar prefix */}
         <div>
           <label
             htmlFor="daily_price"
@@ -145,6 +167,7 @@ export default function ListingForm({
             Daily Price
           </label>
           <div className="relative">
+            {/* Dollar sign prefix — positioned absolutely to allow numeric input padding */}
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary text-sm">
               $
             </span>
@@ -166,7 +189,7 @@ export default function ListingForm({
         </div>
       </div>
 
-      {/* Location */}
+      {/* ── Location Field with Auto-detect ─────────────────────── */}
       <div>
         <label
           htmlFor="location"
@@ -182,6 +205,7 @@ export default function ListingForm({
             placeholder="City, Country"
             className="w-full px-4 py-2.5 pr-11 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
           />
+          {/* Geolocation button — uses browser API to auto-fill the location field */}
           <button
             type="button"
             onClick={handleDetectLocation}
@@ -204,7 +228,7 @@ export default function ListingForm({
         )}
       </div>
 
-      {/* Images (via Controller for react-hook-form integration) */}
+      {/* ── Image Upload (uses Controller to bridge react-hook-form with ImageUpload) ── */}
       <Controller
         name="images"
         control={control}
@@ -231,7 +255,7 @@ export default function ListingForm({
         )}
       />
 
-      {/* Submit */}
+      {/* ── Submit Button ────────────────────────────────────────── */}
       <button
         type="submit"
         disabled={submitting}

@@ -1,3 +1,20 @@
+/**
+ * MobileMenu — Slide-out navigation drawer for mobile and tablet viewports.
+ *
+ * Opens from the right side when the hamburger icon in Header is tapped.
+ * Includes user avatar/name (when logged in), navigation links, and
+ * auth actions (login/signup or logout).
+ *
+ * Two side-effects are managed:
+ *   - Body scroll is locked while the menu is open.
+ *   - The Escape key closes the menu for keyboard accessibility.
+ *
+ * @param {Object} props
+ * @param {boolean} props.open - Whether the menu is currently visible.
+ * @param {() => void} props.onClose - Callback to close the menu.
+ * @returns {JSX.Element} The overlay + slide-out panel.
+ */
+
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -5,6 +22,7 @@ import { useProfileContext } from "../../contexts/ProfileContext";
 import { getAvatarUrl } from "../../utils/storage";
 import Logo from "./Logo";
 
+/** Tailwind classes for mobile nav links, with active state highlighting. */
 const navLinkClass = ({ isActive }) =>
   `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
     isActive
@@ -12,12 +30,17 @@ const navLinkClass = ({ isActive }) =>
       : "text-text-primary hover:bg-gray-100 dark:hover:bg-white/10"
   }`;
 
+/**
+ * @param {{ open: boolean, onClose: () => void }} props
+ * @returns {JSX.Element} The mobile menu overlay and panel.
+ */
 export default function MobileMenu({ open, onClose }) {
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
+  // Lock body scroll when the menu is open so the background doesn't scroll.
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -29,6 +52,7 @@ export default function MobileMenu({ open, onClose }) {
     };
   }, [open]);
 
+  // Close on Escape key for keyboard accessibility.
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && open) onClose();
@@ -37,16 +61,19 @@ export default function MobileMenu({ open, onClose }) {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
 
+  /** Signs the user out, closes the menu, and redirects to home. */
   const handleLogout = async () => {
     onClose();
     await signOut();
     navigate("/");
   };
 
+  /** Closes the menu when any nav link is clicked. */
   const handleNavClick = () => onClose();
 
   return (
     <>
+      {/* Semi-transparent backdrop — fades in/out, only visible on screens < lg */}
       <div
         className={`fixed inset-0 bg-black/40 z-50 transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -55,6 +82,7 @@ export default function MobileMenu({ open, onClose }) {
         aria-hidden="true"
       />
 
+      {/* Slide-out panel */}
       <div
         className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-surface z-50 shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden ${
           open ? "translate-x-0" : "translate-x-full"
@@ -63,6 +91,7 @@ export default function MobileMenu({ open, onClose }) {
         aria-modal="true"
         aria-label="Navigation menu"
       >
+        {/* Panel header with logo and close button */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10">
           <Logo />
           <button
@@ -76,6 +105,7 @@ export default function MobileMenu({ open, onClose }) {
           </button>
         </div>
 
+        {/* User info section — only visible when logged in */}
         {user && (
           <div className="px-4 py-4 border-b border-gray-100 dark:border-white/10">
             <div className="flex items-center gap-3">
@@ -87,6 +117,7 @@ export default function MobileMenu({ open, onClose }) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
+                  /* Fall back to initials when no avatar is set */
                   profile?.full_name || user?.user_metadata?.full_name
                     ? (profile?.full_name || user.user_metadata.full_name)
                         .split(" ")
@@ -109,6 +140,7 @@ export default function MobileMenu({ open, onClose }) {
           </div>
         )}
 
+        {/* Navigation links */}
         <nav className="p-4 space-y-1">
           <NavLink to="/" end className={navLinkClass} onClick={handleNavClick}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -157,6 +189,7 @@ export default function MobileMenu({ open, onClose }) {
           )}
         </nav>
 
+        {/* Bottom-pinned auth actions (logout or login/signup) */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-white/10">
           {user ? (
             <button

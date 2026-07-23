@@ -1,3 +1,15 @@
+/**
+ * ListingDetailPage — Full detail view for a single rental listing.
+ *
+ * Shows the image gallery, title, price, category, location, description,
+ * and the owner's profile card. Owners see edit/delete actions; other
+ * authenticated users see a "Contact Owner" button.
+ *
+ * Supports two delete modes:
+ *   - Soft delete: hides the listing from browsing but preserves data.
+ *   - Hard delete: permanently removes the listing and its images.
+ */
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -8,6 +20,9 @@ import ImageGallery from "../components/listings/ImageGallery";
 import OwnerCard from "../components/listings/OwnerCard";
 import ConfirmDialog from "../components/listings/ConfirmDialog";
 
+/**
+ * @returns {JSX.Element} The listing detail page with gallery, info, owner card, and actions.
+ */
 export default function ListingDetailPage() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -22,9 +37,10 @@ export default function ListingDetailPage() {
   const [showHardDelete, setShowHardDelete] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Derived flag used to conditionally render owner actions vs contact button.
   const isOwner = user && listing && user.id === listing.owner_id;
 
-  // ── Fetch owner profile ────────────────────────────────────
+  // Fetch the listing owner's profile so we can display the OwnerCard sidebar.
   useEffect(() => {
     if (!listing?.owner_id) return;
 
@@ -42,7 +58,7 @@ export default function ListingDetailPage() {
     fetchOwner();
   }, [listing?.owner_id]);
 
-  // ── Soft delete handler ────────────────────────────────────
+  /** Soft-deletes the listing (marks inactive) and redirects to home. */
   const handleSoftDelete = async () => {
     setActionLoading(true);
     const result = await softDeleteListing();
@@ -57,7 +73,7 @@ export default function ListingDetailPage() {
     }
   };
 
-  // ── Hard delete handler ────────────────────────────────────
+  /** Permanently deletes the listing and its images. Does NOT navigate away. */
   const handleHardDelete = async () => {
     setActionLoading(true);
     const result = await hardDeleteListing();
@@ -71,6 +87,7 @@ export default function ListingDetailPage() {
     }
   };
 
+  // Skeleton placeholder while the listing is loading.
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
@@ -83,6 +100,7 @@ export default function ListingDetailPage() {
     );
   }
 
+  // Error or missing listing.
   if (error || !listing) {
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16 text-center">
@@ -126,7 +144,7 @@ export default function ListingDetailPage() {
       <ImageGallery images={listing.images || []} />
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main content */}
+        {/* Main content — takes 2/3 width on desktop */}
         <div className="lg:col-span-2 space-y-6">
           {/* Title + Price */}
           <div>
@@ -186,7 +204,7 @@ export default function ListingDetailPage() {
             </p>
           </div>
 
-          {/* Owner actions */}
+          {/* Owner actions — only shown when the current user owns this listing */}
           {isOwner && (
             <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
               <Link
@@ -210,7 +228,7 @@ export default function ListingDetailPage() {
             </div>
           )}
 
-          {/* Contact button for non-owners */}
+          {/* Contact button — shown to non-owner authenticated users only */}
           {!isOwner && user && (
             <a
               href={`mailto:?subject=RentIt%20-%20${encodeURIComponent(listing.title)}`}
@@ -234,13 +252,13 @@ export default function ListingDetailPage() {
           )}
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar — owner card with contact info */}
         <div className="space-y-6">
           <OwnerCard owner={owner} loading={ownerLoading} />
         </div>
       </div>
 
-      {/* Soft delete confirmation */}
+      {/* Soft delete confirmation dialog */}
       <ConfirmDialog
         open={showSoftDelete}
         title="Remove Listing"
@@ -251,7 +269,7 @@ export default function ListingDetailPage() {
         onCancel={() => setShowSoftDelete(false)}
       />
 
-      {/* Hard delete confirmation */}
+      {/* Hard delete confirmation dialog */}
       <ConfirmDialog
         open={showHardDelete}
         title="Delete Permanently"

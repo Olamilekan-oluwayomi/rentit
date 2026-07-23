@@ -1,3 +1,12 @@
+/**
+ * Hook for fetching and filtering the marketplace listing feed.
+ *
+ * Queries the `listings` table for active rows only and supports
+ * category, free-text search, and sort-order filters. The hook
+ * re-fetches whenever the filter values change and exposes a
+ * manual refresh function for pull-to-refresh patterns.
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
@@ -11,6 +20,11 @@ export function useListings(filters = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /**
+   * Builds and executes the Supabase query based on the current filters.
+   * Uses useCallback with specific filter keys so stale closures don't
+   * trigger unnecessary re-fetches.
+   */
   const fetchListings = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -21,17 +35,20 @@ export function useListings(filters = {}) {
       .eq("is_active", true);
 
     // ── Category filter ──────────────────────────────────────
+    // "All" is treated as no filter — every category is returned.
     if (filters.category && filters.category !== "All") {
       query = query.eq("category", filters.category);
     }
 
     // ── Text search (title + description) ────────────────────
+    // ilike provides case-insensitive partial matching via Postgres.
     if (filters.search) {
       const term = filters.search.trim();
       query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%`);
     }
 
     // ── Sorting ──────────────────────────────────────────────
+    // Newest-first is the default to surface fresh inventory.
     switch (filters.sort) {
       case "oldest":
         query = query.order("created_at", { ascending: true });
@@ -60,6 +77,7 @@ export function useListings(filters = {}) {
     setLoading(false);
   }, [filters.search, filters.category, filters.sort]);
 
+  // Trigger a fetch whenever the derived callback changes (i.e. a filter changed)
   useEffect(() => {
     (async () => {
       await fetchListings();

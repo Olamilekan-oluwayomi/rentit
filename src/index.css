@@ -1,7 +1,23 @@
+/*
+ * index.css — Global styles and design token definitions for RentIt.
+ *
+ * This file serves as the single source of truth for the app's visual
+ * identity: color palette, typography, dark mode overrides, and
+ * utility animations.
+ */
+
+/* ── Font imports ────────────────────────────────────────────────
+ * Sora: used for headings (font-heading) — geometric, modern feel.
+ * Inter: used for body text (font-body) — optimized for readability.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
-
+/* ── Design tokens (Tailwind v4 @theme) ──────────────────────────
+ * These CSS variables are consumed by Tailwind utilities like
+ * `bg-accent`, `text-text-primary`, `font-heading`, etc.
+ * Naming follows the pattern: --color-{token} / --font-{token}.
+ */
 @theme {
   --color-primary: #16213e;
   --color-secondary: #0f3460;
@@ -15,12 +31,20 @@
   --font-body: 'Inter', sans-serif;
 }
 
+/* ── Base body styles ────────────────────────────────────────────
+ * Sets the default font, text color, and background for the entire
+ * page. These are overridden for dark mode below.
+ */
 body {
   font-family: var(--font-body);
   color: var(--color-text-primary);
   background-color: var(--color-background);
 }
 
+/* ── Headings ────────────────────────────────────────────────────
+ * All h1–h6 elements use the Sora heading font globally so
+ * individual components don't need to specify font-family.
+ */
 h1,
 h2,
 h3,
@@ -30,6 +54,11 @@ h6 {
   font-family: var(--font-heading);
 }
 
+/* ── Dark mode overrides ─────────────────────────────────────────
+ * The .dark class is toggled on <html> by ThemeContext. These
+ * overrides swap the token values used by Tailwind's dark: variants
+ * and direct CSS variable references.
+ */
 .dark {
   --color-background: #0f1117;
   --color-surface: #1a1d27;
@@ -42,6 +71,12 @@ h6 {
   background-color: var(--color-background);
 }
 
+/* ── Animations ──────────────────────────────────────────────────
+ * Custom keyframe animations used via Tailwind's animate- utility
+ * classes (e.g., animate-slide-in, animate-fade-in).
+ */
+
+/* slide-in: slides content from the right — used for mobile menu panels */
 @keyframes slide-in {
   from {
     opacity: 0;
@@ -57,6 +92,7 @@ h6 {
   animation: slide-in 0.2s ease-out;
 }
 
+/* fade-in: drops content down slightly — used for dropdown menus and tooltips */
 @keyframes fade-in {
   from {
     opacity: 0;

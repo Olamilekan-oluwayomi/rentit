@@ -1,9 +1,18 @@
+/**
+ * ListingGrid.jsx
+ * ----------------
+ * Responsive grid container that renders ListingCard components with proper
+ * loading (skeleton), empty, and error state handling. Acts as the single
+ * entry point for displaying lists of listings across the application.
+ */
 import ListingCard from "./ListingCard";
 import ListingSkeleton from "./ListingSkeleton";
 
 /**
  * Responsive listing grid with loading, empty, and error states.
- * @param {{ listings: object[], loading: boolean, error: string|null, emptyMessage: string }}
+ * Renders a 1-4 column responsive grid that adapts to screen width.
+ * Handles all edge states so parent components just pass data.
+ * @param {{ listings: object[], loading: boolean, error: string|null, emptyMessage: string }} props
  */
 export default function ListingGrid({
   listings,
@@ -11,8 +20,12 @@ export default function ListingGrid({
   error,
   emptyMessage = "No listings found.",
 }) {
+  // Show skeleton placeholders while data is being fetched.
+  // 8 skeleton cards provide a realistic grid impression during loading.
   if (loading) return <ListingSkeleton count={8} />;
 
+  // Error state — displays a red icon and the error message.
+  // The error string comes from the data-fetching layer (API/Supabase errors).
   if (error) {
     return (
       <div className="text-center py-20">
@@ -36,6 +49,8 @@ export default function ListingGrid({
     );
   }
 
+  // Empty state — shown when the API returns results but the list is empty.
+  // Customizable message allows context-specific copy (e.g., "No results for X").
   if (listings.length === 0) {
     return (
       <div className="text-center py-20">
@@ -59,6 +74,8 @@ export default function ListingGrid({
     );
   }
 
+  // Default state — render the responsive grid of listing cards.
+  // Grid columns: 1 on mobile, 2 on sm, 3 on lg, 4 on xl.
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {listings.map((listing) => (

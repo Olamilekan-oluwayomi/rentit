@@ -1,3 +1,14 @@
+/**
+ * Header — Site-wide sticky header with navigation, search, and user actions.
+ *
+ * Renders differently based on auth state:
+ *   - Logged out: theme toggle, Log In, Sign Up.
+ *   - Logged in: theme toggle, notifications, new listing button, UserMenu.
+ *
+ * On mobile (< md), nav links collapse into the MobileMenu slide-out panel.
+ * The search form navigates to the home page with a ?q= query param.
+ */
+
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -6,6 +17,7 @@ import Logo from "./Logo";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 
+/** Returns Tailwind classes for NavLink based on active state. */
 const navLinkClass = ({ isActive }) =>
   `text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
     isActive
@@ -13,6 +25,9 @@ const navLinkClass = ({ isActive }) =>
       : "text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-white/10"
   }`;
 
+/**
+ * @returns {JSX.Element} The sticky site header and the MobileMenu overlay.
+ */
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -20,6 +35,11 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
+  /**
+   * Redirects to the home page with the search query in the URL.
+   * Empty queries navigate to the bare "/" to clear any previous search.
+   * @param {React.FormEvent} e
+   */
   const handleSearch = (e) => {
     e.preventDefault();
     const q = searchValue.trim();
@@ -35,6 +55,7 @@ export default function Header() {
       <header className="sticky top-0 z-40 bg-surface/80 dark:bg-surface/80 backdrop-blur-lg border-b border-gray-100 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
+            {/* Left: logo + desktop nav links */}
             <div className="flex items-center gap-8">
               <Logo />
 
@@ -45,6 +66,7 @@ export default function Header() {
               </nav>
             </div>
 
+            {/* Center: search form (desktop only) */}
             <form
               onSubmit={handleSearch}
               className="hidden lg:flex items-center flex-1 max-w-md mx-8"
@@ -64,8 +86,10 @@ export default function Header() {
               </div>
             </form>
 
+            {/* Right: auth-dependent actions + hamburger */}
             <div className="flex items-center gap-2">
               {user ? (
+                /* Logged-in user actions (desktop) */
                 <div className="hidden md:flex items-center gap-2">
                   <NavLink
                     to="/listings/new"
@@ -77,6 +101,7 @@ export default function Header() {
                     New Listing
                   </NavLink>
 
+                  {/* Theme toggle */}
                   <button
                     onClick={toggleTheme}
                     className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors"
@@ -93,6 +118,7 @@ export default function Header() {
                     )}
                   </button>
 
+                  {/* Notifications bell (placeholder — not wired to a backend yet) */}
                   <button
                     className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors relative"
                     aria-label="Notifications"
@@ -105,6 +131,7 @@ export default function Header() {
                   <UserMenu />
                 </div>
               ) : (
+                /* Logged-out user actions (desktop) */
                 <div className="hidden md:flex items-center gap-2">
                   <button
                     onClick={toggleTheme}
@@ -136,6 +163,7 @@ export default function Header() {
                 </div>
               )}
 
+              {/* Mobile hamburger — opens the slide-out MobileMenu */}
               <button
                 onClick={() => setMobileOpen(true)}
                 className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors"

@@ -1,5 +1,21 @@
+/**
+ * Logo — Renders the RentIt brand mark as a link back to the home page.
+ *
+ * Consists of an accent-colored icon box and the "RentIt" wordmark.
+ * Accepts an optional className for layout flexibility when used in
+ * different contexts (header, footer).
+ *
+ * @param {Object} props
+ * @param {string} [props.className=""] - Additional CSS classes to apply to the link wrapper.
+ * @returns {JSX.Element} The branded logo link.
+ */
+
 import { Link } from "react-router-dom";
 
+/**
+ * @param {{ className?: string }} props
+ * @returns {JSX.Element} The RentIt logo linking to the home page.
+ */
 export default function Logo({ className = "" }) {
   return (
     <Link to="/" className={`flex items-center gap-2 ${className}`} aria-label="RentIt Home">

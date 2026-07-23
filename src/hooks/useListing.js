@@ -1,3 +1,12 @@
+/**
+ * Hook for managing a single listing's lifecycle.
+ *
+ * Provides CRUD operations scoped to one listing ID: fetch, update,
+ * soft-delete, restore, and hard-delete. Hard-delete also cleans up
+ * associated images in Supabase Storage before removing the DB row,
+ * and redirects the user to the home page via React Router.
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -36,6 +45,7 @@ export function useListing(id) {
     setLoading(false);
   }, [id]);
 
+  // Auto-fetch when the component mounts or the listing ID changes
   useEffect(() => {
     (async () => {
       await fetchListing();
@@ -43,6 +53,12 @@ export function useListing(id) {
   }, [fetchListing]);
 
   // ── Update listing fields ─────────────────────────────────
+  /**
+   * Merges arbitrary field updates into the listing row via upsert.
+   *
+   * @param {object} updates - Partial listing object (e.g. title, daily_price)
+   * @returns {Promise<{success?: boolean, error?: string}>}
+   */
   const updateListing = useCallback(
     async (updates) => {
       if (!id) return { error: "No listing ID" };
@@ -63,6 +79,12 @@ export function useListing(id) {
   );
 
   // ── Soft delete (set is_active = false) ───────────────────
+  /**
+   * Hides a listing from the marketplace without permanently removing it.
+   * The owner can still view and restore soft-deleted listings.
+   *
+   * @returns {Promise<{success?: boolean, error?: string}>}
+   */
   const softDeleteListing = useCallback(async () => {
     if (!id) return { error: "No listing ID" };
     if (!user) return { error: "Not authenticated" };
@@ -80,6 +102,12 @@ export function useListing(id) {
   }, [id, user]);
 
   // ── Restore soft-deleted listing ──────────────────────────
+  /**
+   * Re-activates a previously soft-deleted listing so it reappears
+   * in marketplace searches.
+   *
+   * @returns {Promise<{success?: boolean, error?: string}>}
+   */
   const restoreListing = useCallback(async () => {
     if (!id) return { error: "No listing ID" };
     if (!user) return { error: "Not authenticated" };
@@ -97,11 +125,18 @@ export function useListing(id) {
   }, [id, user]);
 
   // ── Hard delete (row + storage images) ────────────────────
+  /**
+   * Permanently deletes a listing and its images from Supabase Storage.
+   * Storage cleanup happens first so we don't leave orphaned files
+   * if the DB delete later fails. After deletion, navigates to "/".
+   *
+   * @returns {Promise<{success?: boolean, error?: string}>}
+   */
   const hardDeleteListing = useCallback(async () => {
     if (!id) return { error: "No listing ID" };
     if (!user) return { error: "Not authenticated" };
 
-    // Delete storage images first
+    // Delete storage images first to avoid orphaned files
     if (listing?.images?.length) {
       const { error: storageError } = await supabase.storage
         .from("listing-images")
@@ -119,6 +154,7 @@ export function useListing(id) {
 
     if (deleteError) return { error: deleteError.message };
 
+    // Redirect away from the now-deleted listing page
     navigate("/");
     return { success: true };
   }, [id, user, listing, navigate]);

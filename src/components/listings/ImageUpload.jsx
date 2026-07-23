@@ -1,15 +1,26 @@
+/**
+ * ImageUpload.jsx
+ * ----------------
+ * Drag-and-drop image upload component with preview thumbnails.
+ * Supports both newly selected images (as File objects) and existing images
+ * (as Supabase storage paths). Handles file validation (type + size limits),
+ * object URL lifecycle management, and slot-based max image enforcement.
+ */
 import { useCallback, useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { X } from "lucide-react";
 import { getListingImageUrl } from "../../utils/storage";
 
+// ── Upload Constraints ─────────────────────────────────────────────
 const MAX_FILES = 5;
-const MAX_SIZE = 5 * 1024 * 1024;
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB per file — matches Supabase storage limits
 const ACCEPT = { "image/jpeg": [], "image/png": [], "image/webp": [] };
 
 /**
  * Drag-and-drop image upload with preview thumbnails.
- * @param {{ images: File[], existingImages: string[], onImagesChange, onExistingRemove, maxImages, uploading }}
+ * Manages two separate image sets: existing (stored remotely) and new (local Files).
+ * The `maxImages` prop enforces a total cap across both sets.
+ * @param {{ images: File[], existingImages: string[], onImagesChange: (files: File[]) => void, onExistingRemove: (path: string) => void, maxImages: number, uploading: boolean }} props
  */
 export default function ImageUpload({
   images = [],
@@ -19,21 +30,27 @@ export default function ImageUpload({
   maxImages = MAX_FILES,
   uploading = false,
 }) {
+  // Calculate how many new images can still be added (maxImages minus already-used slots).
   const totalSlots = maxImages - existingImages.length;
   const canAddMore = images.length < totalSlots;
 
-  // Create object URLs once per images array change, and revoke old ones on cleanup.
+  // Memoize object URLs so we only create new ones when the File array changes.
+  // This prevents re-creating URLs on every render, which would be wasteful.
   const previews = useMemo(
     () => images.map((file) => URL.createObjectURL(file)),
     [images]
   );
 
+  // Revoke object URLs on cleanup to prevent memory leaks.
+  // Without this, each File's blob URL would persist in memory even after removal.
   useEffect(() => {
     return () => {
       previews.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [previews]);
 
+  // Callback for react-dropzone — slices accepted files to fit remaining slots.
+  // Prevents exceeding the image cap even if dropzone allows more files.
   const onDrop = useCallback(
     (acceptedFiles) => {
       const remaining = totalSlots - images.length;
@@ -44,6 +61,8 @@ export default function ImageUpload({
     [images, totalSlots, onImagesChange]
   );
 
+  // Configure dropzone with type/size constraints and slot awareness.
+  // Disabling when uploading prevents adding files mid-submission.
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
     useDropzone({
       onDrop,
@@ -53,13 +72,14 @@ export default function ImageUpload({
       disabled: uploading || !canAddMore,
     });
 
+  /** Removes a newly-selected image by index from the local array. */
   const removeNew = (index) => {
     onImagesChange(images.filter((_, i) => i !== index));
   };
 
   return (
     <div className="space-y-3">
-      {/* Drop zone */}
+      {/* ── Drop Zone ─────────────────────────────────────────── */}
       <div
         {...getRootProps()}
         className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
@@ -88,13 +108,14 @@ export default function ImageUpload({
               ? "Drop images here..."
               : "Drag & drop images, or click to browse"}
           </p>
+          {/* Shows current usage: existing + new out of max */}
           <p className="text-xs text-text-secondary">
             JPEG, PNG, WEBP up to 5MB ({existingImages.length + images.length}/{maxImages})
           </p>
         </div>
       </div>
 
-      {/* Validation errors */}
+      {/* ── File Rejection Errors ─────────────────────────────── */}
       {fileRejections.length > 0 && (
         <div className="space-y-1">
           {fileRejections.map(({ file, errors }) => (
@@ -105,7 +126,7 @@ export default function ImageUpload({
         </div>
       )}
 
-      {/* Existing image previews */}
+      {/* ── Existing Image Thumbnails (from Supabase storage) ──── */}
       {existingImages.length > 0 && (
         <div className="flex flex-wrap gap-3">
           {existingImages.map((path, i) => (
@@ -118,6 +139,7 @@ export default function ImageUpload({
                 alt={`Existing ${i + 1}`}
                 className="w-full h-full object-cover"
               />
+              {/* Remove button — visible on hover for desktop, always accessible */}
               <button
                 type="button"
                 onClick={() => onExistingRemove(path)}
@@ -132,7 +154,7 @@ export default function ImageUpload({
         </div>
       )}
 
-      {/* New image previews */}
+      {/* ── New Image Thumbnails (locally selected Files) ──────── */}
       {images.length > 0 && (
         <div className="flex flex-wrap gap-3">
           {images.map((file, i) => (

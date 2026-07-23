@@ -1,3 +1,13 @@
+/**
+ * HomePage — Main landing/browse page for the RentIt marketplace.
+ *
+ * Displays a hero section, search bar, category + sort filters, a listing
+ * grid, and a floating "create listing" button for authenticated users.
+ *
+ * Search state is synced to URL query params (?q=...) so results are
+ * shareable and bookmarkable.
+ */
+
 import { useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -6,14 +16,19 @@ import { SORT_OPTIONS } from "../lib/constants";
 import CategoryFilter from "../components/listings/CategoryFilter";
 import ListingGrid from "../components/listings/ListingGrid";
 
+/**
+ * @returns {JSX.Element} The home/browse page with search, filters, and listing grid.
+ */
 export default function HomePage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Search is seeded from the URL so deep-links work out of the box.
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("newest");
 
+  // Memoize filters to avoid unnecessary re-renders in useListings.
   const filters = useMemo(
     () => ({ search, category, sort }),
     [search, category, sort]
@@ -21,6 +36,11 @@ export default function HomePage() {
 
   const { listings, loading, error } = useListings(filters);
 
+  /**
+   * Syncs the search query to the URL when the user submits the form.
+   * Empty queries remove the param entirely for cleaner URLs.
+   * @param {React.FormEvent} e
+   */
   const handleSearch = (e) => {
     e.preventDefault();
     const q = search.trim();
@@ -69,7 +89,7 @@ export default function HomePage() {
         </div>
       </form>
 
-      {/* Filters row */}
+      {/* Filters row: category chips on the left, sort dropdown on the right */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <CategoryFilter value={category} onChange={setCategory} />
 
@@ -86,7 +106,7 @@ export default function HomePage() {
         </select>
       </div>
 
-      {/* Listings grid */}
+      {/* Listings grid — handles loading, error, and empty states internally */}
       <ListingGrid
         listings={listings}
         loading={loading}
@@ -94,7 +114,7 @@ export default function HomePage() {
         emptyMessage="No listings match your filters."
       />
 
-      {/* Floating CTA */}
+      {/* Floating action button — only visible to authenticated users */}
       {user && (
         <Link
           to="/listings/new"

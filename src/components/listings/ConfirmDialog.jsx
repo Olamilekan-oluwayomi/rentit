@@ -1,3 +1,19 @@
+/**
+ * ConfirmDialog.jsx
+ * ------------------
+ * Modal confirmation dialog with backdrop overlay. Used for destructive actions
+ * (e.g., deleting a listing) where the user must explicitly confirm.
+ * Supports a `danger` mode that styles the confirm button red, a loading state
+ * that disables interactions during async operations, and customizable labels.
+ * Returns null when `open` is false (unmounts from DOM entirely).
+ */
+
+/**
+ * Modal confirmation dialog with backdrop overlay.
+ * Renders nothing when `open` is false. Clicking the backdrop calls onCancel
+ * for a quick dismiss gesture. All interactive elements are disabled during loading.
+ * @param {{ open: boolean, title: string, message: string, confirmLabel: string, cancelLabel: string, danger: boolean, loading: boolean, onConfirm: () => void, onCancel: () => void }} props
+ */
 export default function ConfirmDialog({
   open,
   title,
@@ -9,6 +25,7 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
+  // Early return — no DOM elements created when dialog is closed.
   if (!open) return null;
 
   return (
@@ -18,13 +35,13 @@ export default function ConfirmDialog({
       aria-modal="true"
       aria-label={title}
     >
-      {/* Backdrop */}
+      {/* Backdrop overlay — clicking dismisses the dialog */}
       <div
         className="absolute inset-0 bg-black/50 animate-fade-in"
         onClick={onCancel}
       />
 
-      {/* Dialog */}
+      {/* Dialog panel — positioned above the backdrop */}
       <div className="relative bg-surface rounded-2xl shadow-xl max-w-md w-full p-6 animate-slide-in">
         <h3 className="text-lg font-heading font-semibold text-text-primary mb-2">
           {title}
@@ -32,6 +49,7 @@ export default function ConfirmDialog({
         <p className="text-sm text-text-secondary mb-6">{message}</p>
 
         <div className="flex items-center gap-3 justify-end">
+          {/* Cancel button — disabled during loading to prevent double-action */}
           <button
             onClick={onCancel}
             disabled={loading}
@@ -39,6 +57,7 @@ export default function ConfirmDialog({
           >
             {cancelLabel}
           </button>
+          {/* Confirm button — uses red styling for dangerous actions (delete, etc.) */}
           <button
             onClick={onConfirm}
             disabled={loading}

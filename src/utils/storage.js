@@ -1,3 +1,12 @@
+/**
+ * Storage URL helpers for Supabase Storage buckets.
+ *
+ * Supabase stores file references as bucket-relative paths. These
+ * helpers resolve those paths into full public URLs that can be used
+ * in <img> tags and CSS. If the bucket is private, switch to
+ * `createSignedUrl` instead — but the current buckets are public.
+ */
+
 import { supabase } from "../lib/supabase";
 
 /**

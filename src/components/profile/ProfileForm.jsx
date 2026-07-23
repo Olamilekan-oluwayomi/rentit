@@ -1,14 +1,33 @@
+/**
+ * ProfileForm — Editable form for the user's profile fields (name, location, bio).
+ *
+ * Includes client-side validation with character limits, a geolocation-based
+ * "detect my location" button, and inline error messages. Form state is
+ * local; the parent calls onSave with the validated payload.
+ *
+ * @param {Object} props
+ * @param {Object} props.profile - The current profile data to populate defaults from.
+ * @param {boolean} props.saving - Whether a save operation is in progress.
+ * @param {(updates: { full_name: string, location: string, bio: string }) => void} props.onSave - Callback to persist the form data.
+ * @returns {JSX.Element} The profile edit form.
+ */
+
 import { useState } from "react";
 import { MapPinned } from "lucide-react";
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 import { useToast } from "../../contexts/ToastContext";
 
+/** Character length limits for each profile field. */
 const LIMITS = {
   full_name: { min: 2, max: 60 },
   location: { max: 80 },
   bio: { max: 300 },
 };
 
+/**
+ * @param {{ profile: Object, saving: boolean, onSave: (updates: Object) => void }} props
+ * @returns {JSX.Element} The profile form with validation and location detection.
+ */
 export default function ProfileForm({ profile, saving, onSave }) {
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [location, setLocation] = useState(profile?.location || "");
@@ -18,6 +37,10 @@ export default function ProfileForm({ profile, saving, onSave }) {
   const { getCurrentLocation, loading: locationLoading } = useCurrentLocation();
   const { addToast } = useToast();
 
+  /**
+   * Uses the browser Geolocation API to auto-fill the location field.
+   * Converts coordinates to a human-readable string via the useCurrentLocation hook.
+   */
   const handleDetectLocation = async () => {
     const { location: detected, error } = await getCurrentLocation();
 
@@ -29,6 +52,10 @@ export default function ProfileForm({ profile, saving, onSave }) {
     setLocation(detected);
   };
 
+  /**
+   * Validates all fields against LIMITS and populates the errors state.
+   * @returns {boolean} True if the form is valid.
+   */
   const validate = () => {
     const errs = {};
     const trimmedName = fullName.trim();
@@ -53,6 +80,10 @@ export default function ProfileForm({ profile, saving, onSave }) {
     return Object.keys(errs).length === 0;
   };
 
+  /**
+   * Validates then passes the cleaned form data to the parent's onSave callback.
+   * @param {React.FormEvent} e
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -65,7 +96,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Full Name */}
+      {/* Full Name field */}
       <div>
         <label
           htmlFor="full_name"
@@ -87,7 +118,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         )}
       </div>
 
-      {/* Location */}
+      {/* Location field with geolocation detect button */}
       <div>
         <label
           htmlFor="location"
@@ -132,7 +163,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         </div>
       </div>
 
-      {/* Bio */}
+      {/* Bio textarea */}
       <div>
         <label
           htmlFor="bio"
@@ -161,7 +192,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         </div>
       </div>
 
-      {/* Submit */}
+      {/* Submit button with loading spinner */}
       <button
         type="submit"
         disabled={saving}

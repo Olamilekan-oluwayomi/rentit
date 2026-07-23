@@ -1,9 +1,20 @@
+/**
+ * UserMenu — Desktop dropdown menu triggered by clicking the user avatar.
+ *
+ * Displays the user's name, email, and links to profile, listings,
+ * saved items, and settings. Closes automatically when clicking
+ * outside or pressing Escape.
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProfileContext } from "../../contexts/ProfileContext";
 import { getAvatarUrl } from "../../utils/storage";
 
+/**
+ * @returns {JSX.Element} The avatar button and its associated dropdown menu.
+ */
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -12,6 +23,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
+  // Click-outside and Escape-key listeners to auto-close the dropdown.
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -31,12 +43,14 @@ export default function UserMenu() {
     };
   }, []);
 
+  /** Signs out the user, closes the menu, and redirects to home. */
   const handleLogout = async () => {
     setOpen(false);
     await signOut();
     navigate("/");
   };
 
+  // Derive display name and initials from profile or auth metadata.
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
   const initials = displayName
     .split(" ")
@@ -47,6 +61,7 @@ export default function UserMenu() {
 
   return (
     <div className="relative" ref={menuRef}>
+      {/* Avatar trigger button */}
       <button
         onClick={() => setOpen(!open)}
         className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 overflow-hidden"
@@ -65,8 +80,10 @@ export default function UserMenu() {
         )}
       </button>
 
+      {/* Dropdown panel — rendered only when open to avoid unnecessary DOM nodes */}
       {open && (
         <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-gray-100 dark:border-white/10 py-2 z-50 animate-fade-in">
+          {/* User info header */}
           <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10">
             <p className="text-sm font-medium text-text-primary truncate">
               {displayName}
@@ -76,6 +93,7 @@ export default function UserMenu() {
             </p>
           </div>
 
+          {/* Navigation links */}
           <div className="py-1">
             <Link
               to="/profile"
@@ -123,6 +141,7 @@ export default function UserMenu() {
             </Link>
           </div>
 
+          {/* Logout — visually separated at the bottom */}
           <div className="border-t border-gray-100 dark:border-white/10 py-1">
             <button
               onClick={handleLogout}

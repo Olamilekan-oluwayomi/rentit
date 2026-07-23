@@ -1,8 +1,20 @@
+/**
+ * Avatar-related utility functions.
+ *
+ * Pure helpers for validating avatar uploads, deriving display
+ * initials from a name, and formatting file sizes for UI labels.
+ * No side effects — all functions are stateless.
+ */
+
+/** MIME types accepted for avatar uploads */
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
+/** 2 MB — keeps upload latency reasonable on slower connections */
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 
 /**
  * Validates an avatar file before upload.
+ * Checks MIME type and file size against the constants above.
+ *
  * @param {File} file
  * @returns {{ valid: boolean, error?: string }}
  */
@@ -19,6 +31,9 @@ export function validateAvatar(file) {
 
 /**
  * Extracts initials from a full name (max 2 characters).
+ * Used as a fallback when no avatar image is available.
+ * Handles multi-word names and collapses to at most two letters.
+ *
  * @param {string} name
  * @returns {string}
  */
@@ -35,12 +50,15 @@ export function getInitials(name) {
 
 /**
  * Formats bytes into a human-readable file size string.
+ * Uses base-1024 binary units (KB, MB, GB).
+ *
  * @param {number} bytes
  * @returns {string}
  */
 export function formatFileSize(bytes) {
   if (bytes === 0) return "0 B";
   const units = ["B", "KB", "MB", "GB"];
+  // Find the largest unit that doesn't produce a value < 1
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0)} ${units[i]}`;
 }

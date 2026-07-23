@@ -1,9 +1,20 @@
+/**
+ * ProfilePage — User profile view and edit page.
+ *
+ * Displays the user's avatar, name, location, and bio. Supports
+ * avatar upload/delete and inline profile editing. All mutations
+ * are delegated to the useProfile hook which handles Supabase calls.
+ */
+
 import { useState } from "react";
 import { useToast } from "../contexts/ToastContext";
 import { useProfile } from "../hooks/useProfile";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 
+/**
+ * @returns {JSX.Element} The profile page with avatar management and editable details.
+ */
 export default function ProfilePage() {
   const {
     profile,
@@ -17,6 +28,12 @@ export default function ProfilePage() {
   const [avatarError, setAvatarError] = useState(null);
   const [editing, setEditing] = useState(false);
 
+  /**
+   * Validates and uploads a new avatar file.
+   * Displays a validation error inline if the file is invalid.
+   * @param {File|null} file - The image file selected by the user.
+   * @param {string|null} validationError - Error string from client-side validation.
+   */
   const handleUploadAvatar = async (file, validationError) => {
     setAvatarError(null);
 
@@ -35,6 +52,7 @@ export default function ProfilePage() {
     }
   };
 
+  /** Removes the user's avatar image from storage. */
   const handleDeleteAvatar = async () => {
     setAvatarError(null);
     const result = await deleteAvatar();
@@ -45,6 +63,10 @@ export default function ProfilePage() {
     }
   };
 
+  /**
+   * Persists profile field updates and exits editing mode on success.
+   * @param {Object} updates - The fields to update (full_name, location, bio).
+   */
   const handleSaveProfile = async (updates) => {
     const result = await updateProfile(updates);
     if (result.error) {
@@ -55,6 +77,7 @@ export default function ProfilePage() {
     }
   };
 
+  // Show a skeleton while the initial profile data is being fetched.
   if (saving || uploading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">

@@ -1,13 +1,26 @@
+/**
+ * OwnerCard.jsx
+ * --------------
+ * Displays the listing owner's profile information on the listing detail page.
+ * Shows avatar (or initials fallback), name, location, and member-since date.
+ * Includes a "Contact Owner" button that's only visible to authenticated users
+ * who are not the listing owner (avoids self-contact).
+ * Renders a loading skeleton while owner data is being fetched.
+ */
 import { getAvatarUrl } from "../../utils/storage";
 import { useAuth } from "../../contexts/AuthContext";
 
 /**
  * Displays the listing owner's info card.
- * @param {{ owner: object|null, loading: boolean }}
+ * Shows a skeleton during loading, nothing if no owner data, and the full
+ * profile card with contact option when data is available.
+ * @param {{ owner: object|null, loading: boolean }} props - Owner object with full_name, avatar_url, created_at, location, and id
  */
 export default function OwnerCard({ owner, loading }) {
+  // Current authenticated user — needed to hide the contact button for the owner themselves.
   const { user } = useAuth();
 
+  // Loading skeleton — matches the exact dimensions of the real card to prevent layout shift.
   if (loading) {
     return (
       <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-6 animate-pulse">
@@ -22,9 +35,11 @@ export default function OwnerCard({ owner, loading }) {
     );
   }
 
+  // No owner data — render nothing (e.g., listing has no owner assigned).
   if (!owner) return null;
 
   const avatarSrc = getAvatarUrl(owner.avatar_url);
+  // Format the account creation date for a human-friendly display.
   const memberSince = new Date(owner.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -34,6 +49,7 @@ export default function OwnerCard({ owner, loading }) {
     <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-6">
       <h3 className="text-sm font-medium text-text-secondary mb-4">Listed by</h3>
       <div className="flex items-center gap-4">
+        {/* Avatar — shows image or initials fallback for users without an avatar */}
         <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden flex-shrink-0">
           {avatarSrc ? (
             <img
@@ -42,6 +58,8 @@ export default function OwnerCard({ owner, loading }) {
               className="w-full h-full object-cover"
             />
           ) : (
+            // Initials fallback — takes first two initials from the full name.
+            // Sliced to 2 chars max for consistent sizing.
             <span className="text-accent font-heading font-bold text-lg">
               {owner.full_name
                 ?.split(" ")
@@ -56,6 +74,7 @@ export default function OwnerCard({ owner, loading }) {
           <p className="text-sm font-medium text-text-primary truncate">
             {owner.full_name || "Anonymous"}
           </p>
+          {/* Location is optional — not all owners have it set */}
           {owner.location && (
             <p className="text-xs text-text-secondary truncate">
               {owner.location}
@@ -67,6 +86,8 @@ export default function OwnerCard({ owner, loading }) {
         </div>
       </div>
 
+      {/* Contact button — only shown to non-owner authenticated users.
+          Prevents the owner from seeing a "Contact Yourself" button. */}
       {user && user.id !== owner.id && (
         <a
           href={`mailto:?subject=RentIt%20-%20Inquiry`}
