@@ -13,6 +13,7 @@ import { useToast } from "../../contexts/ToastContext";
 import { useListings } from "../../hooks/useListings";
 import { useListingBookingStats } from "../../hooks/useListingBookingStats";
 import { supabase } from "../../lib/supabase";
+import { getListingImageUrl } from "../../utils/storage";
 import ConfirmDialog from "../listings/ConfirmDialog";
 
 /**
@@ -106,7 +107,7 @@ export default function MyListingsTab() {
 
       <div className="space-y-3">
         {listings.map((listing) => {
-          const firstImage = listing.images?.[0] || null;
+          const firstImage = getListingImageUrl(listing.images?.[0]);
 
           return (
             <div
