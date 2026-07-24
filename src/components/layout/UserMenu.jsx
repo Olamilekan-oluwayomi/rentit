@@ -8,8 +8,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { useProfileContext } from "../../contexts/ProfileContext";
+import { useAuth } from "../../features/auth/context/AuthContext";
+import { useProfileContext } from "../../features/profile/context/ProfileContext";
 import { getAvatarUrl } from "../../utils/storage";
 
 /**

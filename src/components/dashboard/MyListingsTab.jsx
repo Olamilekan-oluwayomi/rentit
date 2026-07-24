@@ -8,15 +8,15 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { useToast } from "../../contexts/ToastContext";
-import { useListings } from "../../hooks/useListings";
-import { useListingBookingStats } from "../../hooks/useListingBookingStats";
-import { supabase } from "../../lib/supabase";
-import ConfirmDialog from "../listings/ConfirmDialog";
-import ListingThumbnail from "../ui/ListingThumbnail";
-import BookingListSkeleton from "../ui/BookingListSkeleton";
-import EmptyState from "../ui/EmptyState";
+import { useAuth } from "../../features/auth/context/AuthContext";
+import { useToast } from "../../shared/contexts/ToastContext";
+import { useListings } from "../../features/listings/hooks/useListings";
+import { useListingBookingStats } from "../../features/bookings/hooks/useListingBookingStats";
+import { supabase } from "../../shared/lib/supabase";
+import ConfirmDialog from "../../shared/components/ConfirmDialog";
+import ListingThumbnail from "../../shared/components/ListingThumbnail";
+import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
+import EmptyState from "../../shared/components/EmptyState";
 
 export default function MyListingsTab() {
   const { user } = useAuth();

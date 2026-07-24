@@ -7,14 +7,14 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useBookings } from "../../hooks/useBookings";
-import { useToast } from "../../contexts/ToastContext";
-import { supabase } from "../../lib/supabase";
-import StatusBadge from "../bookings/StatusBadge";
-import ListingThumbnail from "../ui/ListingThumbnail";
-import BookingMeta from "../ui/BookingMeta";
-import BookingListSkeleton from "../ui/BookingListSkeleton";
-import EmptyState from "../ui/EmptyState";
+import { useBookings } from "../../features/bookings/hooks/useBookings";
+import { useToast } from "../../shared/contexts/ToastContext";
+import { supabase } from "../../shared/lib/supabase";
+import StatusBadge from "../../features/bookings/components/StatusBadge";
+import ListingThumbnail from "../../shared/components/ListingThumbnail";
+import BookingMeta from "../../shared/components/BookingMeta";
+import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
+import EmptyState from "../../shared/components/EmptyState";
 
 export default function MyRentalsTab() {
   const { data: bookings, loading, error, refetch } = useBookings("rentals");

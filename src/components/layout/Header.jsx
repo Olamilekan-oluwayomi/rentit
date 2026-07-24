@@ -11,8 +11,8 @@
 
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { useTheme } from "../../contexts/ThemeContext";
+import { useAuth } from "../../features/auth/context/AuthContext";
+import { useTheme } from "../../shared/contexts/ThemeContext";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";

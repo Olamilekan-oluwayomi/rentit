@@ -18,16 +18,16 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { useListings } from "../hooks/useListings";
-import { SORT_OPTIONS, DEFAULT_FILTERS } from "../lib/constants";
-import CategoryFilter from "../components/listings/CategoryFilter";
-import PriceFilter from "../components/listings/PriceFilter";
-import LocationFilter from "../components/listings/LocationFilter";
-import ListingGrid from "../components/listings/ListingGrid";
-import Pagination from "../components/listings/Pagination";
-import MobileFilterDrawer from "../components/listings/MobileFilterDrawer";
-import ActiveFilters from "../components/listings/ActiveFilters";
+import { useAuth } from "../features/auth/context/AuthContext";
+import { useListings } from "../features/listings/hooks/useListings";
+import { SORT_OPTIONS, DEFAULT_FILTERS } from "../shared/lib/constants";
+import CategoryFilter from "../features/listings/components/CategoryFilter";
+import PriceFilter from "../features/listings/components/PriceFilter";
+import LocationFilter from "../features/listings/components/LocationFilter";
+import ListingGrid from "../features/listings/components/ListingGrid";
+import Pagination from "../features/listings/components/Pagination";
+import MobileFilterDrawer from "../features/listings/components/MobileFilterDrawer";
+import ActiveFilters from "../features/listings/components/ActiveFilters";
 
 // ── Helpers ──────────────────────────────────────────────────────
 

@@ -7,7 +7,7 @@
  * `createSignedUrl` instead — but the current buckets are public.
  */
 
-import { supabase } from "../lib/supabase";
+import { supabase } from "../shared/lib/supabase";
 
 /**
  * Converts a stored avatar path into a full public URL.

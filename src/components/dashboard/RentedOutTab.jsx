@@ -6,13 +6,13 @@
  */
 
 import { Link } from "react-router-dom";
-import { useBookings } from "../../hooks/useBookings";
-import StatusBadge from "../bookings/StatusBadge";
-import ListingThumbnail from "../ui/ListingThumbnail";
-import RenterInfo from "../ui/RenterInfo";
-import BookingMeta from "../ui/BookingMeta";
-import BookingListSkeleton from "../ui/BookingListSkeleton";
-import EmptyState from "../ui/EmptyState";
+import { useBookings } from "../../features/bookings/hooks/useBookings";
+import StatusBadge from "../../features/bookings/components/StatusBadge";
+import ListingThumbnail from "../../shared/components/ListingThumbnail";
+import RenterInfo from "../../shared/components/RenterInfo";
+import BookingMeta from "../../shared/components/BookingMeta";
+import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
+import EmptyState from "../../shared/components/EmptyState";
 
 export default function RentedOutTab() {
   const { data: bookings, loading, error } = useBookings("rented-out");

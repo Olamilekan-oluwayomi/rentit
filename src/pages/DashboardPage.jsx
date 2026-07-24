@@ -12,9 +12,9 @@
  */
 
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { useListings } from "../hooks/useListings";
-import { useBookings } from "../hooks/useBookings";
+import { useAuth } from "../features/auth/context/AuthContext";
+import { useListings } from "../features/listings/hooks/useListings";
+import { useBookings } from "../features/bookings/hooks/useBookings";
 import MyListingsTab from "../components/dashboard/MyListingsTab";
 import MyRentalsTab from "../components/dashboard/MyRentalsTab";
 import RequestsTab from "../components/dashboard/RequestsTab";
