@@ -1,11 +1,13 @@
 /**
- * useListings — Central data-fetching hook for the listing browse page.
+ * useListings — Central data-fetching hook for listing queries.
  *
- * Queries the `listings` table for active rows and supports:
+ * Queries the `listings` table and supports:
  *   - Free-text search (title + description via ilike)
  *   - Category filter (exact match)
  *   - Location filter (ilike partial match)
  *   - Price range filter (min / max daily_price)
+ *   - Owner filter (owner_id exact match)
+ *   - Include inactive listings toggle (for owner management view)
  *   - Sort order
  *   - Server-side pagination via Supabase range()
  *
@@ -24,6 +26,8 @@ import { LISTINGS_PER_PAGE } from "../lib/constants";
  * @param {string}  filters.location  - Location ilike term
  * @param {string|number} filters.minPrice - Minimum daily price
  * @param {string|number} filters.maxPrice - Maximum daily price
+ * @param {string}  filters.owner_id  - Owner UUID to filter by (for My Listings)
+ * @param {boolean} filters.includeInactive - Include inactive listings (owner mgmt view)
  * @param {string}  filters.sort      - Sort key (newest|oldest|price_asc|price_desc)
  * @param {number}  filters.page      - 1-indexed current page
  * @param {number}  [filters.limit]   - Items per page (default LISTINGS_PER_PAGE)
@@ -46,14 +50,24 @@ export function useListings(filters = {}) {
     // Needed so Pagination can derive totalPages client-side.
     let countQuery = supabase
       .from("listings")
-      .select("*", { count: "exact", head: true })
-      .eq("is_active", true);
+      .select("*", { count: "exact", head: true });
 
     // ── Data query ───────────────────────────────────────────
     let dataQuery = supabase
       .from("listings")
-      .select("*")
-      .eq("is_active", true);
+      .select("*");
+
+    // ── Active-only filter (skip when fetching owner's own listings) ──
+    if (!filters.includeInactive) {
+      countQuery = countQuery.eq("is_active", true);
+      dataQuery = dataQuery.eq("is_active", true);
+    }
+
+    // ── Owner filter ─────────────────────────────────────────
+    if (filters.owner_id) {
+      countQuery = countQuery.eq("owner_id", filters.owner_id);
+      dataQuery = dataQuery.eq("owner_id", filters.owner_id);
+    }
 
     // ── Apply filters to both queries ────────────────────────
     // Category
@@ -137,6 +151,8 @@ export function useListings(filters = {}) {
     filters.location,
     filters.minPrice,
     filters.maxPrice,
+    filters.owner_id,
+    filters.includeInactive,
     filters.sort,
     page,
     limit,

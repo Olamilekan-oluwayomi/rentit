@@ -1,13 +1,15 @@
 /**
- * useBookings — Fetches bookings for either a renter or a listing owner.
+ * useBookings — Fetches bookings for the current user in either direction.
  *
- * When type is 'renter', returns all bookings where the current user is the
- * renter, joined with the listing title and first image.
+ * When type is 'rentals', returns all bookings where the current user is the
+ * renter, joined with listing data (title, images, daily_price).
  *
- * When type is 'owner', returns all bookings for listings owned by the current
- * user, joined with the listing title and the renter's full name / avatar.
+ * When type is 'requests', returns all bookings for listings owned by the
+ * current user, joined with listing data (title, images) and the renter's
+ * profile (full_name, avatar_url).
  *
  * Results are ordered by created_at descending (newest first).
+ * If the user is null, returns empty data without error.
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -15,32 +17,35 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 
 /**
- * @param {{ type: "renter" | "owner" }} options
+ * @param {"rentals" | "requests"} type
  * @returns {{
- *   bookings: Array<object>,
+ *   data: Array<object>,
  *   loading: boolean,
  *   error: string|null,
- *   refetch: () => Promise<void>
+ *   refetch: () => void
  * }}
  */
-export function useBookings({ type }) {
+export function useBookings(type) {
   const { user } = useAuth();
-  const [bookings, setBookings] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchBookings = useCallback(async () => {
-    if (!user) return;
+    if (!user) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     let query;
 
-    if (type === "renter") {
-      // Renter view: fetch bookings where the current user is the renter.
-      // Join listing data (title + first image) for display.
+    if (type === "rentals") {
+      // Renter view: bookings where current user is the renter.
       query = supabase
         .from("bookings")
         .select(`
@@ -59,8 +64,7 @@ export function useBookings({ type }) {
         .eq("renter_id", user.id)
         .order("created_at", { ascending: false });
     } else {
-      // Owner view: fetch bookings for listings owned by the current user.
-      // Join listing title and renter profile (name + avatar).
+      // Owner view: bookings for listings owned by the current user.
       query = supabase
         .from("bookings")
         .select(`
@@ -74,35 +78,32 @@ export function useBookings({ type }) {
           owner_message,
           created_at,
           updated_at,
-          listings ( title, images, daily_price ),
+          listings ( title, images ),
           profiles:renter_id ( full_name, avatar_url )
         `)
         .eq("listings.owner_id", user.id)
         .order("created_at", { ascending: false });
     }
 
-    const { data, error: fetchError } = await query;
+    const { data: bookings, error: fetchError } = await query;
 
     if (fetchError) {
       setError(fetchError.message);
-      setBookings([]);
+      setData([]);
     } else {
-      setBookings(data ?? []);
+      setData(bookings ?? []);
     }
 
     setLoading(false);
-  }, [user, type]);
+  }, [user, type, refreshKey]);
 
   useEffect(() => {
-    (async () => {
-      await fetchBookings();
-    })();
-  }, [fetchBookings]);
-
-  /** Force a re-fetch to pick up mutations made elsewhere. */
-  const refetch = useCallback(() => {
     fetchBookings();
   }, [fetchBookings]);
 
-  return { bookings, loading, error, refetch };
+  const refetch = useCallback(() => {
+    setRefreshKey((k) => k + 1);
+  }, []);
+
+  return { data, loading, error, refetch };
 }

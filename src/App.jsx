@@ -20,6 +20,7 @@ import NewListingPage from './pages/NewListingPage'
 import ListingDetailPage from './pages/ListingDetailPage'
 import EditListingPage from './pages/EditListingPage'
 import ProfilePage from './pages/ProfilePage'
+import DashboardPage from './pages/DashboardPage'
 import BookingRequestsPage from './pages/BookingRequestsPage'
 import MyBookingsPage from './pages/MyBookingsPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
@@ -45,6 +46,7 @@ function App() {
 
         {/* Authenticated-only routes — guests are redirected to /login */}
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
         <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
         <Route path="/requests" element={<ProtectedRoute><BookingRequestsPage /></ProtectedRoute>} />

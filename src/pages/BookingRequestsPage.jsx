@@ -24,7 +24,7 @@ import StatusBadge from "../components/bookings/StatusBadge";
  * @returns {JSX.Element} Owner's booking requests page.
  */
 export default function BookingRequestsPage() {
-  const { bookings, loading, error, refetch } = useBookings({ type: "owner" });
+  const { data: bookings, loading, error, refetch } = useBookings("requests");
   const { addToast } = useToast();
   const [actionLoading, setActionLoading] = useState(null);
   const [declineReason, setDeclineReason] = useState({});

@@ -17,7 +17,7 @@ import StatusBadge from "../components/bookings/StatusBadge";
  * @returns {JSX.Element} Renter's bookings page.
  */
 export default function MyBookingsPage() {
-  const { bookings, loading, error, refetch } = useBookings({ type: "renter" });
+  const { data: bookings, loading, error, refetch } = useBookings("rentals");
   const { addToast } = useToast();
   const [cancellingId, setCancellingId] = useState(null);
 
