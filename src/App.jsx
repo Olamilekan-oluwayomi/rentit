@@ -9,12 +9,14 @@
  */
 
 import { Routes, Route } from 'react-router-dom'
+import { useAuth } from './features/auth/context/AuthContext'
 import Layout from './components/layout/Layout'
 import LoginPage from './features/auth/components/LoginPage'
 import RegisterPage from './features/auth/components/RegisterPage'
 import EmailConfirmationPage from './features/auth/components/EmailConfirmationPage'
 import ForgotPasswordPage from './features/auth/components/ForgotPasswordPage'
 import ResetPasswordPage from './features/auth/components/ResetPasswordPage'
+import LandingPage from './pages/LandingPage'
 import HomePage from './pages/HomePage'
 import NewListingPage from './features/listings/components/NewListingPage'
 import ListingDetailPage from './features/listings/components/ListingDetailPage'
@@ -25,6 +27,26 @@ import ProtectedRoute from './features/auth/components/ProtectedRoute'
 import GuestRoute from './features/auth/components/GuestRoute'
 
 /**
+ * Returns the component to render at the root "/" route based on auth state.
+ * - Loading: spinner (avoids flash redirect).
+ * - Logged out: LandingPage (marketing page).
+ * - Logged in: HomePage (browse listings).
+ */
+function RootRoute() {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return user ? <HomePage /> : <LandingPage />
+}
+
+/**
  * @returns {JSX.Element} The full route tree wrapped in the site layout.
  */
 function App() {
@@ -32,7 +54,7 @@ function App() {
     <Layout>
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<RootRoute />} />
         <Route path="/confirm" element={<EmailConfirmationPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/listings/:id" element={<ListingDetailPage />} />
