@@ -193,68 +193,79 @@ export default function ListingDetailPage() {
         )}
       </div>
 
-      {/* Booking confirmation screen — shown after a successful submission */}
+      {/* Booking confirmation modal — shown after a successful submission */}
       {bookingResult && (
-        <div className="mt-6 bg-surface rounded-2xl border border-green-200 dark:border-green-500/20 p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-500/15 flex items-center justify-center shrink-0">
-              <svg
-                className="w-5 h-5 text-green-600 dark:text-green-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Booking submitted"
+        >
+          <div
+            className="absolute inset-0 bg-black/50 animate-fade-in"
+            onClick={() => setBookingResult(null)}
+          />
+          <div className="relative bg-surface rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4 animate-slide-in">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-500/15 flex items-center justify-center shrink-0">
+                <svg
+                  className="w-5 h-5 text-green-600 dark:text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-heading font-semibold text-text-primary">
+                  Booking Request Submitted
+                </h3>
+                <p className="text-sm text-text-secondary">
+                  Your request is pending owner approval.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-4 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-text-secondary">Listing</span>
+                <span className="text-text-primary font-medium">{bookingResult.listingTitle}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-text-secondary">Dates</span>
+                <span className="text-text-primary font-medium">
+                  {format(bookingResult.startDate, "MMM d, yyyy")} –{" "}
+                  {format(bookingResult.endDate, "MMM d, yyyy")}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-text-secondary">Total</span>
+                <span className="text-accent font-heading font-bold">
+                  ${bookingResult.totalPrice}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setBookingResult(null)}
+                className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+                Book More Dates
+              </button>
+              <Link
+                to="/my-bookings"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
+              >
+                View My Bookings
+              </Link>
             </div>
-            <div>
-              <h3 className="text-lg font-heading font-semibold text-text-primary">
-                Booking Request Submitted
-              </h3>
-              <p className="text-sm text-text-secondary">
-                Your request is pending owner approval.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-4 space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Listing</span>
-              <span className="text-text-primary font-medium">{bookingResult.listingTitle}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Dates</span>
-              <span className="text-text-primary font-medium">
-                {format(bookingResult.startDate, "MMM d, yyyy")} –{" "}
-                {format(bookingResult.endDate, "MMM d, yyyy")}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-text-secondary">Total</span>
-              <span className="text-accent font-heading font-bold">
-                ${bookingResult.totalPrice}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <Link
-              to="/my-bookings"
-              className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-            >
-              View My Bookings
-            </Link>
-            <button
-              onClick={() => setBookingResult(null)}
-              className="px-5 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-            >
-              Book More Dates
-            </button>
           </div>
         </div>
       )}
