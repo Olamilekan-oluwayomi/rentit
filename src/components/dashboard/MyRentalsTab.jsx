@@ -11,6 +11,7 @@ import { format, parseISO } from "date-fns";
 import { useBookings } from "../../hooks/useBookings";
 import { useToast } from "../../contexts/ToastContext";
 import { supabase } from "../../lib/supabase";
+import { getListingImageUrl } from "../../utils/storage";
 import StatusBadge from "../bookings/StatusBadge";
 
 /**
@@ -74,7 +75,7 @@ export default function MyRentalsTab() {
     <div className="space-y-3">
       {bookings.map((booking) => {
         const listing = booking.listings;
-        const firstImage = listing?.images?.[0] || null;
+        const firstImage = getListingImageUrl(listing?.images?.[0]);
         const canCancel = booking.status === "pending" || booking.status === "approved";
         const isCancelling = cancellingId === booking.id;
 

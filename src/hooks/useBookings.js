@@ -4,9 +4,13 @@
  * When type is 'rentals', returns all bookings where the current user is the
  * renter, joined with listing data (title, images, daily_price).
  *
- * When type is 'requests', returns all bookings for listings owned by the
+ * When type is 'requests', returns pending bookings for listings owned by the
  * current user, joined with listing data (title, images) and the renter's
- * profile (full_name, avatar_url).
+ * profile (full_name, avatar_url). Only status='pending' is returned since
+ * this tab is for action needed, not history.
+ *
+ * When type is 'rented-out', returns approved/completed bookings for listings
+ * owned by the current user — things currently or previously rented out.
  *
  * Results are ordered by created_at descending (newest first).
  * If the user is null, returns empty data without error.
@@ -17,7 +21,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 
 /**
- * @param {"rentals" | "requests"} type
+ * @param {"rentals" | "requests" | "rented-out"} type
  * @returns {{
  *   data: Array<object>,
  *   loading: boolean,
@@ -89,6 +93,10 @@ export function useBookings(type) {
         return;
       }
 
+      // Determine which statuses to fetch based on type.
+      const statusFilter =
+        type === "requests" ? ["pending"] : ["approved", "completed"];
+
       // Step 2: fetch bookings where listing_id is in the user's listings.
       query = supabase
         .from("bookings")
@@ -107,6 +115,7 @@ export function useBookings(type) {
           profiles:renter_id ( full_name, avatar_url )
         `)
         .in("listing_id", listingIds)
+        .in("status", statusFilter)
         .order("created_at", { ascending: false });
     }
 

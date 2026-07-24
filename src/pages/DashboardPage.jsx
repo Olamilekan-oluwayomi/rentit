@@ -1,7 +1,7 @@
 /**
  * DashboardPage — Owner/renter dashboard with tabbed navigation.
  *
- * Three tabs: My Listings, My Rentals, Requests.
+ * Four tabs: My Listings, My Rentals, Requests, Rented Out.
  * Tab state is persisted via useSearchParams so the active tab survives
  * page refreshes and is shareable/bookmarkable.
  *
@@ -18,11 +18,13 @@ import { useBookings } from "../hooks/useBookings";
 import MyListingsTab from "../components/dashboard/MyListingsTab";
 import MyRentalsTab from "../components/dashboard/MyRentalsTab";
 import RequestsTab from "../components/dashboard/RequestsTab";
+import RentedOutTab from "../components/dashboard/RentedOutTab";
 
 const TABS = [
   { key: "listings", label: "My Listings" },
   { key: "rentals", label: "My Rentals" },
   { key: "requests", label: "Requests" },
+  { key: "rented-out", label: "Rented Out" },
 ];
 
 /**
@@ -42,10 +44,14 @@ export default function DashboardPage() {
   });
   const { data: rentalBookings } = useBookings("rentals");
   const { data: requestBookings } = useBookings("requests");
+  const { data: rentedOutBookings } = useBookings("rented-out");
 
-  const activeBookings = (rentalBookings ?? []).filter(
-    (b) => b.status === "approved"
-  ).length;
+  // Active Bookings = approved bookings from BOTH sides combined:
+  // - renter-side: bookings where the user is the renter and status is approved
+  // - owner-side: bookings where the user owns the listing and status is approved
+  const activeBookings =
+    (rentalBookings ?? []).filter((b) => b.status === "approved").length +
+    (rentedOutBookings ?? []).filter((b) => b.status === "approved").length;
   const pendingRequests = (requestBookings ?? []).filter(
     (b) => b.status === "pending"
   ).length;
@@ -105,6 +111,7 @@ export default function DashboardPage() {
       {activeTab === "listings" && <MyListingsTab />}
       {activeTab === "rentals" && <MyRentalsTab />}
       {activeTab === "requests" && <RequestsTab />}
+      {activeTab === "rented-out" && <RentedOutTab />}
     </div>
   );
 }

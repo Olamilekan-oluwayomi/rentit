@@ -11,6 +11,7 @@ import { format, parseISO } from "date-fns";
 import { useBookings } from "../hooks/useBookings";
 import { supabase } from "../lib/supabase";
 import { useToast } from "../contexts/ToastContext";
+import { getListingImageUrl } from "../utils/storage";
 import StatusBadge from "../components/bookings/StatusBadge";
 
 /**
@@ -89,7 +90,7 @@ export default function MyBookingsPage() {
         <div className="space-y-4">
           {bookings.map((booking) => {
             const listing = booking.listings;
-            const firstImage = listing?.images?.[0] || null;
+            const firstImage = getListingImageUrl(listing?.images?.[0]);
             const isPending = booking.status === "pending";
             const isCancelling = cancellingId === booking.id;
 

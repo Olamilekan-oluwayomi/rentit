@@ -1,9 +1,9 @@
 /**
- * RequestsTab — Displays incoming booking requests for the owner's listings.
+ * RequestsTab — Displays pending booking requests for the owner's listings.
  *
- * Shows all bookings where the related listing's owner_id is the current user,
- * with renter info, listing details, status badge, and approve/decline actions
- * for pending requests.
+ * Shows bookings where the related listing's owner_id is the current user
+ * AND status is 'pending', with renter info, listing details, status badge,
+ * and approve/decline actions.
  */
 
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { format, parseISO } from "date-fns";
 import { useBookings } from "../../hooks/useBookings";
 import { useToast } from "../../contexts/ToastContext";
 import { supabase } from "../../lib/supabase";
+import { getListingImageUrl } from "../../utils/storage";
 import StatusBadge from "../bookings/StatusBadge";
 
 /**
@@ -94,7 +95,7 @@ export default function RequestsTab() {
   if (bookings.length === 0) {
     return (
       <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-10 text-center">
-        <p className="text-text-secondary">No booking requests yet.</p>
+        <p className="text-text-secondary">No pending requests.</p>
       </div>
     );
   }
@@ -104,7 +105,7 @@ export default function RequestsTab() {
       {bookings.map((booking) => {
         const listing = booking.listings;
         const renter = booking.profiles;
-        const firstImage = listing?.images?.[0] || null;
+        const firstImage = getListingImageUrl(listing?.images?.[0]);
         const isPending = booking.status === "pending";
         const isLoading = actionId === booking.id;
 
