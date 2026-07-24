@@ -4,7 +4,7 @@
  * Every page is wrapped in the Layout shell (Header + Footer).
  * Auth-sensitive routes use ProtectedRoute or GuestRoute guards:
  *   - GuestRoute: /login, /register, /forgot-password (redirects logged-in users home).
- *   - ProtectedRoute: /profile, /listings/new, /listings/:id/edit, /requests, /my-bookings (redirects guests to /login).
+ *   - ProtectedRoute: /profile, /listings/new, /listings/:id/edit, /dashboard (redirects guests to /login).
  *   - Public: /, /listings/:id, /confirm, /reset-password (accessible to everyone).
  */
 
@@ -21,8 +21,6 @@ import ListingDetailPage from './pages/ListingDetailPage'
 import EditListingPage from './pages/EditListingPage'
 import ProfilePage from './pages/ProfilePage'
 import DashboardPage from './pages/DashboardPage'
-import BookingRequestsPage from './pages/BookingRequestsPage'
-import MyBookingsPage from './pages/MyBookingsPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import GuestRoute from './components/common/GuestRoute'
 
@@ -49,8 +47,6 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
         <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
-        <Route path="/requests" element={<ProtectedRoute><BookingRequestsPage /></ProtectedRoute>} />
-        <Route path="/my-bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
       </Routes>
     </Layout>
   )

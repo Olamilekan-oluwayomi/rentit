@@ -7,22 +7,20 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { format, parseISO } from "date-fns";
 import { useBookings } from "../../hooks/useBookings";
 import { useToast } from "../../contexts/ToastContext";
 import { supabase } from "../../lib/supabase";
-import { getListingImageUrl } from "../../utils/storage";
 import StatusBadge from "../bookings/StatusBadge";
+import ListingThumbnail from "../ui/ListingThumbnail";
+import BookingMeta from "../ui/BookingMeta";
+import BookingListSkeleton from "../ui/BookingListSkeleton";
+import EmptyState from "../ui/EmptyState";
 
-/**
- * @returns {JSX.Element} The renter's rentals tab.
- */
 export default function MyRentalsTab() {
   const { data: bookings, loading, error, refetch } = useBookings("rentals");
   const { addToast } = useToast();
   const [cancellingId, setCancellingId] = useState(null);
 
-  /** Cancel a booking by updating its status to 'cancelled'. */
   const handleCancel = async (booking) => {
     setCancellingId(booking.id);
 
@@ -41,33 +39,19 @@ export default function MyRentalsTab() {
     setCancellingId(null);
   };
 
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((n) => (
-          <div key={n} className="h-24 bg-gray-200 dark:bg-white/5 rounded-2xl animate-pulse" />
-        ))}
-      </div>
-    );
-  }
+  if (loading) return <BookingListSkeleton />;
 
   if (error) {
-    return (
-      <p className="text-text-secondary text-sm py-8 text-center">{error}</p>
-    );
+    return <p className="text-text-secondary text-sm py-8 text-center">{error}</p>;
   }
 
   if (bookings.length === 0) {
     return (
-      <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-10 text-center space-y-3">
-        <p className="text-text-secondary">You haven&apos;t requested any rentals yet.</p>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-        >
-          Browse Listings
-        </Link>
-      </div>
+      <EmptyState
+        message="You haven't requested any rentals yet."
+        actionLabel="Browse Listings"
+        actionTo="/"
+      />
     );
   }
 
@@ -75,7 +59,6 @@ export default function MyRentalsTab() {
     <div className="space-y-3">
       {bookings.map((booking) => {
         const listing = booking.listings;
-        const firstImage = getListingImageUrl(listing?.images?.[0]);
         const canCancel = booking.status === "pending" || booking.status === "approved";
         const isCancelling = cancellingId === booking.id;
 
@@ -86,31 +69,16 @@ export default function MyRentalsTab() {
             className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Thumbnail */}
-              <div className="w-full sm:w-20 h-20 rounded-lg bg-gray-100 dark:bg-white/5 overflow-hidden shrink-0">
-                {firstImage ? (
-                  <img src={firstImage} alt={listing?.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-text-secondary text-xs">No image</div>
-                )}
-              </div>
+              <ListingThumbnail listing={listing} />
 
-              {/* Details */}
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing?.title}</h3>
                   <StatusBadge status={booking.status} />
                 </div>
-
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
-                  <span>
-                    {format(parseISO(booking.start_date), "MMM d")} – {format(parseISO(booking.end_date), "MMM d, yyyy")}
-                  </span>
-                  <span className="font-medium text-text-primary">${booking.total_price}</span>
-                </div>
+                <BookingMeta booking={booking} />
               </div>
 
-              {/* Cancel action */}
               {canCancel && (
                 <div className="shrink-0 sm:self-center" onClick={(e) => e.preventDefault()}>
                   <button
