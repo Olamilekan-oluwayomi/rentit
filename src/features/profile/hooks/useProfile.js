@@ -12,6 +12,7 @@ import { useCallback, useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useProfileContext } from "../context/ProfileContext";
 import { supabase } from "../../../shared/lib/supabase";
+import { compressImage } from "../../../utils/imageCompression";
 
 export function useProfile() {
   const { user } = useAuth();
@@ -64,9 +65,11 @@ export function useProfile() {
 
   /**
    * Uploads a new avatar image and links it to the user's profile.
-   * The file is stored at `<user-id>/avatar.jpg` with upsert so each
-   * user always has exactly one avatar. After the storage upload
-   * succeeds, the profile row is updated to point to the new path.
+   * The file is compressed to 512×512 JPEG before uploading to keep
+   * storage sizes small and load times fast. The file is stored at
+   * `<user-id>/avatar.jpg` with upsert so each user always has exactly
+   * one avatar. After the storage upload succeeds, the profile row is
+   * updated to point to the new path.
    *
    * @param {File} file - Image file selected by the user
    * @returns {Promise<{success?: boolean, error?: string}>}
@@ -77,12 +80,21 @@ export function useProfile() {
       setUploading(true);
       setError(null);
 
+      let compressed;
+      try {
+        compressed = await compressImage(file);
+      } catch (err) {
+        setError(err.message);
+        setUploading(false);
+        return { error: err.message };
+      }
+
       // Deterministic path per user — upsert replaces any previous avatar
       const filePath = `${user.id}/avatar.jpg`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, compressed, { upsert: true });
 
       if (uploadError) {
         setError(uploadError.message);

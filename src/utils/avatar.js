@@ -8,8 +8,8 @@
 
 /** MIME types accepted for avatar uploads */
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
-/** 2 MB — keeps upload latency reasonable on slower connections */
-const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+/** 10 MB — files above this are rejected before compression */
+const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
 /**
  * Validates an avatar file before upload.
@@ -24,7 +24,7 @@ export function validateAvatar(file) {
     return { valid: false, error: "Only JPG and PNG images are allowed." };
   }
   if (file.size > MAX_SIZE) {
-    return { valid: false, error: "Image must be smaller than 2MB." };
+    return { valid: false, error: "Image must be smaller than 10MB." };
   }
   return { valid: true };
 }

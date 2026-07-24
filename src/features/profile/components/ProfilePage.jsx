@@ -30,6 +30,7 @@ export default function ProfilePage() {
 
   /**
    * Validates and uploads a new avatar file.
+   * Rejects files over 10MB before compression runs.
    * Displays a validation error inline if the file is invalid.
    * @param {File|null} file - The image file selected by the user.
    * @param {string|null} validationError - Error string from client-side validation.
@@ -43,6 +44,11 @@ export default function ProfilePage() {
     }
 
     if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      addToast("Image is too large. Please choose a file under 10MB.", "error");
+      return;
+    }
 
     const result = await uploadAvatar(file);
     if (result.error) {
