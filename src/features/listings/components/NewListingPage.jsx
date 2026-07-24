@@ -16,6 +16,7 @@ import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { supabase } from "../../../shared/lib/supabase";
 import { MAX_LISTING_IMAGES } from "../../../shared/lib/constants";
+import { compressImage } from "../../../utils/imageCompression";
 import ListingForm from "./ListingForm";
 
 /**
@@ -64,17 +65,29 @@ export default function NewListingPage() {
         return;
       }
 
-      // Step 2: Upload each image to Supabase Storage, capped by MAX_LISTING_IMAGES.
+      // Step 2: Compress and upload each image to Supabase Storage, capped by MAX_LISTING_IMAGES.
       const imagePaths = [];
       for (let i = 0; i < data.images.length && i < MAX_LISTING_IMAGES; i++) {
         const file = data.images[i];
-        const ext = file.name.split(".").pop();
-        // Path format: userId/listingId/timestamp-index.ext for uniqueness and organization.
-        const filePath = `${user.id}/${listing.id}/${Date.now()}-${i}.${ext}`;
+
+        let compressed;
+        try {
+          compressed = await compressImage(file, {
+            maxWidth: 1200,
+            maxHeight: 1200,
+            quality: 0.8,
+          });
+        } catch (err) {
+          addToast(`Failed to process ${file.name}: ${err.message}`, "error");
+          continue;
+        }
+
+        // Path format: userId/listingId/timestamp-index.jpg for uniqueness and organization.
+        const filePath = `${user.id}/${listing.id}/${Date.now()}-${i}.jpg`;
 
         const { error: uploadError } = await supabase.storage
           .from("listing-images")
-          .upload(filePath, file);
+          .upload(filePath, compressed);
 
         if (uploadError) {
           addToast(`Failed to upload ${file.name}: ${uploadError.message}`, "error");
