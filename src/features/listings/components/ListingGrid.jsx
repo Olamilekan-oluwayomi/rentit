@@ -7,6 +7,7 @@
  */
 import ListingCard from "./ListingCard";
 import ListingSkeleton from "./ListingSkeleton";
+import AnimatedList, { AnimatedListItem } from "../../../shared/components/AnimatedList";
 
 /**
  * Responsive listing grid with loading, empty, and error states.
@@ -82,10 +83,12 @@ export default function ListingGrid({
 
   // Default state — render the responsive grid of listing cards.
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {listings.map((listing) => (
-        <ListingCard key={listing.id} listing={listing} />
+        <AnimatedListItem key={listing.id}>
+          <ListingCard listing={listing} />
+        </AnimatedListItem>
       ))}
-    </div>
+    </AnimatedList>
   );
 }

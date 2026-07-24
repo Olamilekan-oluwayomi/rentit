@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 
@@ -95,13 +96,14 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <button
+          <motion.button
             type="submit"
             disabled={loading}
+            whileTap={{ scale: 0.97 }}
             className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
           >
             {loading ? "Signing in..." : "Log In"}
-          </button>
+          </motion.button>
         </form>
 
         <div className="relative my-6">

@@ -13,6 +13,7 @@ import RenterInfo from "../../shared/components/RenterInfo";
 import BookingMeta from "../../shared/components/BookingMeta";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
 import EmptyState from "../../shared/components/EmptyState";
+import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
 
 export default function RentedOutTab() {
   const { data: bookings, loading, error } = useBookings("rented-out");
@@ -28,17 +29,17 @@ export default function RentedOutTab() {
   }
 
   return (
-    <div className="space-y-3">
+    <AnimatedList className="space-y-3">
       {bookings.map((booking) => {
         const listing = booking.listings;
         const renter = booking.profiles;
 
         return (
-          <Link
-            key={booking.id}
-            to={`/booking/${booking.id}`}
-            className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
-          >
+          <AnimatedListItem key={booking.id}>
+            <Link
+              to={`/booking/${booking.id}`}
+              className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
+            >
             <div className="flex flex-col sm:flex-row gap-4">
               <ListingThumbnail listing={listing} />
 
@@ -53,9 +54,10 @@ export default function RentedOutTab() {
                 <BookingMeta booking={booking} />
               </div>
             </div>
-          </Link>
+            </Link>
+          </AnimatedListItem>
         );
       })}
-    </div>
+    </AnimatedList>
   );
 }

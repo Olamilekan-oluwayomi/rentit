@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import { useToast } from "../../shared/contexts/ToastContext";
 import { supabase } from "../../shared/lib/supabase";
@@ -17,6 +18,7 @@ import RenterInfo from "../../shared/components/RenterInfo";
 import BookingMeta from "../../shared/components/BookingMeta";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
 import EmptyState from "../../shared/components/EmptyState";
+import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
 
 export default function RequestsTab() {
   const { data: bookings, loading, error, refetch } = useBookings("requests");
@@ -83,7 +85,7 @@ export default function RequestsTab() {
   }
 
   return (
-    <div className="space-y-3">
+    <AnimatedList className="space-y-3">
       {bookings.map((booking) => {
         const listing = booking.listings;
         const renter = booking.profiles;
@@ -91,11 +93,11 @@ export default function RequestsTab() {
         const isLoading = actionId === booking.id;
 
         return (
-          <Link
-            key={booking.id}
-            to={`/booking/${booking.id}`}
-            className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
-          >
+          <AnimatedListItem key={booking.id}>
+            <Link
+              to={`/booking/${booking.id}`}
+              className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
+            >
             <div className="flex flex-col sm:flex-row gap-4">
               <ListingThumbnail listing={listing} />
 
@@ -113,34 +115,37 @@ export default function RequestsTab() {
 
               {isPending && (
                 <div className="flex items-center gap-2 shrink-0 sm:self-center" onClick={(e) => e.preventDefault()}>
-                  <button
+                  <motion.button
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleApprove(booking);
                     }}
                     disabled={isLoading}
+                    whileTap={{ scale: 0.97 }}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isLoading ? "..." : "Approve"}
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleDecline(booking);
                     }}
                     disabled={isLoading}
+                    whileTap={{ scale: 0.97 }}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isLoading ? "..." : "Decline"}
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </div>
-          </Link>
+            </Link>
+          </AnimatedListItem>
         );
       })}
-    </div>
+    </AnimatedList>
   );
 }

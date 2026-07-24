@@ -7,6 +7,7 @@
  */
 
 import { createContext, useCallback, useContext, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
 const ToastContext = createContext(null);
 
@@ -50,17 +51,22 @@ export function ToastProvider({ children }) {
 
       {/* Toast container — fixed position, above all other UI */}
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 animate-slide-in ${
-              toast.type === "success"
-                ? "bg-green-600 text-white"
-                : toast.type === "error"
-                  ? "bg-red-600 text-white"
-                  : "bg-gray-800 text-white"
-            }`}
-          >
+        <AnimatePresence>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, x: 24, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 24, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className={`pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 ${
+                toast.type === "success"
+                  ? "bg-green-600 text-white"
+                  : toast.type === "error"
+                    ? "bg-red-600 text-white"
+                    : "bg-gray-800 text-white"
+              }`}
+            >
             {/* Success icon */}
             {toast.type === "success" && (
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,8 +87,9 @@ export function ToastProvider({ children }) {
             >
               &times;
             </button>
-          </div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );

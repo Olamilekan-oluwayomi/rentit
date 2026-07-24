@@ -17,6 +17,7 @@ import ConfirmDialog from "../../shared/components/ConfirmDialog";
 import ListingThumbnail from "../../shared/components/ListingThumbnail";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
 import EmptyState from "../../shared/components/EmptyState";
+import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
 
 export default function MyListingsTab() {
   const { user } = useAuth();
@@ -85,12 +86,12 @@ export default function MyListingsTab() {
     <>
       <p className="text-xs text-text-secondary mb-4">{totalCount} listing{totalCount !== 1 ? "s" : ""}</p>
 
-      <div className="space-y-3">
+      <AnimatedList className="space-y-3">
         {listings.map((listing) => (
-          <div
-            key={listing.id}
-            className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 flex flex-col sm:flex-row gap-4"
-          >
+          <AnimatedListItem key={listing.id}>
+            <div
+              className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 flex flex-col sm:flex-row gap-4"
+            >
             <ListingThumbnail listing={listing} />
 
             <div className="flex-1 min-w-0 space-y-1">
@@ -128,9 +129,10 @@ export default function MyListingsTab() {
                 Delete
               </button>
             </div>
-          </div>
+            </div>
+          </AnimatedListItem>
         ))}
-      </div>
+      </AnimatedList>
 
       <ConfirmDialog
         open={!!deleteTarget}

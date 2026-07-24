@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   format,
@@ -367,12 +368,13 @@ export default function AvailabilityCalendar({
                 </span>
               </div>
 
-              <button
+              <motion.button
                 onClick={handleRequestToBook}
+                whileTap={{ scale: 0.97 }}
                 className="w-full px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
               >
                 Request to Book
-              </button>
+              </motion.button>
             </div>
           ) : (
             <p className="text-sm text-text-secondary">

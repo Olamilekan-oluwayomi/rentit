@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -165,13 +166,14 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <button
+              <motion.button
                 type="submit"
                 disabled={loading}
+                whileTap={{ scale: 0.97 }}
                 className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
               >
                 {loading ? "Creating account..." : "Sign Up"}
-              </button>
+              </motion.button>
             </form>
 
             <p className="text-center text-sm text-text-secondary mt-6">

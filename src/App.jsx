@@ -8,7 +8,8 @@
  *   - Public: /, /listings/:id, /confirm, /reset-password (accessible to everyone).
  */
 
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAuth } from './features/auth/context/AuthContext'
 import Layout from './components/layout/Layout'
 import LoginPage from './features/auth/components/LoginPage'
@@ -50,26 +51,39 @@ function RootRoute() {
  * @returns {JSX.Element} The full route tree wrapped in the site layout.
  */
 function App() {
+  const location = useLocation()
+  const prefersReduced = useReducedMotion()
+
   return (
     <Layout>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<RootRoute />} />
-        <Route path="/confirm" element={<EmailConfirmationPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/listings/:id" element={<ListingDetailPage />} />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={prefersReduced ? false : { opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={prefersReduced ? {} : { opacity: 0, y: -6 }}
+          transition={{ duration: 0.15, ease: "easeInOut" }}
+        >
+          <Routes location={location}>
+            {/* Public routes */}
+            <Route path="/" element={<RootRoute />} />
+            <Route path="/confirm" element={<EmailConfirmationPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/listings/:id" element={<ListingDetailPage />} />
 
-        {/* Guest-only routes — logged-in users are redirected home */}
-        <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-        <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
-        <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+            {/* Guest-only routes — logged-in users are redirected home */}
+            <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+            <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+            <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
 
-        {/* Authenticated-only routes — guests are redirected to /login */}
-        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-        <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
-        <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
-      </Routes>
+            {/* Authenticated-only routes — guests are redirected to /login */}
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
+            <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
     </Layout>
   )
 }
