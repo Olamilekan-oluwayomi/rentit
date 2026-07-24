@@ -65,6 +65,31 @@ export function useBookings(type) {
         .order("created_at", { ascending: false });
     } else {
       // Owner view: bookings for listings owned by the current user.
+      // Two-step fetch because PostgREST embedded-resource filters (e.g.
+      // .eq("listings.owner_id", ...)) don't reliably filter parent rows.
+      // Step 1: get the current user's listing IDs.
+      const { data: ownedListings, error: listingsError } = await supabase
+        .from("listings")
+        .select("id")
+        .eq("owner_id", user.id);
+
+      if (listingsError) {
+        setError(listingsError.message);
+        setData([]);
+        setLoading(false);
+        return;
+      }
+
+      const listingIds = (ownedListings ?? []).map((l) => l.id);
+
+      // If the user owns no listings, there can be no incoming requests.
+      if (listingIds.length === 0) {
+        setData([]);
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: fetch bookings where listing_id is in the user's listings.
       query = supabase
         .from("bookings")
         .select(`
@@ -81,7 +106,7 @@ export function useBookings(type) {
           listings ( title, images ),
           profiles:renter_id ( full_name, avatar_url )
         `)
-        .eq("listings.owner_id", user.id)
+        .in("listing_id", listingIds)
         .order("created_at", { ascending: false });
     }
 

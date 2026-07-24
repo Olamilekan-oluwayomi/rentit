@@ -44,7 +44,7 @@ export default function DashboardPage() {
   const { data: requestBookings } = useBookings("requests");
 
   const activeBookings = (rentalBookings ?? []).filter(
-    (b) => b.status === "approved" || b.status === "pending"
+    (b) => b.status === "approved"
   ).length;
   const pendingRequests = (requestBookings ?? []).filter(
     (b) => b.status === "pending"
