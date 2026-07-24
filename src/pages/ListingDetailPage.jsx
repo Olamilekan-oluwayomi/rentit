@@ -12,9 +12,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { format } from "date-fns";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { useListing } from "../hooks/useListing";
+import { useCreateBooking } from "../hooks/useCreateBooking";
 import { supabase } from "../lib/supabase";
 import ImageGallery from "../components/listings/ImageGallery";
 import OwnerCard from "../components/listings/OwnerCard";
@@ -32,11 +34,14 @@ export default function ListingDetailPage() {
   const { listing, loading, error, softDeleteListing, hardDeleteListing } =
     useListing(id);
 
+  const { createBooking, submitting: bookingSubmitting } = useCreateBooking();
+
   const [owner, setOwner] = useState(null);
   const [ownerLoading, setOwnerLoading] = useState(true);
   const [showSoftDelete, setShowSoftDelete] = useState(false);
   const [showHardDelete, setShowHardDelete] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [bookingResult, setBookingResult] = useState(null);
 
   // Derived flag used to conditionally render owner actions vs contact button.
   const isOwner = user && listing && user.id === listing.owner_id;
@@ -133,15 +138,24 @@ export default function ListingDetailPage() {
     );
   }
 
-  // ── Booking request handler (renter mode) ────────────────
-  // Called when a non-owner selects a range and clicks "Request to Book".
-  // Scoped to availability/calendar only — the actual booking insert
-  // will be implemented in a separate feature.
-  const handleRangeConfirmed = (startDate, endDate, totalPrice) => {
-    addToast(
-      `Booking request: ${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()} ($${totalPrice})`,
-      "info"
-    );
+  /**
+   * Booking request handler (renter mode).
+   * Called when a non-owner selects a range and clicks "Request to Book".
+   * Delegates to useCreateBooking which re-validates availability before insert.
+   */
+  const handleRangeConfirmed = async (startDate, endDate, totalPrice) => {
+    const result = await createBooking(listing.id, startDate, endDate, totalPrice);
+
+    if (result.success) {
+      // Show a dedicated confirmation screen instead of just a toast,
+      // so the renter clearly sees their request was submitted.
+      setBookingResult({
+        startDate,
+        endDate,
+        totalPrice,
+        listingTitle: listing.title,
+      });
+    }
   };
 
   const createdDate = new Date(listing.created_at).toLocaleDateString("en-US", {
@@ -178,6 +192,72 @@ export default function ListingDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Booking confirmation screen — shown after a successful submission */}
+      {bookingResult && (
+        <div className="mt-6 bg-surface rounded-2xl border border-green-200 dark:border-green-500/20 p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-500/15 flex items-center justify-center shrink-0">
+              <svg
+                className="w-5 h-5 text-green-600 dark:text-green-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-heading font-semibold text-text-primary">
+                Booking Request Submitted
+              </h3>
+              <p className="text-sm text-text-secondary">
+                Your request is pending owner approval.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-4 space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-text-secondary">Listing</span>
+              <span className="text-text-primary font-medium">{bookingResult.listingTitle}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-text-secondary">Dates</span>
+              <span className="text-text-primary font-medium">
+                {format(bookingResult.startDate, "MMM d, yyyy")} –{" "}
+                {format(bookingResult.endDate, "MMM d, yyyy")}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-text-secondary">Total</span>
+              <span className="text-accent font-heading font-bold">
+                ${bookingResult.totalPrice}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <Link
+              to="/my-bookings"
+              className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
+            >
+              View My Bookings
+            </Link>
+            <button
+              onClick={() => setBookingResult(null)}
+              className="px-5 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            >
+              Book More Dates
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content — takes 2/3 width on desktop */}
