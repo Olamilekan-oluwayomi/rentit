@@ -49,7 +49,7 @@ export default function MessageInput({ onSend, sending, disabled }) {
   };
 
   return (
-    <div className="border-t border-gray-200 dark:border-white/10 bg-surface px-4 py-3">
+    <div className="shrink-0 border-t border-gray-200/80 dark:border-white/[0.06] bg-white dark:bg-surface shadow-[0_-2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_-2px_8px_rgba(0,0,0,0.2)] px-4 py-3">
       <div className="flex items-end gap-3">
         <textarea
           ref={textareaRef}

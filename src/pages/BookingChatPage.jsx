@@ -3,9 +3,10 @@
  *
  * Route: /booking/:id
  *
+ * Full-viewport messaging layout (no global header/footer rendered).
  * Combines the MessageThread (scrollable list) with the MessageInput box.
- * Shows the listing title and counterparty name in a mini header.
- * Marks unread messages as read when the user opens the chat.
+ * Shows the listing title, counterparty avatar/name, and a back button
+ * in a fixed-height header. Marks unread messages as read when opened.
  */
 
 import { useEffect, useState } from "react";
@@ -46,7 +47,7 @@ export default function BookingChatPage() {
         .select(`
           id, listing_id, renter_id, status,
           listings ( title ),
-          profiles:renter_id ( full_name )
+          profiles:renter_id ( full_name, avatar_url )
         `)
         .eq("id", bookingId)
         .single();
@@ -83,42 +84,60 @@ export default function BookingChatPage() {
 
   const listingTitle = booking?.listings?.title ?? "Booking";
   const isRenter = booking?.renter_id === user?.id;
-  const subtitle = isRenter ? "Chat with owner" : `Chat with ${booking?.profiles?.full_name ?? "renter"}`;
+  const counterpartyName = isRenter
+    ? "Owner"
+    : (booking?.profiles?.full_name ?? "Renter");
 
   return (
-    <div className="max-w-2xl mx-auto h-[calc(100dvh-4rem)] flex flex-col">
-      {/* Chat header */}
-      <div className="shrink-0 border-b border-gray-200 dark:border-white/10 bg-surface px-4 py-3 flex items-center gap-3">
+    <div className="flex flex-col h-full bg-white dark:bg-background">
+      {/* Chat header — fixed height, shadow separates from thread */}
+      <div className="shrink-0 h-14 flex items-center gap-3 px-3 bg-white dark:bg-surface border-b border-gray-200/80 dark:border-white/[0.06] shadow-sm z-10">
         <Link
           to="/inbox"
-          className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
           aria-label="Back to inbox"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
-        <div className="min-w-0">
-          <h1 className="text-sm font-heading font-semibold text-text-primary truncate">
+
+        {/* Avatar */}
+        <div className="shrink-0 w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
+          {booking?.profiles?.avatar_url ? (
+            <img
+              src={booking.profiles.avatar_url}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-accent font-heading font-bold text-xs">
+              {counterpartyName[0]?.toUpperCase() || "?"}
+            </span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h1 className="text-sm font-semibold text-text-primary truncate leading-tight">
             {listingTitle}
           </h1>
-          <p className="text-xs text-text-secondary truncate">
-            {subtitle}
+          <p className="text-xs text-text-secondary truncate leading-tight">
+            {counterpartyName}
           </p>
         </div>
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="px-4 py-3 text-sm text-red-600 bg-red-50 dark:bg-red-500/10">
+        <div className="shrink-0 px-4 py-2.5 text-sm text-red-600 bg-red-50 dark:bg-red-500/10 border-b border-red-100 dark:border-red-500/10">
           {error}
         </div>
       )}
 
-      {/* Message thread */}
+      {/* Message thread — fills remaining space */}
       <MessageThread messages={messages} loading={loading} />
 
-      {/* Message input */}
+      {/* Message input — fixed at bottom */}
       <MessageInput onSend={handleSend} sending={sending} />
     </div>
   );
