@@ -24,6 +24,8 @@ import ListingDetailPage from './features/listings/components/ListingDetailPage'
 import EditListingPage from './features/listings/components/EditListingPage'
 import ProfilePage from './features/profile/components/ProfilePage'
 import DashboardPage from './pages/DashboardPage'
+import BookingChatPage from './pages/BookingChatPage'
+import InboxPage from './pages/InboxPage'
 import ProtectedRoute from './features/auth/components/ProtectedRoute'
 import GuestRoute from './features/auth/components/GuestRoute'
 
@@ -81,6 +83,8 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
             <Route path="/listings/:id/edit" element={<ProtectedRoute><EditListingPage /></ProtectedRoute>} />
+            <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
+            <Route path="/booking/:id" element={<ProtectedRoute><BookingChatPage /></ProtectedRoute>} />
           </Routes>
         </motion.div>
       </AnimatePresence>

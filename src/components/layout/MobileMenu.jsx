@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";
+import { useUnreadCount } from "../../features/messages/hooks/useUnreadCount";
 import { getAvatarUrl } from "../../utils/storage";
 import Logo from "./Logo";
 
@@ -37,6 +38,7 @@ const navLinkClass = ({ isActive }) =>
 export default function MobileMenu({ open, onClose }) {
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
+  const { count: unreadCount } = useUnreadCount();
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
@@ -185,6 +187,24 @@ export default function MobileMenu({ open, onClose }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
               Dashboard
+            </NavLink>
+          )}
+
+          {user && (
+            <NavLink
+              to="/inbox"
+              className={navLinkClass}
+              onClick={handleNavClick}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              Messages
+              {unreadCount > 0 && (
+                <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </NavLink>
           )}
         </nav>
