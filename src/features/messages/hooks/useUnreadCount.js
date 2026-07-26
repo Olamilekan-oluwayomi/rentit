@@ -50,16 +50,17 @@ export function useUnreadCount() {
   useEffect(() => {
     if (!user) return;
 
-    // Clean up any previous channel before creating a new one.
-    // Named channels are singletons in Supabase — calling .channel("unread-count")
-    // again returns the existing instance, which throws if already subscribed.
+    // Use an unnamed channel so Supabase auto-generates a unique ID.
+    // Named channels are singletons — .channel("unread-count") always returns
+    // the same instance, and removeChannel is async, so the old one is still
+    // subscribed when we try to add new .on() callbacks.
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
 
     const channel = supabase
-      .channel("unread-count")
+      .channel()
       .on(
         "postgres_changes",
         {
