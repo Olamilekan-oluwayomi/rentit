@@ -13,18 +13,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
-/* ── Full-height root ───────────────────────────────────────────
- * html, body, and #root must be height: 100% so that h-screen
- * children inside the React tree have a properly-sized parent
- * chain all the way up to the viewport. Without this, h-screen
- * elements can overflow or leave gaps.
- */
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 /* ── Design tokens (Tailwind v4 @theme) ──────────────────────────
  * These CSS variables are consumed by Tailwind utilities like
  * `bg-accent`, `text-text-primary`, `font-heading`, etc.
