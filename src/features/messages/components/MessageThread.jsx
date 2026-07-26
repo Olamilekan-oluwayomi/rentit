@@ -55,7 +55,7 @@ export default function MessageThread({ messages, loading }) {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
+      <div className="flex-1 min-h-0 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
         <div className="w-6 h-6 border-3 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -63,7 +63,7 @@ export default function MessageThread({ messages, loading }) {
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
+      <div className="flex-1 min-h-0 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
         <div className="text-center px-6">
           <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
             <svg className="w-7 h-7 text-text-secondary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
