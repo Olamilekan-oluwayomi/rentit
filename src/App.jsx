@@ -61,6 +61,7 @@ function App() {
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
+          className="h-full"
           initial={prefersReduced ? false : { opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={prefersReduced ? {} : { opacity: 0, y: -6 }}

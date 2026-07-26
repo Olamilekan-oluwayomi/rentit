@@ -54,7 +54,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-surface/80 dark:bg-surface/80 backdrop-blur-lg border-b border-gray-100 dark:border-white/10">
+      <header className="shrink-0 sticky top-0 z-40 bg-surface/80 dark:bg-surface/80 backdrop-blur-lg border-b border-gray-100 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             {/* Left: logo + desktop nav links */}
