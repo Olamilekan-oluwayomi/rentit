@@ -18,6 +18,7 @@ import { format, eachDayOfInterval } from "date-fns";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
+import { useRequireCompleteProfile } from "../../profile/hooks/useRequireCompleteProfile";
 
 /**
  * @returns {{
@@ -28,6 +29,7 @@ import { useToast } from "../../../shared/contexts/ToastContext";
 export function useCreateBooking() {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const { requireProfile } = useRequireCompleteProfile();
   const [submitting, setSubmitting] = useState(false);
 
   /**
@@ -113,5 +115,16 @@ export function useCreateBooking() {
     [user, addToast]
   );
 
-  return { createBooking, submitting };
+  const createBookingGated = useCallback(
+    (listingId, startDate, endDate, totalPrice) => {
+      return new Promise((resolve) => {
+        requireProfile(() => {
+          createBooking(listingId, startDate, endDate, totalPrice).then(resolve);
+        });
+      });
+    },
+    [requireProfile, createBooking]
+  );
+
+  return { createBooking: createBookingGated, submitting };
 }

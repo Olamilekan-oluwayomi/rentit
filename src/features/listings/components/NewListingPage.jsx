@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
+import { useRequireCompleteProfile } from "../../profile/hooks/useRequireCompleteProfile";
 import { supabase } from "../../../shared/lib/supabase";
 import { MAX_LISTING_IMAGES } from "../../../shared/lib/constants";
 import { compressImage } from "../../../utils/imageCompression";
@@ -26,15 +27,18 @@ export default function NewListingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { requireProfile } = useRequireCompleteProfile();
   const [submitting, setSubmitting] = useState(false);
 
   /**
    * Handles the full listing creation flow: DB insert → image uploads → DB update.
+   * Gated behind profile completion.
    * @param {Object} data - Validated form data from ListingForm.
    */
   const onSubmit = async (data) => {
     if (!user) return;
-    setSubmitting(true);
+    requireProfile(async () => {
+      setSubmitting(true);
 
     try {
       // Step 1: Insert a placeholder row so we have a listing.id for storage paths.
@@ -118,6 +122,7 @@ export default function NewListingPage() {
     } finally {
       setSubmitting(false);
     }
+    }); // end requireProfile
   };
 
   return (

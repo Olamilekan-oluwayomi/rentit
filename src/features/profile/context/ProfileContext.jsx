@@ -1,15 +1,26 @@
 /**
- * ProfileContext — Provides the current user's profile data to the component tree.
+ * ProfileContext — Provides the current user's profile data and completion
+ * state to the component tree.
  *
- * Fetches the profile row from Supabase on auth changes and auto-creates one
- * if it doesn't exist yet (first login / new user).
+ * Fetches the profile row from Supabase on auth changes, auto-creates one
+ * if it doesn't exist yet (first login / new user), and pre-fills avatar_url
+ * from OAuth provider metadata when available.
+ *
+ * Exposes:
+ *   - profile / setProfile / refreshProfile / loading — profile CRUD state
+ *   - isProfileLoading — true until the initial fetch (+ retry) resolves
+ *   - isProfileComplete — derived: avatar_url set AND full_name >= 2 chars
+ *   - showCompletion / hideCompletion / completionPending — overlay visibility
  */
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
 
 const ProfileContext = createContext(null);
+
+/** Delay before retrying profile fetch for brand-new users (ms). */
+const RETRY_DELAY = 800;
 
 /**
  * ProfileProvider — React context provider for user profile state.
@@ -23,13 +34,27 @@ export function ProfileProvider({ children }) {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [completionVisible, setCompletionVisible] = useState(false);
+  const completionResolveRef = useRef(null);
+
+  /**
+   * Extract the avatar URL from OAuth provider metadata.
+   * Google puts it under `picture`, Apple under `avatar_url`,
+   * general OAuth under `picture` or `data?.avatar_url`.
+   */
+  const getOAuthAvatar = useCallback(() => {
+    if (!user) return null;
+    const meta = user.user_metadata || {};
+    return meta.picture || meta.avatar_url || user.identities?.[0]?.identity_data?.picture || null;
+  }, [user]);
 
   /**
    * Fetch the profile for the currently authenticated user.
-   * If no profile row exists (PGRST116), it creates one via upsert
-   * using metadata from the auth user.
+   * If no profile row exists (PGRST116), creates one via upsert.
+   * For brand-new users the row may not exist yet (async trigger),
+   * so we retry once after a short delay before concluding incomplete.
    */
-  const fetchProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async (isRetry = false) => {
     if (!user) {
       setProfile(null);
       setLoading(false);
@@ -44,16 +69,28 @@ export function ProfileProvider({ children }) {
 
     // PGRST116 = "Row not found" — first-time user with no profile row yet
     if (fetchError && fetchError.code === "PGRST116") {
+      // Auto-populate avatar from OAuth if available
+      const oauthAvatar = getOAuthAvatar();
+
       const { data: created, error: createError } = await supabase
         .from("profiles")
         .upsert(
-          { id: user.id, full_name: user.user_metadata?.full_name || "" },
+          {
+            id: user.id,
+            full_name: user.user_metadata?.full_name || "",
+            avatar_url: oauthAvatar || null,
+          },
           { onConflict: "id" }
         )
         .select()
         .single();
 
       if (createError) {
+        // Retry once if the row might be created by a DB trigger
+        if (!isRetry) {
+          await new Promise((r) => setTimeout(r, RETRY_DELAY));
+          return fetchProfile(true);
+        }
         setLoading(false);
         return;
       }
@@ -63,20 +100,79 @@ export function ProfileProvider({ children }) {
       return;
     }
 
+    // If profile exists but has no avatar, and we haven't retried yet,
+    // the row might have been created by a trigger after our first fetch
+    // returned PGRST116. Retry once to catch this race.
+    if (!isRetry && data && !data.avatar_url && getOAuthAvatar()) {
+      const oauthAvatar = getOAuthAvatar();
+      const { data: updated } = await supabase
+        .from("profiles")
+        .upsert({ id: user.id, avatar_url: oauthAvatar }, { onConflict: "id" })
+        .select()
+        .single();
+      if (updated) data = updated;
+    }
+
     setProfile(data);
     setLoading(false);
-  }, [user]);
+  }, [user, getOAuthAvatar]);
 
   // Re-fetch profile whenever the auth user changes
   useEffect(() => {
+    setLoading(true);
     (async () => {
       await fetchProfile();
     })();
   }, [fetchProfile]);
 
+  // ── Derived completion state ──────────────────────────────────
+  const isProfileLoading = loading;
+  const isProfileComplete =
+    !isProfileLoading &&
+    !!profile?.avatar_url &&
+    (profile?.full_name?.trim().length ?? 0) >= 2;
+
+  // ── Overlay visibility (imperative API via context) ───────────
+  const showCompletion = useCallback(() => {
+    setCompletionVisible(true);
+  }, []);
+
+  const hideCompletion = useCallback(() => {
+    setCompletionVisible(false);
+    // Resolve any pending action that was gated on completion
+    if (completionResolveRef.current) {
+      completionResolveRef.current();
+      completionResolveRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Returns a promise that resolves when the profile is complete.
+   * If already complete, resolves immediately. Otherwise shows the
+   * overlay and waits for the user to finish.
+   */
+  const waitForCompletion = useCallback(() => {
+    if (isProfileComplete) return Promise.resolve();
+    showCompletion();
+    return new Promise((resolve) => {
+      completionResolveRef.current = resolve;
+    });
+  }, [isProfileComplete, showCompletion]);
+
   return (
     <ProfileContext.Provider
-      value={{ profile, setProfile, refreshProfile: fetchProfile, loading }}
+      value={{
+        profile,
+        setProfile,
+        refreshProfile: fetchProfile,
+        loading,
+        isProfileLoading,
+        isProfileComplete,
+        completionVisible,
+        showCompletion,
+        hideCompletion,
+        waitForCompletion,
+      }}
     >
       {children}
     </ProfileContext.Provider>
@@ -88,7 +184,7 @@ export function ProfileProvider({ children }) {
  *
  * Must be used inside a <ProfileProvider>.
  *
- * @returns {{ profile: object|null, setProfile: Function, refreshProfile: Function, loading: boolean }}
+ * @returns {{ profile, setProfile, refreshProfile, loading, isProfileLoading, isProfileComplete, completionVisible, showCompletion, hideCompletion, waitForCompletion }}
  * @throws {Error} If used outside a ProfileProvider.
  */
 // eslint-disable-next-line react-refresh/only-export-components

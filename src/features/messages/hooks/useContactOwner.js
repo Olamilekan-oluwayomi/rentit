@@ -3,19 +3,23 @@
  * then returns a function that navigates to the chat thread.
  *
  * Used by the "Contact Owner" buttons on listing detail pages and owner cards.
+ * Gated behind profile completion — if the user's profile is incomplete,
+ * the completion overlay opens first.
  */
 
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
+import { useRequireCompleteProfile } from "../../profile/hooks/useRequireCompleteProfile";
 
 export function useContactOwner() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { requireProfile } = useRequireCompleteProfile();
 
-  const contactOwner = useCallback(
+  const contactOwnerAction = useCallback(
     async (listingId) => {
       if (!user || !listingId) return;
       setLoading(true);
@@ -63,6 +67,13 @@ export function useContactOwner() {
       navigate(`/booking/${newBooking.id}`);
     },
     [user, navigate]
+  );
+
+  const contactOwner = useCallback(
+    (listingId) => {
+      requireProfile(() => contactOwnerAction(listingId));
+    },
+    [requireProfile, contactOwnerAction]
   );
 
   return { contactOwner, loading };

@@ -9,11 +9,12 @@
  * in a fixed-height header. Marks unread messages as read when opened.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useMessages } from "../features/messages/hooks/useMessages";
 import { useSendMessage } from "../features/messages/hooks/useSendMessage";
 import { useAuth } from "../features/auth/context/AuthContext";
+import { useRequireCompleteProfile } from "../features/profile/hooks/useRequireCompleteProfile";
 import { supabase } from "../shared/lib/supabase";
 import { getAvatarUrl } from "../utils/storage";
 import MessageThread from "../features/messages/components/MessageThread";
@@ -36,6 +37,7 @@ export default function BookingChatPage() {
   const { user } = useAuth();
   const { messages, loading, error, addOptimistic } = useMessages(bookingId);
   const { sendMessage, sending } = useSendMessage();
+  const { requireProfile } = useRequireCompleteProfile();
   const [booking, setBooking] = useState(null);
 
   // Fetch booking details for the header
@@ -75,13 +77,25 @@ export default function BookingChatPage() {
     }
   }, [messages, bookingId, user]);
 
-  const handleSend = async (content) => {
+  const doSend = async (content) => {
     addOptimistic(content);
     const { error: sendError } = await sendMessage(bookingId, content);
     if (sendError) {
       console.error("Failed to send message:", sendError);
     }
   };
+
+  // Gate the first message behind profile completion; subsequent sends pass through.
+  const handleSend = useCallback(
+    (content) => {
+      if (messages.length === 0) {
+        requireProfile(() => doSend(content));
+      } else {
+        doSend(content);
+      }
+    },
+    [messages.length, requireProfile]
+  );
 
   const listingTitle = booking?.listings?.title ?? "Booking";
   const isRenter = booking?.renter_id === user?.id;
