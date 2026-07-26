@@ -15,6 +15,7 @@ import { useMessages } from "../features/messages/hooks/useMessages";
 import { useSendMessage } from "../features/messages/hooks/useSendMessage";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { supabase } from "../shared/lib/supabase";
+import { getAvatarUrl } from "../utils/storage";
 import MessageThread from "../features/messages/components/MessageThread";
 import MessageInput from "../features/messages/components/MessageInput";
 
@@ -88,6 +89,8 @@ export default function BookingChatPage() {
     ? "Owner"
     : (booking?.profiles?.full_name ?? "Renter");
 
+  const counterpartyAvatar = getAvatarUrl(booking?.profiles?.avatar_url);
+
   return (
     <div className="flex flex-col h-full bg-white dark:bg-background">
       {/* Chat header — fixed height, shadow separates from thread */}
@@ -104,9 +107,9 @@ export default function BookingChatPage() {
 
         {/* Avatar */}
         <div className="shrink-0 w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
-          {booking?.profiles?.avatar_url ? (
+          {counterpartyAvatar ? (
             <img
-              src={booking.profiles.avatar_url}
+              src={counterpartyAvatar}
               alt=""
               className="w-full h-full object-cover"
             />

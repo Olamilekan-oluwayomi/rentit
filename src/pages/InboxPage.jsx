@@ -12,6 +12,7 @@
 
 import { Link } from "react-router-dom";
 import { useConversations } from "../features/messages/hooks/useConversations";
+import { getAvatarUrl } from "../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../shared/components/AnimatedList";
 
 function formatRelativeTime(isoString) {
@@ -97,9 +98,9 @@ export default function InboxPage() {
                 >
                   {/* Avatar */}
                   <div className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
-                    {conv.counterparty?.avatar_url ? (
+                    {getAvatarUrl(conv.counterparty?.avatar_url) ? (
                       <img
-                        src={conv.counterparty.avatar_url}
+                        src={getAvatarUrl(conv.counterparty.avatar_url)}
                         alt=""
                         className="w-full h-full object-cover"
                       />
