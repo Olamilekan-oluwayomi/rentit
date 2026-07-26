@@ -33,7 +33,7 @@ export default function Layout({ children }) {
   return (
     <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary ${noFooter ? "overflow-hidden" : ""}`}>
       <Header />
-      <main className="flex-1 min-h-0">{children}</main>
+      <main className={`flex-1 min-h-0${noFooter ? " flex flex-col" : ""}`}>{children}</main>
       {!noFooter && <Footer />}
     </div>
   );
