@@ -47,7 +47,7 @@ export default function BookingChatPage() {
         .from("bookings")
         .select(`
           id, listing_id, renter_id, status,
-          listings ( title ),
+          listings ( title, owner_id, profiles:owner_id ( full_name, avatar_url ) ),
           profiles:renter_id ( full_name, avatar_url )
         `)
         .eq("id", bookingId)
@@ -85,11 +85,13 @@ export default function BookingChatPage() {
 
   const listingTitle = booking?.listings?.title ?? "Booking";
   const isRenter = booking?.renter_id === user?.id;
-  const counterpartyName = isRenter
-    ? "Owner"
-    : (booking?.profiles?.full_name ?? "Renter");
 
-  const counterpartyAvatar = getAvatarUrl(booking?.profiles?.avatar_url);
+  // Pick the counterparty profile: owner if I'm the renter, renter if I'm the owner
+  const counterpartyProfile = isRenter
+    ? booking?.listings?.profiles
+    : booking?.profiles;
+  const counterpartyName = counterpartyProfile?.full_name ?? (isRenter ? "Owner" : "Renter");
+  const counterpartyAvatar = getAvatarUrl(counterpartyProfile?.avatar_url);
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-background">
