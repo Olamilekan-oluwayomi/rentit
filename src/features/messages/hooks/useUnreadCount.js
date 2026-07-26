@@ -5,7 +5,7 @@
  * Used to render the unread badge in the site header.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 
@@ -16,6 +16,7 @@ export function useUnreadCount() {
   const { user } = useAuth();
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const channelRef = useRef(null);
 
   const fetchCount = useCallback(async () => {
     if (!user) {
@@ -49,6 +50,14 @@ export function useUnreadCount() {
   useEffect(() => {
     if (!user) return;
 
+    // Clean up any previous channel before creating a new one.
+    // Named channels are singletons in Supabase — calling .channel("unread-count")
+    // again returns the existing instance, which throws if already subscribed.
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
     const channel = supabase
       .channel("unread-count")
       .on(
@@ -81,8 +90,11 @@ export function useUnreadCount() {
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
       supabase.removeChannel(channel);
+      channelRef.current = null;
     };
   }, [user]);
 
