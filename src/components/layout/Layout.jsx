@@ -32,9 +32,9 @@ export default function Layout({ children }) {
   const noFooter = hasNoFooter(location.pathname);
 
   return (
-    <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
+    <div className="h-screen flex flex-col bg-background text-text-primary">
       <Header />
-      <main className={`flex-1 min-h-0${noFooter ? " flex flex-col overflow-hidden" : ""}`}>
+      <main className={`flex-1 min-h-0${noFooter ? " flex flex-col overflow-hidden" : " overflow-y-auto"}`}>
         {children}
       </main>
       {!noFooter && <Footer />}
