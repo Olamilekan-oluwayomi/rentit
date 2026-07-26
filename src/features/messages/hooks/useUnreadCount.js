@@ -9,6 +9,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 
+// Monotonically increasing counter so every channel name is unique,
+// even across React StrictMode double-mounts. removeChannel() is async
+// but React re-runs the effect synchronously, so reusing a name would
+// return the still-subscribed singleton and throw.
+let channelCounter = 0;
+
 /**
  * @returns {{ count: number, loading: boolean }}
  */
@@ -27,8 +33,6 @@ export function useUnreadCount() {
 
     setLoading(true);
 
-    // Count all unread messages where the sender is NOT the current user.
-    // We count across all bookings the user participates in via RLS.
     const { count: unreadCount, error } = await supabase
       .from("messages")
       .select("id", { count: "exact", head: true })
@@ -50,17 +54,16 @@ export function useUnreadCount() {
   useEffect(() => {
     if (!user) return;
 
-    // Use an unnamed channel so Supabase auto-generates a unique ID.
-    // Named channels are singletons — .channel("unread-count") always returns
-    // the same instance, and removeChannel is async, so the old one is still
-    // subscribed when we try to add new .on() callbacks.
+    // Tear down any previous channel (best-effort, may still be pending)
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
 
+    // Each mount gets a unique name so we never hit the singleton
+    const name = `unread-count-${++channelCounter}`;
     const channel = supabase
-      .channel()
+      .channel(name)
       .on(
         "postgres_changes",
         {

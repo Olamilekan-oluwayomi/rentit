@@ -12,6 +12,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 
+let channelCounter = 0;
+
 /**
  * @param {string|null} bookingId
  * @returns {{
@@ -29,6 +31,7 @@ export function useMessages(bookingId) {
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const optimisticIdRef = useRef(0);
+  const channelRef = useRef(null);
 
   const fetchMessages = useCallback(async () => {
     if (!bookingId || !user) {
@@ -64,8 +67,15 @@ export function useMessages(bookingId) {
   useEffect(() => {
     if (!bookingId || !user) return;
 
+    // Tear down any previous channel
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    const name = `messages-${bookingId}-${++channelCounter}`;
     const channel = supabase
-      .channel(`messages:${bookingId}`)
+      .channel(name)
       .on(
         "postgres_changes",
         {
@@ -109,8 +119,11 @@ export function useMessages(bookingId) {
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
       supabase.removeChannel(channel);
+      channelRef.current = null;
     };
   }, [bookingId, user]);
 
