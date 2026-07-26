@@ -92,7 +92,7 @@ export default function BookingChatPage() {
   const counterpartyAvatar = getAvatarUrl(booking?.profiles?.avatar_url);
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-background">
+    <div className="flex-1 min-h-0 flex flex-col bg-white dark:bg-background">
       {/* Chat header — fixed height, shadow separates from thread */}
       <div className="shrink-0 h-14 flex items-center gap-3 px-3 bg-white dark:bg-surface border-b border-gray-200/80 dark:border-white/[0.06] shadow-sm z-10">
         <Link

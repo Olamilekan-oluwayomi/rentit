@@ -7,8 +7,7 @@
  *
  * On messaging routes (/booking/:id, /inbox) the Footer is omitted so
  * the chat can occupy the full viewport height. The Header stays for
- * navigation. overflow-hidden moves to <main> so it constrains the
- * chat layout directly instead of clipping around the sticky Header.
+ * navigation.
  */
 
 import { useLocation } from "react-router-dom";
@@ -32,11 +31,9 @@ export default function Layout({ children }) {
   const noFooter = hasNoFooter(location.pathname);
 
   return (
-    <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
+    <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary ${noFooter ? "overflow-hidden" : ""}`}>
       <Header />
-      <main className={`flex-1 min-h-0${noFooter ? " flex flex-col overflow-hidden" : ""}`}>
-        {children}
-      </main>
+      <main className={`flex-1 min-h-0${noFooter ? " flex flex-col" : ""}`}>{children}</main>
       {!noFooter && <Footer />}
     </div>
   );

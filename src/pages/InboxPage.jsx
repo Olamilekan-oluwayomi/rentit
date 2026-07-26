@@ -35,7 +35,7 @@ export default function InboxPage() {
   const { conversations, loading, error } = useConversations();
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-background">
+    <div className="flex-1 min-h-0 flex flex-col bg-white dark:bg-background">
       {/* Header bar — matches chat page header height and style */}
       <div className="shrink-0 h-14 flex items-center px-5 bg-white dark:bg-surface border-b border-gray-200/80 dark:border-white/[0.06] shadow-sm z-10">
         <h1 className="text-base font-heading font-semibold text-text-primary">
