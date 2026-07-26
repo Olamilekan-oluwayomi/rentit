@@ -9,16 +9,17 @@
  */
 import { getAvatarUrl } from "../../../utils/storage";
 import { useAuth } from "../../auth/context/AuthContext";
+import { useContactOwner } from "../../messages/hooks/useContactOwner";
 
 /**
  * Displays the listing owner's info card.
  * Shows a skeleton during loading, nothing if no owner data, and the full
  * profile card with contact option when data is available.
- * @param {{ owner: object|null, loading: boolean }} props - Owner object with full_name, avatar_url, created_at, location, and id
+ * @param {{ owner: object|null, loading: boolean, listingId?: string }} props
  */
-export default function OwnerCard({ owner, loading }) {
-  // Current authenticated user — needed to hide the contact button for the owner themselves.
+export default function OwnerCard({ owner, loading, listingId }) {
   const { user } = useAuth();
+  const { contactOwner, loading: contactLoading } = useContactOwner();
 
   // Loading skeleton — matches the exact dimensions of the real card to prevent layout shift.
   if (loading) {
@@ -88,13 +89,14 @@ export default function OwnerCard({ owner, loading }) {
 
       {/* Contact button — only shown to non-owner authenticated users.
           Prevents the owner from seeing a "Contact Yourself" button. */}
-      {user && user.id !== owner.id && (
-        <a
-          href={`mailto:?subject=RentIt%20-%20Inquiry`}
-          className="mt-4 block w-full text-center px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+      {user && user.id !== owner.id && listingId && (
+        <button
+          onClick={() => contactOwner(listingId)}
+          disabled={contactLoading}
+          className="mt-4 block w-full text-center px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Contact Owner
-        </a>
+          {contactLoading ? "Opening chat..." : "Contact Owner"}
+        </button>
       )}
     </div>
   );

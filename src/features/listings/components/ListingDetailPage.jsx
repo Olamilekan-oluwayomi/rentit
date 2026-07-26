@@ -17,6 +17,7 @@ import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { useListing } from "../hooks/useListing";
 import { useCreateBooking } from "../../bookings/hooks/useCreateBooking";
+import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { supabase } from "../../../shared/lib/supabase";
 import ImageGallery from "./ImageGallery";
 import OwnerCard from "./OwnerCard";
@@ -357,31 +358,13 @@ export default function ListingDetailPage() {
 
           {/* Contact button — shown to non-owner authenticated users only */}
           {!isOwner && user && (
-            <a
-              href={`mailto:?subject=RentIt%20-%20${encodeURIComponent(listing.title)}`}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                />
-              </svg>
-              Contact Owner
-            </a>
+            <ContactOwnerButton listingId={listing.id} />
           )}
         </div>
 
         {/* Sidebar — owner card with contact info */}
         <div className="space-y-6">
-          <OwnerCard owner={owner} loading={ownerLoading} />
+          <OwnerCard owner={owner} loading={ownerLoading} listingId={listing.id} />
         </div>
       </div>
 
@@ -408,5 +391,32 @@ export default function ListingDetailPage() {
         onCancel={() => setShowHardDelete(false)}
       />
     </div>
+  );
+}
+
+function ContactOwnerButton({ listingId }) {
+  const { contactOwner, loading } = useContactOwner();
+
+  return (
+    <button
+      onClick={() => contactOwner(listingId)}
+      disabled={loading}
+      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+    >
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+        />
+      </svg>
+      {loading ? "Opening chat..." : "Contact Owner"}
+    </button>
   );
 }
