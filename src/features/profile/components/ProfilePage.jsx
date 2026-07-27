@@ -9,6 +9,8 @@
 import { useState } from "react";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { useProfile } from "../hooks/useProfile";
+import { Card, Heading } from "../../../design";
+import { DashboardLayout } from "../../../layouts";
 import ProfileHeader from "./ProfileHeader";
 import ProfileSkeleton from "./ProfileSkeleton";
 
@@ -93,12 +95,12 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
-      <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8 lg:mb-12">
+    <DashboardLayout>
+      <Heading as="h1" className="mb-8 lg:mb-12">
         My Profile
-      </h1>
+      </Heading>
 
-      <div className="bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 p-6 sm:p-8 lg:p-10">
+      <Card className="p-6 sm:p-8 lg:p-10">
         <ProfileHeader
           profile={profile}
           saving={saving}
@@ -110,7 +112,7 @@ export default function ProfilePage() {
           onSaveProfile={handleSaveProfile}
           onEditToggle={() => setEditing((prev) => !prev)}
         />
-      </div>
-    </div>
+      </Card>
+    </DashboardLayout>
   );
 }

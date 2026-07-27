@@ -21,6 +21,7 @@
  */
 
 import { Pencil } from "lucide-react";
+import { Button } from "../../../design";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileForm from "./ProfileForm";
 
@@ -76,13 +77,14 @@ export default function ProfileHeader({
             error={avatarError}
           />
 
-          <button
+          <Button
+            leftIcon={Pencil}
             onClick={onEditToggle}
-            className="mt-6 w-full flex items-center justify-center gap-2 bg-accent text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 active:opacity-80 transition-opacity"
+            fullWidth
+            className="mt-6"
           >
-            <Pencil size={16} strokeWidth={2} />
             {editing ? "Cancel Editing" : "Edit Profile"}
-          </button>
+          </Button>
         </div>
 
         {editing && (
