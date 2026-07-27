@@ -115,7 +115,7 @@ export default function DashboardLayout() {
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-surface border-r border-border flex flex-col shadow-xl">
+          <aside aria-label="Dashboard navigation" className="absolute left-0 top-0 bottom-0 w-72 bg-surface border-r border-border flex flex-col shadow-xl">
             <div className="flex items-center justify-between h-16 px-4 border-b border-border">
               <Logo />
               <IconButton icon={X} label="Close menu" onClick={() => setSidebarOpen(false)} />
@@ -156,7 +156,7 @@ export default function DashboardLayout() {
       {/* ── Desktop layout ── */}
       <div className="flex flex-1 min-h-0">
         {/* Sidebar — hidden on mobile */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:shrink-0 bg-surface border-r border-border">
+        <aside aria-label="Dashboard navigation" className="hidden lg:flex lg:flex-col lg:w-60 lg:shrink-0 bg-surface border-r border-border">
           <div className="flex items-center h-16 px-5 border-b border-border">
             <Logo />
           </div>

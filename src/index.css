@@ -382,3 +382,21 @@ button:focus {
 .animate-scale-in {
   animation: scale-in .25s ease forwards;
 }
+
+@keyframes spin-in {
+
+  from {
+    transform: rotate(-90deg) scale(.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: rotate(0) scale(1);
+    opacity: 1;
+  }
+
+}
+
+.animate-spin-in {
+  animation: spin-in .3s ease forwards;
+}

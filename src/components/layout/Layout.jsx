@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";
 import Header from "./Header";
 import Footer from "./Footer";
+import BackToTop from "../../shared/components/BackToTop";
 import ProfileCompletionOverlay from "../../features/profile/components/ProfileCompletionOverlay";
 
 const NO_FOOTER_PATHS = ["/inbox"];
@@ -35,10 +36,14 @@ export default function Layout({ children }) {
 
   return (
     <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+        Skip to main content
+      </a>
       <Header />
-      <main className="flex-1 min-h-0">{children}</main>
+      <main id="main-content" className="flex-1 min-h-0">{children}</main>
       {!noFooter && <Footer />}
       {completionVisible && <ProfileCompletionOverlay />}
+      {!noFooter && <BackToTop />}
     </div>
   );
 }

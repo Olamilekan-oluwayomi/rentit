@@ -98,6 +98,7 @@ export default function Header() {
                     icon={theme === "dark" ? Sun : Moon}
                     label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                     onClick={toggleTheme}
+                    className="animate-spin-in"
                   />
 
                   <NavLink
@@ -122,6 +123,7 @@ export default function Header() {
                     icon={theme === "dark" ? Sun : Moon}
                     label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                     onClick={toggleTheme}
+                    className="animate-spin-in"
                   />
                   <NavLink to="/login">
                     <Button variant="ghost" size="sm">Log In</Button>

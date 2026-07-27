@@ -83,10 +83,10 @@ export default function Footer() {
 
           {/* Marketplace navigation */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">
+            <h3 id="footer-marketplace-heading" className="font-heading font-semibold text-text-primary mb-6">
               Marketplace
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3" aria-labelledby="footer-marketplace-heading">
               {marketplaceLinks.map((link) => (
                 <li key={link.label}>
                   <Link
@@ -102,10 +102,10 @@ export default function Footer() {
 
           {/* Company navigation */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">
+            <h3 id="footer-company-heading" className="font-heading font-semibold text-text-primary mb-6">
               Company
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3" aria-labelledby="footer-company-heading">
               {companyLinks.map((link) => (
                 <li key={link.label}>
                   <Link
@@ -121,10 +121,10 @@ export default function Footer() {
 
           {/* Social links */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">
+            <h3 id="footer-social-heading" className="font-heading font-semibold text-text-primary mb-6">
               Connect
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3" aria-labelledby="footer-social-heading">
               {socialLinks.map((link) => (
                 <li key={link.label}>
                   <a
