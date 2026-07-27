@@ -12,10 +12,19 @@ function hasNoFooter(pathname) {
   return false;
 }
 
+function isDashboardRoute(pathname) {
+  return pathname.startsWith("/dashboard");
+}
+
 export default function AppLayout({ children }) {
   const location = useLocation();
   const noFooter = hasNoFooter(location.pathname);
+  const dashboard = isDashboardRoute(location.pathname);
   const { completionVisible } = useProfileContext();
+
+  if (dashboard) {
+    return <>{children}</>;
+  }
 
   return (
     <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
