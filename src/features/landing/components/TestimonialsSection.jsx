@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { supabase } from "../../../shared/lib/supabase";
 import { StarRatingInput, Avatar } from "../../../design";
 import { getAvatarUrl } from "../../../utils/storage";
@@ -6,6 +7,7 @@ import { getAvatarUrl } from "../../../utils/storage";
 export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
     let cancelled = false;
@@ -41,14 +43,18 @@ export default function TestimonialsSection() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t) => {
+          {testimonials.map((t, i) => {
             const reviewer = t.reviewer;
             const avatarSrc = reviewer?.avatar_url ? getAvatarUrl(reviewer.avatar_url) : null;
 
             return (
-              <div
+              <motion.div
                 key={t.id}
-                className="bg-surface border border-border rounded-xl p-6 flex flex-col"
+                initial={prefersReduced ? false : { opacity: 0, y: 16 }}
+                whileInView={prefersReduced ? {} : { opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.05, ease: "easeOut" }}
+                className="bg-surface border border-border rounded-xl p-6 flex flex-col transition-all duration-normal hover:-translate-y-[2px] hover:shadow-md"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Avatar src={avatarSrc} name={reviewer?.full_name} size="sm" />
@@ -64,7 +70,7 @@ export default function TestimonialsSection() {
                     &ldquo;{t.comment}&rdquo;
                   </p>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>

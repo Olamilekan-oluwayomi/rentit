@@ -41,7 +41,7 @@ const Button = forwardRef(function Button(
       ref={ref}
       disabled={isDisabled}
       className={[
-        "inline-flex items-center justify-center font-medium transition-all duration-fast ease whitespace-nowrap select-none",
+        "inline-flex items-center justify-center font-medium transition-all duration-fast ease whitespace-nowrap select-none active:scale-[0.98]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "disabled:opacity-40 disabled:pointer-events-none",
         VARIANTS[variant] || VARIANTS.primary,

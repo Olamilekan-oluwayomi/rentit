@@ -23,7 +23,7 @@ const IconButton = forwardRef(function IconButton(
       type="button"
       aria-label={label}
       className={[
-        "inline-flex items-center justify-center rounded-lg transition-all duration-fast ease",
+        "inline-flex items-center justify-center rounded-lg transition-all duration-fast ease active:scale-[0.97]",
         "text-text-secondary hover:bg-surface-secondary hover:text-text-primary active:bg-surface-tertiary",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
         "disabled:opacity-40 disabled:pointer-events-none",

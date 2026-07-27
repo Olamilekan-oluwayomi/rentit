@@ -15,6 +15,7 @@ import ListingGallery from "./ListingGallery";
 import OwnerCard from "./OwnerCard";
 import ConfirmDialog from "../../../shared/components/ConfirmDialog";
 import AvailabilityCalendar from "../../bookings/components/AvailabilityCalendar";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function ListingDetailPage() {
   const { id } = useParams();
@@ -175,19 +176,22 @@ export default function ListingDetailPage() {
 
           <div className="lg:hidden">{bookingCard}</div>
 
-          <div>
-            <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-6">
-              Description
-            </h2>
-            <div className="text-text-primary text-sm leading-relaxed whitespace-pre-line">
-              {listing.description}
+          <FadeInSection>
+            <div>
+              <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-6">
+                Description
+              </h2>
+              <div className="text-text-primary text-sm leading-relaxed whitespace-pre-line">
+                {listing.description}
+              </div>
             </div>
-          </div>
+          </FadeInSection>
 
-          <div className="pt-2">
-            <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-6">
-              Hosted by
-            </h2>
+          <FadeInSection>
+            <div className="pt-2">
+              <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-6">
+                Hosted by
+              </h2>
             <div className="flex items-center gap-3 mb-4">
               <p className="text-lg font-heading font-semibold text-text-primary">
                 {listing.owner?.full_name || "Anonymous"}
@@ -205,6 +209,7 @@ export default function ListingDetailPage() {
             </div>
             <OwnerCard owner={listing.owner} loading={false} listingId={listing.id} />
           </div>
+          </FadeInSection>
 
           {isOwner && (
             <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
@@ -226,12 +231,16 @@ export default function ListingDetailPage() {
             </div>
           )}
 
-          <ReviewsSection
-            ownerId={listing.owner_id}
-            ratingCount={listing.owner?.rating_count || 0}
-          />
+          <FadeInSection>
+            <ReviewsSection
+              ownerId={listing.owner_id}
+              ratingCount={listing.owner?.rating_count || 0}
+            />
+          </FadeInSection>
 
-          <RelatedListings category={listing.category} excludeId={listing.id} />
+          <FadeInSection>
+            <RelatedListings category={listing.category} excludeId={listing.id} />
+          </FadeInSection>
         </div>
 
         <div className="hidden lg:block lg:col-span-1">

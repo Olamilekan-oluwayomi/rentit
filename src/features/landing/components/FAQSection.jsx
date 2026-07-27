@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+
 const FAQS = [
   {
     q: "How does renting work?",
@@ -22,6 +25,12 @@ const FAQS = [
 ];
 
 export default function FAQSection() {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggle = (i) => {
+    setOpenIndex(openIndex === i ? null : i);
+  };
+
   return (
     <section className="py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -31,25 +40,46 @@ export default function FAQSection() {
           </h2>
 
           <div className="divide-y divide-border">
-            {FAQS.map((faq, i) => (
-              <details key={i} className="group">
-                <summary className="flex items-center justify-between py-5 cursor-pointer list-none text-text-primary hover:text-accent transition-colors">
-                  <span className="text-base font-heading font-semibold pr-4">
-                    {faq.q}
-                  </span>
-                  <span className="shrink-0 text-text-muted group-open:rotate-180 transition-transform duration-fast">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </span>
-                </summary>
-                <div className="pb-5">
-                  <p className="text-sm text-text-secondary leading-relaxed">
-                    {faq.a}
-                  </p>
+            {FAQS.map((faq, i) => {
+              const isOpen = openIndex === i;
+
+              return (
+                <div key={i}>
+                  <button
+                    onClick={() => toggle(i)}
+                    className="flex items-center justify-between w-full py-5 cursor-pointer text-left text-text-primary hover:text-accent transition-colors"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-base font-heading font-semibold pr-4">
+                      {faq.q}
+                    </span>
+                    <span className={`shrink-0 text-text-muted transition-transform duration-fast ${isOpen ? "rotate-180" : ""}`}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pb-5">
+                          <p className="text-sm text-text-secondary leading-relaxed">
+                            {faq.a}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </details>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

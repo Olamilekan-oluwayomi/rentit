@@ -8,6 +8,7 @@ import { useCategoryCounts } from "../features/landing/hooks/useCategoryCounts";
 import { CATEGORIES } from "../shared/lib/constants";
 import { Button, Badge, Avatar, StarRatingInput } from "../design";
 import { getListingImageUrl, getAvatarUrl } from "../utils/storage";
+import FadeInSection from "../shared/components/FadeInSection";
 import TestimonialsSection from "../features/landing/components/TestimonialsSection";
 import FAQSection from "../features/landing/components/FAQSection";
 
@@ -30,26 +31,6 @@ const CATEGORY_BLURBS = {
   "Sports & Outdoors": "Camping gear, bikes, kayaks, and sports equipment.",
   Vehicles: "Cars, trucks, vans, and trailers.",
 };
-
-function FadeInSection({ children, className = "" }) {
-  const prefersReduced = useReducedMotion();
-
-  if (prefersReduced) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 export default function LandingPage() {
   const prefersReduced = useReducedMotion();
@@ -155,7 +136,7 @@ export default function LandingPage() {
             <FadeInSection className="mt-14 max-w-md mx-auto">
               <Link
                 to={`/listings/${heroListing.id}`}
-                className="group block bg-surface border border-border rounded-lg overflow-hidden transition-all duration-normal hover:-translate-y-1"
+                className="group block bg-surface border border-border rounded-lg overflow-hidden transition-all duration-normal hover:-translate-y-[2px]"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-surface-tertiary/40">
                   {heroListing.images?.[0] ? (
@@ -265,7 +246,7 @@ export default function LandingPage() {
                   <Link
                     key={cat}
                     to="/register"
-                    className="group bg-surface border border-border rounded-lg p-5 flex flex-col h-full transition-all duration-normal hover:-translate-y-1"
+                    className="group bg-surface border border-border rounded-lg p-5 flex flex-col h-full transition-all duration-normal hover:-translate-y-[2px] hover:border-accent/30"
                   >
                     {Icon && (
                       <Icon size={22} className="text-text-secondary group-hover:text-accent transition-colors mb-3" />
