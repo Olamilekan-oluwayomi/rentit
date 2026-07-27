@@ -7,6 +7,7 @@
  */
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
+import { Badge } from "../../../design";
 import { getListingImageUrl } from "../../../utils/storage";
 
 /**
@@ -70,19 +71,18 @@ export default function ListingCard({ listing }) {
           {listing.title}
         </h3>
 
-        {/* Category pill + location — flex layout keeps them aligned regardless of length */}
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent/10 text-accent">
-            {listing.category}
+          <Badge variant="accent" className="shrink-0 whitespace-nowrap">
+           {listing.category}
+        </Badge>
+         {/* Location is optional — only shown if provided */}
+        {listing.location && (
+         <span className="flex items-center gap-1 text-xs text-text-secondary truncate min-w-0">
+         <MapPin size={12} className="flex-shrink-0" />
+         {listing.location}
           </span>
-          {/* Location is optional — only shown if provided */}
-          {listing.location && (
-            <span className="flex items-center gap-1 text-xs text-text-secondary truncate">
-              <MapPin size={12} className="flex-shrink-0" />
-              {listing.location}
-            </span>
-          )}
-        </div>
+  )}
+</div>
       </div>
     </Link>
   );

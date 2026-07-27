@@ -1,19 +1,6 @@
-/**
- * ActiveFilters — Displays active filter chips and a "Clear All" button.
- *
- * Shown only when at least one non-default filter is active.
- * Each chip can be dismissed individually, or all can be cleared at once.
- */
+import { Chip } from "../../../design";
+import { Button } from "../../../design";
 
-import { X } from "lucide-react";
-
-/**
- * @param {{
- *   filters: object,
- *   onClear: () => void,
- *   onRemove: (key: string) => void
- * }} props
- */
 export default function ActiveFilters({ filters, onClear, onRemove }) {
   const chips = [];
 
@@ -39,22 +26,13 @@ export default function ActiveFilters({ filters, onClear, onRemove }) {
     <div className="flex flex-wrap items-center gap-2 mb-4">
       <span className="text-xs text-text-secondary">Active:</span>
       {chips.map((chip) => (
-        <button
-          key={chip.key}
-          onClick={() => onRemove(chip.key)}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-          aria-label={`Remove ${chip.label} filter`}
-        >
+        <Chip key={chip.key} onRemove={() => onRemove(chip.key)}>
           {chip.label}
-          <X size={12} />
-        </button>
+        </Chip>
       ))}
-      <button
-        onClick={onClear}
-        className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors ml-1"
-      >
+      <Button variant="ghost" size="sm" onClick={onClear}>
         Clear All
-      </button>
+      </Button>
     </div>
   );
 }

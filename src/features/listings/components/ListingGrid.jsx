@@ -7,7 +7,10 @@
  */
 import ListingCard from "./ListingCard";
 import ListingSkeleton from "./ListingSkeleton";
-import AnimatedList, { AnimatedListItem } from "../../../shared/components/AnimatedList";
+import { AnimatedListItem } from "../../../shared/components/AnimatedList";
+import { EmptyState } from "../../../design";
+import { Button } from "../../../design";
+import { AutoGrid } from "../../../layouts";
 
 /**
  * Responsive listing grid with loading, empty, and error states.
@@ -25,70 +28,43 @@ export default function ListingGrid({
   // Show skeleton placeholders while data is being fetched.
   if (loading) return <ListingSkeleton count={8} />;
 
-  // Error state — displays a red icon and the error message.
   if (error) {
     return (
-      <div className="text-center py-20">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-red-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-            />
-          </svg>
-        </div>
-        <p className="text-text-secondary text-sm">{error}</p>
+      <div className="py-12">
+        <EmptyState
+          title="Something went wrong"
+          description={error}
+        />
       </div>
     );
   }
 
-  // Empty state — shows message and optional "Clear Filters" button.
   if (listings.length === 0) {
     return (
-      <div className="text-center py-20">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-text-secondary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-        </div>
-        <p className="text-text-secondary text-sm mb-4">{emptyMessage}</p>
-        {onClearFilters && (
-          <button
-            onClick={onClearFilters}
-            className="text-sm font-medium text-accent hover:underline"
-          >
-            Clear Filters
-          </button>
-        )}
+      <div className="py-12">
+        <EmptyState
+          title="No results found"
+          description={emptyMessage}
+          action={
+            onClearFilters ? (
+              <Button variant="outline" onClick={onClearFilters}>
+                Clear Filters
+              </Button>
+            ) : undefined
+          }
+        />
       </div>
     );
   }
 
   // Default state — render the responsive grid of listing cards.
   return (
-    <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <AutoGrid minWidth="240px">
       {listings.map((listing) => (
         <AnimatedListItem key={listing.id}>
           <ListingCard listing={listing} />
         </AnimatedListItem>
       ))}
-    </AnimatedList>
+    </AutoGrid>
   );
 }
