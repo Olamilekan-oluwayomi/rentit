@@ -153,7 +153,6 @@ export default function ResetPasswordPage() {
             Back to login
         </Link>
         </div>
-      </div>
       </FadeInSection>
     </AuthLayout>
   );

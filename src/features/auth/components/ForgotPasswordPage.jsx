@@ -111,7 +111,6 @@ export default function ForgotPasswordPage() {
             Log in
         </Link>
         </div>
-      </div>
       </FadeInSection>
     </AuthLayout>
   );
