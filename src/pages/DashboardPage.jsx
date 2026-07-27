@@ -15,6 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useListings } from "../features/listings/hooks/useListings";
 import { useBookings } from "../features/bookings/hooks/useBookings";
+import { PageHeader, DashboardLayout } from "../layouts";
 import MyListingsTab from "../components/dashboard/MyListingsTab";
 import MyRentalsTab from "../components/dashboard/MyRentalsTab";
 import RequestsTab from "../components/dashboard/RequestsTab";
@@ -61,11 +62,8 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
-      {/* Page header */}
-      <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-6">
-        Dashboard
-      </h1>
+    <DashboardLayout>
+      <PageHeader title="Dashboard" className="mb-6" />
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -112,7 +110,7 @@ export default function DashboardPage() {
       {activeTab === "rentals" && <MyRentalsTab />}
       {activeTab === "requests" && <RequestsTab />}
       {activeTab === "rented-out" && <RentedOutTab />}
-    </div>
+    </DashboardLayout>
   );
 }
 
