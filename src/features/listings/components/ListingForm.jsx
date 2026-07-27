@@ -85,6 +85,7 @@ export default function ListingForm({
         </label>
         <input
           id="title"
+          autoComplete="off"
           {...register("title")}
           maxLength={100}
           placeholder="e.g. Professional DSLR Camera"
@@ -111,6 +112,7 @@ export default function ListingForm({
         </label>
         <textarea
           id="description"
+          autoComplete="off"
           {...register("description")}
           maxLength={1000}
           rows={4}
@@ -174,6 +176,7 @@ export default function ListingForm({
             <input
               id="daily_price"
               type="number"
+              autoComplete="off"
               step="0.01"
               min="0.01"
               {...register("daily_price")}
@@ -200,6 +203,7 @@ export default function ListingForm({
         <div className="relative">
           <input
             id="location"
+            autoComplete="address-level2"
             {...register("location")}
             maxLength={100}
             placeholder="City, Country"

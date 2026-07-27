@@ -101,6 +101,7 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="text"
+                  autoComplete="name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
@@ -114,6 +115,7 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -128,6 +130,7 @@ export default function RegisterPage() {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     value={password}
                     onChange={handlePasswordChange}
                     required
@@ -152,6 +155,7 @@ export default function RegisterPage() {
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     value={confirmPassword}
                     onChange={handleConfirmPasswordChange}
                     required

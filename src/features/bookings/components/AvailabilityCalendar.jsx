@@ -293,6 +293,7 @@ export default function AvailabilityCalendar({
 
             <input
               type="text"
+              autoComplete="off"
               value={blockReason}
               onChange={(e) => setBlockReason(e.target.value)}
               placeholder="Reason (optional, e.g. Personal use)"

@@ -7,6 +7,7 @@ export default function PriceFilter({ min, max, onChange }) {
         </span>
         <input
           type="number"
+          autoComplete="off"
           min="0"
           step="1"
           value={min}
@@ -23,6 +24,7 @@ export default function PriceFilter({ min, max, onChange }) {
         </span>
         <input
           type="number"
+          autoComplete="off"
           min="0"
           step="1"
           value={max}

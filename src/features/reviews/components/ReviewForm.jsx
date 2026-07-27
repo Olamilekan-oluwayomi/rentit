@@ -84,6 +84,7 @@ export default function ReviewForm({
         </label>
         <textarea
           id="review-comment"
+          autoComplete="off"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Share your experience..."

@@ -91,6 +91,7 @@ export default function ProfileCompletionOverlay() {
             <input
               id="completion-full-name"
               type="text"
+              autoComplete="name"
               value={fullName}
               onChange={(e) => {
                 setFullName(e.target.value);

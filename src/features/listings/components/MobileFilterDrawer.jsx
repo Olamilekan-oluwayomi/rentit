@@ -103,6 +103,7 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
             <label className="block text-sm font-medium text-text-secondary mb-2">Location</label>
             <input
               type="text"
+              autoComplete="address-level2"
               value={draft.location}
               onChange={(e) => setDraft((d) => ({ ...d, location: e.target.value, page: 1 }))}
               placeholder="City, Country"

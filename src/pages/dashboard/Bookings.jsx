@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { CalendarDays } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import FadeInSection from "../../shared/components/FadeInSection";
@@ -73,12 +74,15 @@ export default function DashboardBookings() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-surface border border-border rounded-lg p-12 text-center">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-surface-secondary flex items-center justify-center">
+              <CalendarDays size={24} className="text-text-muted" />
+            </div>
             <p className="text-sm text-text-muted">
               {statusFilter === "all"
                 ? "No bookings yet. When someone books your listing, it will appear here."
                 : `No ${statusFilter} bookings.`}
             </p>
-            <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
+            <Link to="/" className="inline-block mt-3 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
               Browse listings
             </Link>
           </div>

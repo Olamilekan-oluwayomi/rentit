@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Plus, MessageSquare, BarChart3 } from "lucide-react";
+import { Plus, MessageSquare, BarChart3, CalendarDays, Clock } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
@@ -74,6 +74,9 @@ export default function DashboardHome() {
             </h3>
             {allBookings.length === 0 ? (
               <div className="bg-surface border border-border rounded-lg p-8 text-center">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-secondary flex items-center justify-center">
+                  <CalendarDays size={20} className="text-text-muted" />
+                </div>
                 <p className="text-sm text-text-muted">No bookings yet.</p>
                 <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
                   Browse listings to get started
@@ -139,6 +142,9 @@ export default function DashboardHome() {
             </h3>
             {upcomingRentals.length === 0 ? (
               <div className="bg-surface border border-border rounded-lg p-6 text-center">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-surface-secondary flex items-center justify-center">
+                  <Clock size={16} className="text-text-muted" />
+                </div>
                 <p className="text-xs text-text-muted">No upcoming rentals.</p>
               </div>
             ) : (

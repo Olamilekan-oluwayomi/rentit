@@ -6,6 +6,7 @@ export default function LocationFilter({ value, onChange }) {
       <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
       <input
         type="text"
+        autoComplete="address-level2"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Filter by location..."

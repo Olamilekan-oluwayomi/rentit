@@ -55,8 +55,20 @@ export default function MessageThread({ messages, loading }) {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-surface-secondary/50">
-        <div className="w-6 h-6 border-3 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex-1 bg-surface-secondary/50 px-4 py-4 overflow-hidden">
+        <div className="max-w-2xl mx-auto space-y-4 animate-pulse">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+              <div className={`${i % 2 === 0 ? "bg-accent/20" : "bg-surface"} rounded-2xl ${i % 2 === 0 ? "rounded-br-md" : "rounded-bl-md"} ${i % 2 === 0 ? "max-w-[55%]" : "max-w-[65%]"}`}>
+                <div className="px-3.5 py-3 space-y-2">
+                  <div className={`h-3 rounded ${i % 2 === 0 ? "bg-white/20" : "bg-surface-tertiary/40"} ${i % 2 === 0 ? "w-32" : "w-24"}`} />
+                  <div className={`h-3 rounded ${i % 2 === 0 ? "bg-white/20" : "bg-surface-tertiary/40"} ${i % 2 === 0 ? "w-20" : "w-36"}`} />
+                  <div className={`h-2.5 rounded ${i % 2 === 0 ? "bg-white/20 w-12" : "bg-surface-tertiary/30 w-14"}`} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

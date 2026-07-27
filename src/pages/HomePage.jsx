@@ -139,6 +139,7 @@ export default function HomePage() {
                   <div className="relative rounded-lg focus-within:ring-2 focus-within:ring-accent/40 -mx-2 px-2 py-1 transition-shadow">
                     <input
                       type="text"
+                      autoComplete="off"
                       value={searchInput}
                       onChange={(e) => handleSearchChange(e.target.value)}
                       placeholder="Search rentals..."
@@ -152,6 +153,7 @@ export default function HomePage() {
                     <MapPin size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted" />
                     <input
                       type="text"
+                      autoComplete="address-level2"
                       value={filters.location}
                       onChange={(e) => setFilter("location", e.target.value)}
                       placeholder="Where?"

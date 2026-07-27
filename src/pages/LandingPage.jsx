@@ -89,6 +89,7 @@ export default function LandingPage() {
                 <Search size={16} className="text-text-muted shrink-0" />
                 <input
                   type="text"
+                  autoComplete="off"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search rentals..."
@@ -100,6 +101,7 @@ export default function LandingPage() {
                 <MapPin size={16} className="text-text-muted shrink-0" />
                 <input
                   type="text"
+                  autoComplete="address-level2"
                   placeholder="Location"
                   className="w-full bg-transparent text-sm font-mono text-text-primary placeholder:text-text-muted/60 focus:outline-none"
                   aria-label="Location"

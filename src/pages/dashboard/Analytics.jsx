@@ -1,6 +1,7 @@
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
+import { TrendingUp, BarChart3, List } from "lucide-react";
 import FadeInSection from "../../shared/components/FadeInSection";
 
 export default function DashboardAnalytics() {
@@ -67,7 +68,7 @@ export default function DashboardAnalytics() {
               Revenue Over Time
             </h3>
             <div className="h-48 flex items-center justify-center bg-surface-secondary/50 rounded-lg">
-              <ChartEmptyState message="No revenue data yet. Connect a payment provider to see trends." />
+              <ChartEmptyState icon={TrendingUp} message="No revenue data yet. Connect a payment provider to see trends." />
             </div>
           </div>
         </FadeInSection>
@@ -77,7 +78,7 @@ export default function DashboardAnalytics() {
               Bookings Over Time
             </h3>
             <div className="h-48 flex items-center justify-center bg-surface-secondary/50 rounded-lg">
-              <ChartEmptyState message="Booking data will appear once you have active rentals." />
+              <ChartEmptyState icon={BarChart3} message="Booking data will appear once you have active rentals." />
             </div>
           </div>
         </FadeInSection>
@@ -99,6 +100,7 @@ export default function DashboardAnalytics() {
             </div>
           ) : topListings.length === 0 ? (
             <div className="p-8 text-center">
+              <List size={24} className="text-text-muted/40 mx-auto mb-2" />
               <p className="text-sm text-text-muted">Create your first listing to see performance data.</p>
             </div>
           ) : (
@@ -135,9 +137,10 @@ function MetricCard({ label, value, subtitle }) {
   );
 }
 
-function ChartEmptyState({ message }) {
+function ChartEmptyState({ message, icon: Icon }) {
   return (
     <div className="text-center px-4">
+      {Icon && <Icon size={24} className="text-text-muted/40 mx-auto mb-2" />}
       <p className="text-xs text-text-muted">{message}</p>
     </div>
   );

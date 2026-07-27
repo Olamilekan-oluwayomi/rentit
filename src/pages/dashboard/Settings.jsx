@@ -59,6 +59,7 @@ export default function DashboardSettings() {
                 <label className="block text-xs font-medium text-text-secondary mb-1.5">Full Name</label>
                 <input
                   type="text"
+                  autoComplete="name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/40"
@@ -69,6 +70,7 @@ export default function DashboardSettings() {
                 <label className="block text-xs font-medium text-text-secondary mb-1.5">Email</label>
                 <input
                   type="email"
+                  autoComplete="email"
                   value={user?.email || ""}
                   disabled
                   className="w-full px-3 py-2 rounded-lg border border-border bg-surface-tertiary/30 text-sm text-text-muted cursor-not-allowed"
@@ -80,6 +82,7 @@ export default function DashboardSettings() {
               <label className="block text-xs font-medium text-text-secondary mb-1.5">Location</label>
               <input
                 type="text"
+                autoComplete="address-level2"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/40"
@@ -90,6 +93,7 @@ export default function DashboardSettings() {
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1.5">Bio</label>
               <textarea
+                autoComplete="off"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}

@@ -107,6 +107,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         <input
           id="full_name"
           type="text"
+          autoComplete="name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           maxLength={LIMITS.full_name.max}
@@ -130,6 +131,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
           <input
             id="location"
             type="text"
+            autoComplete="address-level2"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             maxLength={LIMITS.location.max}
@@ -173,6 +175,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         </label>
         <textarea
           id="bio"
+          autoComplete="off"
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           maxLength={LIMITS.bio.max}
