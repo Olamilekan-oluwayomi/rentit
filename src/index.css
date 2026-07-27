@@ -1,62 +1,157 @@
 /*
- * index.css — Global styles and design token definitions for RentIt.
- *
- * This file serves as the single source of truth for the app's visual
- * identity: color palette, typography, dark mode overrides, and
- * utility animations.
- */
+|--------------------------------------------------------------------------
+| RentIt Design System
+|--------------------------------------------------------------------------
+| Global design tokens, typography, motion and base styles.
+| Tailwind v4
+|--------------------------------------------------------------------------
+*/
 
-/* ── Font imports ────────────────────────────────────────────────
- * Sora: used for headings (font-heading) — geometric, modern feel.
- * Inter: used for body text (font-body) — optimized for readability.
- */
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
-/* ── Full-height root ───────────────────────────────────────────
- * html, body, #root must be height: 100% so that h-screen children
- * have a properly-sized parent chain up to the viewport. Without
- * this, flex-1 / h-full descendants can't resolve their height
- * relative to the viewport, causing overflow and gaps.
- */
-html, body, #root {
+/* ==========================================================================
+   Root
+========================================================================== */
+
+html,
+body,
+#root {
   height: 100%;
-  margin: 0;
-  padding: 0;
 }
 
-/* ── Design tokens (Tailwind v4 @theme) ──────────────────────────
- * These CSS variables are consumed by Tailwind utilities like
- * `bg-accent`, `text-text-primary`, `font-heading`, etc.
- * Naming follows the pattern: --color-{token} / --font-{token}.
- */
-@theme {
-  --color-primary: #16213e;
-  --color-secondary: #0f3460;
-  --color-accent: #0d9488;
-  --color-background: #f3f4f6;
-  --color-surface: #f9fafb;
-  --color-text-primary: #1a1a2e;
-  --color-text-secondary: #6c757d;
-
-  --font-heading: 'Sora', sans-serif;
-  --font-body: 'Inter', sans-serif;
+html {
+  scroll-behavior: smooth;
 }
 
-/* ── Base body styles ────────────────────────────────────────────
- * Sets the default font, text color, and background for the entire
- * page. These are overridden for dark mode below.
- */
 body {
-  font-family: var(--font-body);
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--color-background);
   color: var(--color-text-primary);
-  background-color: var(--color-background);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color .25s ease,
+    color .25s ease;
 }
 
-/* ── Headings ────────────────────────────────────────────────────
- * All h1–h6 elements use the Sora heading font globally so
- * individual components don't need to specify font-family.
- */
+/* ==========================================================================
+   Design Tokens
+========================================================================== */
+
+@theme {
+
+  /* Typography */
+
+  --font-heading: "Barlow Condensed", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  /* Brand
+     Rust is the primary accent (CTAs, prices, active states).
+     Sage is a secondary accent for category tags and lower-emphasis
+     highlights, so not everything on the page shares one color. */
+
+  --color-accent: #C4531D;
+  --color-accent-hover: #A8461A;
+  --color-sage: #6B7A5E;
+  --color-sage-hover: #56634C;
+
+  /* Light
+     Warm paper background instead of slate, so the app reads like a
+     listings board rather than a generic SaaS dashboard. */
+
+  --color-background: #F7F4EE;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #EFEAE0;
+  --color-surface-tertiary: #E4DDCE;
+
+  --color-text-primary: #1C1B19;
+  --color-text-secondary: #6B6558;
+  --color-text-muted: #A39C8C;
+
+  --color-border: #E4DDCE;
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* Radius */
+
+  --radius-xs: .375rem;
+  --radius-sm: .5rem;
+  --radius-md: .75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+
+  --shadow-xs: 0 1px 2px rgba(28,27,25,.05);
+
+  --shadow-sm:
+    0 2px 8px rgba(28,27,25,.04);
+
+  --shadow-md:
+    0 6px 20px rgba(28,27,25,.08);
+
+  --shadow-lg:
+    0 15px 40px rgba(28,27,25,.12);
+
+  --shadow-xl:
+    0 25px 60px rgba(28,27,25,.16);
+
+  /* Motion */
+
+  --ease: cubic-bezier(.4,0,.2,1);
+
+  --duration-fast: .15s;
+  --duration-normal: .25s;
+  --duration-slow: .4s;
+
+  /* Layout */
+
+  --container-width: 1280px;
+}
+
+/* ==========================================================================
+   Dark Theme
+========================================================================== */
+
+.dark {
+
+  --color-background: #1A1815;
+
+  --color-surface: #23201B;
+
+  --color-surface-secondary: #2C2822;
+
+  --color-surface-tertiary: #3A342B;
+
+  --color-text-primary: #EDE8DE;
+
+  --color-text-secondary: #C2BBAA;
+
+  --color-text-muted: #A39C8C;
+
+  --color-border: #3A342B;
+
+  --color-accent: #D9713A;
+
+  --color-accent-hover: #E88A57;
+
+  --color-sage: #7C8C6D;
+
+  --color-sage-hover: #91A183;
+}
+
+/* ==========================================================================
+   Typography
+========================================================================== */
+
 h1,
 h2,
 h3,
@@ -64,58 +159,197 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
-}
-
-/* ── Dark mode overrides ─────────────────────────────────────────
- * The .dark class is toggled on <html> by ThemeContext. These
- * overrides swap the token values used by Tailwind's dark: variants
- * and direct CSS variable references.
- */
-.dark {
-  --color-background: #0f1117;
-  --color-surface: #1a1d27;
-  --color-text-primary: #e4e4e7;
-  --color-text-secondary: #9ca3af;
-}
-
-.dark body {
   color: var(--color-text-primary);
-  background-color: var(--color-background);
+  margin: 0;
+  letter-spacing: .01em;
 }
 
-/* ── Animations ──────────────────────────────────────────────────
- * Custom keyframe animations used via Tailwind's animate- utility
- * classes (e.g., animate-slide-in, animate-fade-in).
- */
-
-/* slide-in: slides content from the right — used for mobile menu panels */
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+p {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
 }
 
-.animate-slide-in {
-  animation: slide-in 0.2s ease-out;
+/* ==========================================================================
+   Base Elements
+========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* fade-in: drops content down slightly — used for dropdown menus and tooltips */
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+svg {
+  flex-shrink: 0;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* ==========================================================================
+   Links
+========================================================================== */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease);
+}
+
+/* ==========================================================================
+   Focus Ring
+========================================================================== */
+
+:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(196,83,29,.22);
+  border-radius: .5rem;
+}
+
+/* ==========================================================================
+   Selection
+========================================================================== */
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* ==========================================================================
+   Scrollbar
+========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(107,101,88,.35);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107,101,88,.55);
+}
+
+/* ==========================================================================
+   Reusable Utilities
+========================================================================== */
+
+.container-app {
+  width: min(100% - 2rem, var(--container-width));
+  margin-inline: auto;
+}
+
+.surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.surface-secondary {
+  background: var(--color-surface-secondary);
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--duration-normal) var(--ease),
+    box-shadow var(--duration-normal) var(--ease),
+    border-color var(--duration-normal) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.transition-default {
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+/* ==========================================================================
+   Animations
+========================================================================== */
+
 @keyframes fade-in {
+
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
+
+}
+
+@keyframes slide-up {
+
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+@keyframes scale-in {
+
+  from {
+    opacity: 0;
+    transform: scale(.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
 }
 
 .animate-fade-in {
-  animation: fade-in 0.15s ease-out;
+  animation: fade-in .35s ease forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up .4s ease forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in .25s ease forwards;
 }
