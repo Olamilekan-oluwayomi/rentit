@@ -63,7 +63,7 @@ export function useBookings(type) {
           owner_message,
           created_at,
           updated_at,
-          listings ( title, images, daily_price )
+          listings ( id, title, images, daily_price, owner_id )
         `)
         .eq("renter_id", user.id)
         .order("created_at", { ascending: false });
@@ -111,7 +111,7 @@ export function useBookings(type) {
           owner_message,
           created_at,
           updated_at,
-          listings ( title, images ),
+          listings ( id, title, images, owner_id ),
           profiles:renter_id ( full_name, avatar_url )
         `)
         .in("listing_id", listingIds)

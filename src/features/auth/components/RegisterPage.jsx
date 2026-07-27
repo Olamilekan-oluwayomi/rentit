@@ -71,7 +71,7 @@ export default function RegisterPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-2xl font-heading font-bold mb-2 text-text-primary">Check your email</h1>
+            <h1 className="text-2xl font-heading font-bold mb-6 text-text-primary">Check your email</h1>
             <p className="text-text-secondary mb-6">
               We sent a confirmation link to <span className="font-medium">{email}</span>. Click the link to activate your account.
             </p>

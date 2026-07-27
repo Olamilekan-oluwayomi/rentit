@@ -123,11 +123,11 @@ export default function HomePage() {
       <section className="bg-background pt-10 lg:pt-20 pb-20 lg:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-text-primary leading-[1.05] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-text-primary leading-[1.05] tracking-tight mb-6">
               Find what you need,{" "}
               <span className="text-accent">rent it today</span>
             </h1>
-            <p className="mt-5 text-lg text-text-secondary max-w-md mx-auto leading-relaxed">
+            <p className="text-lg text-text-secondary max-w-md mx-auto leading-relaxed">
               Browse thousands of items available for rent in your area. From tools to cameras, find everything you need.
             </p>
 
@@ -189,10 +189,10 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 lg:pb-24 -mt-12 lg:-mt-16 relative z-10">
         <section className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary">
+            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-6">
               Browse by Category
             </h2>
-            <p className="mt-2 text-sm text-text-secondary">
+            <p className="text-sm text-text-secondary">
               Find exactly what you need
             </p>
           </div>
@@ -204,10 +204,10 @@ export default function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-6 lg:mb-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary">
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-6">
                 Featured Rentals
               </h2>
-              <p className="mt-1 text-sm text-text-secondary">
+              <p className="text-sm text-text-secondary">
                 {totalCount} {totalCount === 1 ? "item" : "items"} available
               </p>
             </div>

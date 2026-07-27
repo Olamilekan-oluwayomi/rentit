@@ -160,7 +160,7 @@ h5,
 h6 {
   font-family: var(--font-heading);
   color: var(--color-text-primary);
-  margin: 0;
+  /* margin: 0; */
   letter-spacing: .01em;
 }
 

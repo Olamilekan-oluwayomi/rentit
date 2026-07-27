@@ -11,3 +11,4 @@ export { IconButton } from "./IconButton";
 export { EmptyState } from "./EmptyState";
 export { Skeleton, CardSkeleton, AvatarSkeleton, TextSkeleton, GridSkeleton } from "./Skeleton";
 export { Heading, Text } from "./Typography";
+export { StarRatingInput } from "./StarRating";

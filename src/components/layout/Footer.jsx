@@ -75,7 +75,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Branding / tagline */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Logo className="mb-4" />
+            <Logo className="mb-6" />
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
               RentIt helps people rent tools, electronics, vehicles and more safely within their community.
             </p>
@@ -83,7 +83,7 @@ export default function Footer() {
 
           {/* Marketplace navigation */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-4">
+            <h3 className="font-heading font-semibold text-text-primary mb-6">
               Marketplace
             </h3>
             <ul className="space-y-3">
@@ -102,7 +102,7 @@ export default function Footer() {
 
           {/* Company navigation */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-4">
+            <h3 className="font-heading font-semibold text-text-primary mb-6">
               Company
             </h3>
             <ul className="space-y-3">
@@ -121,7 +121,7 @@ export default function Footer() {
 
           {/* Social links */}
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-4">
+            <h3 className="font-heading font-semibold text-text-primary mb-6">
               Connect
             </h3>
             <ul className="space-y-3">

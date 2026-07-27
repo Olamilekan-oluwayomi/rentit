@@ -96,7 +96,7 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <Heading as="h1" className="mb-8 lg:mb-12">
+      <Heading as="h1" className="mb-6">
         My Profile
       </Heading>
 

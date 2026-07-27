@@ -5,6 +5,7 @@
  * booking status is 'approved' or 'completed'. Read-only view with no actions.
  */
 
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import StatusBadge from "../../features/bookings/components/StatusBadge";
@@ -14,9 +15,16 @@ import BookingMeta from "../../shared/components/BookingMeta";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
 import EmptyState from "../../shared/components/EmptyState";
 import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
+import ReviewPrompt from "../../features/reviews/components/ReviewPrompt";
 
 export default function RentedOutTab() {
   const { data: bookings, loading, error } = useBookings("rented-out");
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleReviewUpdate = useCallback(() => {
+    setRefreshKey((k) => k + 1);
+  }, []);
 
   if (loading) return <BookingListSkeleton />;
 
@@ -36,25 +44,30 @@ export default function RentedOutTab() {
 
         return (
           <AnimatedListItem key={booking.id}>
-            <Link
-              to={`/booking/${booking.id}`}
-              className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
-            >
-            <div className="flex flex-col sm:flex-row gap-4">
-              <ListingThumbnail listing={listing} />
+            <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow">
+              <Link to={`/booking/${booking.id}`} className="block">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <ListingThumbnail listing={listing} />
 
-              <div className="flex-1 min-w-0 space-y-1">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing?.title}</h3>
-                    <RenterInfo renter={renter} />
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing?.title}</h3>
+                        <RenterInfo renter={renter} />
+                      </div>
+                      <StatusBadge status={booking.status} />
+                    </div>
+                    <BookingMeta booking={booking} />
                   </div>
-                  <StatusBadge status={booking.status} />
                 </div>
-                <BookingMeta booking={booking} />
-              </div>
+              </Link>
+
+              <ReviewPrompt
+                booking={booking}
+                revieweeId={booking.renter_id}
+                onReviewUpdate={handleReviewUpdate}
+              />
             </div>
-            </Link>
           </AnimatedListItem>
         );
       })}

@@ -91,7 +91,7 @@ export default function ResetPasswordPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-          <h1 className="text-2xl font-heading font-bold mb-2 text-text-primary">Invalid Link</h1>
+          <h1 className="text-2xl font-heading font-bold mb-6 text-text-primary">Invalid Link</h1>
           <p className="text-text-secondary mb-6">
             This password reset link is invalid or has expired.
           </p>

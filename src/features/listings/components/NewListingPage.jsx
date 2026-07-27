@@ -127,7 +127,7 @@ export default function NewListingPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
-      <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8">
+      <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-6">
         New Listing
       </h1>
 

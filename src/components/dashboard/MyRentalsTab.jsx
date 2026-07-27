@@ -5,7 +5,7 @@
  * details, date range, status badge, and cancel action for pending/approved bookings.
  */
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import { useToast } from "../../shared/contexts/ToastContext";
@@ -17,11 +17,18 @@ import BookingMeta from "../../shared/components/BookingMeta";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
 import EmptyState from "../../shared/components/EmptyState";
 import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
+import ReviewPrompt from "../../features/reviews/components/ReviewPrompt";
 
 export default function MyRentalsTab() {
   const { data: bookings, loading, error, refetch } = useBookings("rentals");
   const { addToast } = useToast();
   const [cancellingId, setCancellingId] = useState(null);
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleReviewUpdate = useCallback(() => {
+    setRefreshKey((k) => k + 1);
+  }, []);
 
   const handleCancel = async (booking) => {
     setCancellingId(booking.id);
@@ -66,39 +73,43 @@ export default function MyRentalsTab() {
 
         return (
           <AnimatedListItem key={booking.id}>
-            <Link
-              to={`/booking/${booking.id}`}
-              className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
-            >
-            <div className="flex flex-col sm:flex-row gap-4">
-              <ListingThumbnail listing={listing} />
+            <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow">
+              <Link to={`/booking/${booking.id}`} className="block">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <ListingThumbnail listing={listing} />
 
-              <div className="flex-1 min-w-0 space-y-1">
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing?.title}</h3>
-                  <StatusBadge status={booking.status} />
-                </div>
-                <BookingMeta booking={booking} />
-              </div>
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing?.title}</h3>
+                      <StatusBadge status={booking.status} />
+                    </div>
+                    <BookingMeta booking={booking} />
+                  </div>
 
-              {canCancel && (
-                <div className="shrink-0 sm:self-center" onClick={(e) => e.preventDefault()}>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    loading={isCancelling}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleCancel(booking);
-                    }}
-                  >
-                    {isCancelling ? "Cancelling..." : "Cancel"}
-                  </Button>
+                  {canCancel && (
+                    <div className="shrink-0 sm:self-center">
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        loading={isCancelling}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleCancel(booking);
+                        }}
+                      >
+                        {isCancelling ? "Cancelling..." : "Cancel"}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              )}
+              </Link>
+
+              <ReviewPrompt
+                booking={booking}
+                revieweeId={listing?.owner_id}
+                onReviewUpdate={handleReviewUpdate}
+              />
             </div>
-            </Link>
           </AnimatedListItem>
         );
       })}

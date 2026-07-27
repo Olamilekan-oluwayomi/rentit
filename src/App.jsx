@@ -28,6 +28,7 @@ import BookingChatPage from './pages/BookingChatPage'
 import InboxPage from './pages/InboxPage'
 import ProtectedRoute from './features/auth/components/ProtectedRoute'
 import GuestRoute from './features/auth/components/GuestRoute'
+import ScrollToTop from './shared/components/ScrollToTop'
 
 /**
  * Returns the component to render at the root "/" route based on auth state.
@@ -58,6 +59,7 @@ function App() {
 
   return (
     <AppLayout>
+      <ScrollToTop />
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}

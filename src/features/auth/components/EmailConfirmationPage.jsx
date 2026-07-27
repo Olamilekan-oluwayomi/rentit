@@ -73,10 +73,10 @@ export default function EmailConfirmationPage() {
         {status === "loading" && (
           <>
             <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-heading font-bold text-text-primary">
+            <h1 className="text-2xl font-heading font-bold text-text-primary mb-6">
               Confirming your email...
             </h1>
-            <p className="mt-3 text-text-secondary">
+            <p className="text-text-secondary">
               Please wait while we verify your account.
             </p>
           </>

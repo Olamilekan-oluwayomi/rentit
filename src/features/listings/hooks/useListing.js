@@ -32,7 +32,7 @@ export function useListing(id) {
 
     const { data, error: fetchError } = await supabase
       .from("listings")
-      .select("*")
+      .select("*, owner:owner_id(id, full_name, avatar_url, location, bio, created_at, average_rating, rating_count)")
       .eq("id", id)
       .single();
 
