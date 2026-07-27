@@ -11,19 +11,20 @@
 
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Search, Sun, Moon, Bell, Plus, Menu } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useTheme } from "../../shared/contexts/ThemeContext";
 import { useUnreadCount } from "../../features/messages/hooks/useUnreadCount";
+import { Input, IconButton, Button } from "../../design";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 
-/** Returns Tailwind classes for NavLink based on active state. */
 const navLinkClass = ({ isActive }) =>
   `text-sm font-medium transition-colors px-3 py-2 rounded-lg ${
     isActive
       ? "text-accent"
-      : "text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-white/10"
+      : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary"
   }`;
 
 /**
@@ -68,24 +69,18 @@ export default function Header() {
               </nav>
             </div>
 
-            {/* Center: search form (desktop only) */}
             <form
               onSubmit={handleSearch}
               className="hidden lg:flex items-center flex-1 max-w-md mx-8"
               role="search"
             >
-              <div className="relative w-full">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search rentals..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent focus:bg-white dark:focus:bg-white/10 transition-all"
-                />
-              </div>
+              <Input
+                leadingIcon={Search}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search rentals..."
+                className="rounded-full"
+              />
             </form>
 
             {/* Right: auth-dependent actions + hamburger */}
@@ -93,44 +88,26 @@ export default function Header() {
               {user ? (
                 /* Logged-in user actions (desktop) */
                 <div className="hidden md:flex items-center gap-2">
-                  <NavLink
-                    to="/listings/new"
-                    className="flex items-center gap-1.5 bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    New Listing
+                  <NavLink to="/listings/new">
+                    <Button leftIcon={Plus} size="sm">
+                      New Listing
+                    </Button>
                   </NavLink>
 
-                  {/* Theme toggle */}
-                  <button
+                  <IconButton
+                    icon={theme === "dark" ? Sun : Moon}
+                    label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                     onClick={toggleTheme}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors"
-                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                  >
-                    {theme === "dark" ? (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                    )}
-                  </button>
+                  />
 
-                  {/* Notifications bell — links to inbox with unread badge */}
                   <NavLink
                     to="/inbox"
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors relative"
                     aria-label={`Inbox${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
+                    className="relative"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                    </svg>
+                    <IconButton icon={Bell} label="Inbox" />
                     {unreadCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold leading-none">
+                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger text-white text-[9px] font-bold leading-none">
                         {unreadCount > 99 ? "99+" : unreadCount}
                       </span>
                     )}
@@ -141,46 +118,26 @@ export default function Header() {
               ) : (
                 /* Logged-out user actions (desktop) */
                 <div className="hidden md:flex items-center gap-2">
-                  <button
+                  <IconButton
+                    icon={theme === "dark" ? Sun : Moon}
+                    label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                     onClick={toggleTheme}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors"
-                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                  >
-                    {theme === "dark" ? (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                    )}
-                  </button>
-                  <NavLink
-                    to="/login"
-                    className="text-sm font-medium text-text-secondary hover:text-text-primary px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                  >
-                    Log In
+                  />
+                  <NavLink to="/login">
+                    <Button variant="ghost" size="sm">Log In</Button>
                   </NavLink>
-                  <NavLink
-                    to="/register"
-                    className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-                  >
-                    Sign Up
+                  <NavLink to="/register">
+                    <Button size="sm">Sign Up</Button>
                   </NavLink>
                 </div>
               )}
 
-              {/* Mobile hamburger — opens the slide-out MobileMenu */}
-              <button
+              <IconButton
+                icon={Menu}
+                label="Open menu"
                 onClick={() => setMobileOpen(true)}
-                className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 hover:text-text-primary transition-colors"
-                aria-label="Open menu"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+                className="md:hidden"
+              />
             </div>
           </div>
         </div>

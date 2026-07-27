@@ -11,7 +11,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAuth } from './features/auth/context/AuthContext'
-import Layout from './components/layout/Layout'
+import { AppLayout } from './layouts'
 import LoginPage from './features/auth/components/LoginPage'
 import RegisterPage from './features/auth/components/RegisterPage'
 import EmailConfirmationPage from './features/auth/components/EmailConfirmationPage'
@@ -57,7 +57,7 @@ function App() {
   const prefersReduced = useReducedMotion()
 
   return (
-    <Layout>
+    <AppLayout>
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
@@ -68,18 +68,13 @@ function App() {
           transition={{ duration: 0.15, ease: "easeInOut" }}
         >
           <Routes location={location}>
-            {/* Public routes */}
             <Route path="/" element={<RootRoute />} />
             <Route path="/confirm" element={<EmailConfirmationPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/listings/:id" element={<ListingDetailPage />} />
-
-            {/* Guest-only routes — logged-in users are redirected home */}
             <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
             <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
             <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
-
-            {/* Authenticated-only routes — guests are redirected to /login */}
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/listings/new" element={<ProtectedRoute><NewListingPage /></ProtectedRoute>} />
@@ -89,7 +84,7 @@ function App() {
           </Routes>
         </motion.div>
       </AnimatePresence>
-    </Layout>
+    </AppLayout>
   )
 }
 
