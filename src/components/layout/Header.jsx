@@ -11,7 +11,7 @@
 
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Search, Sun, Moon, Bell, Plus, Menu } from "lucide-react";
+import { Search, Sun, Moon, MessageSquare, Plus, Menu } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useTheme } from "../../shared/contexts/ThemeContext";
 import { useUnreadCount } from "../../features/messages/hooks/useUnreadCount";
@@ -106,7 +106,7 @@ export default function Header() {
                     aria-label={`Inbox${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
                     className="relative"
                   >
-                    <IconButton icon={Bell} label="Inbox" />
+                    <IconButton icon={MessageSquare} label="Inbox" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger text-white text-[9px] font-bold leading-none">
                         {unreadCount > 99 ? "99+" : unreadCount}
