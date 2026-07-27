@@ -38,8 +38,8 @@ export default function Navbar() {
     <>
       <header className="shrink-0 sticky top-0 z-40 bg-background/85 backdrop-blur-lg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-8">
+          <div className="flex items-center justify-between h-18">
+            <div className="flex items-center gap-10">
               <Logo />
               <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
                 <NavLink to="/" end className={navLinkClass}>
@@ -50,7 +50,7 @@ export default function Navbar() {
 
             <form
               onSubmit={handleSearch}
-              className="hidden lg:flex items-center flex-1 max-w-md mx-8"
+              className="hidden lg:flex items-center flex-1 max-w-sm mx-10"
               role="search"
             >
               <Input
@@ -62,9 +62,9 @@ export default function Navbar() {
               />
             </form>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {user ? (
-                <div className="hidden md:flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-3">
                   <Link to="/listings/new">
                     <Button leftIcon={Plus} size="sm">
                       New Listing
@@ -86,7 +86,7 @@ export default function Navbar() {
                   <UserMenu />
                 </div>
               ) : (
-                <div className="hidden md:flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-3">
                   <IconButton
                     icon={theme === "dark" ? Sun : Moon}
                     label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}

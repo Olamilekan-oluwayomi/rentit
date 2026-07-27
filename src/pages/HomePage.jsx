@@ -1,10 +1,10 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useListings } from "../features/listings/hooks/useListings";
 import { CATEGORIES, SORT_OPTIONS, DEFAULT_FILTERS } from "../shared/lib/constants";
-import { Button, Divider } from "../design";
+import { Button } from "../design";
 import CategoryFilter from "../features/listings/components/CategoryFilter";
 import PriceFilter from "../features/listings/components/PriceFilter";
 import LocationFilter from "../features/listings/components/LocationFilter";
@@ -120,57 +120,64 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="bg-background pb-16 lg:pb-24 pt-8 lg:pt-16">
+      <section className="bg-background pt-10 lg:pt-20 pb-20 lg:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-text-primary leading-[1.1] tracking-tight">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-heading font-bold text-text-primary leading-[1.05] tracking-tight">
               Find what you need,{" "}
               <span className="text-accent">rent it today</span>
             </h1>
-            <p className="mt-4 text-lg text-text-secondary max-w-lg mx-auto">
+            <p className="mt-5 text-lg text-text-secondary max-w-md mx-auto leading-relaxed">
               Browse thousands of items available for rent in your area. From tools to cameras, find everything you need.
             </p>
 
-            <div className="mt-8 bg-white dark:bg-surface-secondary rounded-2xl shadow-lg p-2 flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-border">
-              <div className="flex-[2] px-4 py-2.5 text-left">
-                <label className="block text-xs font-medium text-text-secondary mb-0.5">Search</label>
-                <input
-                  type="text"
-                  value={searchInput}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  placeholder="Search rentals..."
-                  className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-secondary/50 focus:outline-none"
-                />
+            <div className="mt-10 bg-white dark:bg-surface-secondary rounded-2xl shadow-lg p-2.5 flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-border">
+              <div className="flex-[2] px-5 py-3 text-left">
+                <label className="block text-xs font-medium text-text-muted mb-1">Search</label>
+                <div className="relative rounded-lg focus-within:ring-2 focus-within:ring-accent/40 -mx-2 px-2 py-1 transition-shadow">
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    placeholder="Search rentals..."
+                    className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none"
+                  />
+                </div>
               </div>
-              <div className="flex-1 px-4 py-2.5 text-left">
-                <label className="block text-xs font-medium text-text-secondary mb-0.5">Location</label>
-                <input
-                  type="text"
-                  value={filters.location}
-                  onChange={(e) => setFilter("location", e.target.value)}
-                  placeholder="Where?"
-                  className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-secondary/50 focus:outline-none"
-                />
+              <div className="flex-1 px-5 py-3 text-left">
+                <label className="block text-xs font-medium text-text-muted mb-1">Location</label>
+                <div className="relative rounded-lg focus-within:ring-2 focus-within:ring-accent/40 -mx-2 px-2 py-1 transition-shadow">
+                  <MapPin size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted" />
+                  <input
+                    type="text"
+                    value={filters.location}
+                    onChange={(e) => setFilter("location", e.target.value)}
+                    placeholder="Where?"
+                    className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none pl-5"
+                  />
+                </div>
               </div>
-              <div className="flex-1 px-4 py-2.5 text-left">
-                <label className="block text-xs font-medium text-text-secondary mb-0.5">Category</label>
-                <select
-                  value={filters.category}
-                  onChange={(e) => setFilter("category", e.target.value)}
-                  className="w-full bg-transparent text-sm text-text-primary focus:outline-none cursor-pointer"
-                >
-                  <option value="All">All</option>
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+              <div className="flex-1 px-5 py-3 text-left">
+                <label className="block text-xs font-medium text-text-muted mb-1">Category</label>
+                <div className="relative rounded-lg focus-within:ring-2 focus-within:ring-accent/40 -mx-2 px-2 py-1 transition-shadow">
+                  <select
+                    value={filters.category}
+                    onChange={(e) => setFilter("category", e.target.value)}
+                    className="w-full bg-transparent text-sm text-text-primary focus:outline-none cursor-pointer"
+                  >
+                    <option value="All">All</option>
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div className="p-1 flex items-stretch">
+              <div className="p-1.5 flex items-stretch">
                 <button
-                  className="w-full sm:w-auto bg-accent text-white rounded-xl px-6 py-3 text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2 justify-center"
+                  className="w-full sm:w-auto bg-accent text-white rounded-xl px-7 py-3 text-sm font-medium hover:bg-accent-hover transition-colors flex items-center gap-2.5 justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   aria-label="Search"
                 >
-                  <Search size={16} />
+                  <Search size={17} />
                   <span className="hidden sm:inline">Search</span>
                 </button>
               </div>
@@ -179,90 +186,111 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 lg:pb-12">
-        <ActiveFilters
-          filters={filters}
-          onClear={handleClearAll}
-          onRemove={handleRemoveFilter}
-        />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 lg:pb-24 -mt-12 lg:-mt-16 relative z-10">
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary">
+              Browse by Category
+            </h2>
+            <p className="mt-2 text-sm text-text-secondary">
+              Find exactly what you need
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <CategoryFilter value={filters.category} onChange={(v) => setFilter("category", v)} />
+          </div>
+        </section>
 
-        <div className="hidden lg:flex items-center gap-3 mb-8 flex-wrap">
-          <CategoryFilter value={filters.category} onChange={(v) => setFilter("category", v)} />
-
-          <Divider orientation="vertical" className="h-6" />
-
-          <div className="w-48">
-            <LocationFilter value={filters.location} onChange={(v) => setFilter("location", v)} />
+        <section>
+          <div className="flex items-center justify-between mb-6 lg:mb-8">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-text-primary">
+                Featured Rentals
+              </h2>
+              <p className="mt-1 text-sm text-text-secondary">
+                {totalCount} {totalCount === 1 ? "item" : "items"} available
+              </p>
+            </div>
           </div>
 
-          <Divider orientation="vertical" className="h-6" />
+          <ActiveFilters
+            filters={filters}
+            onClear={handleClearAll}
+            onRemove={handleRemoveFilter}
+          />
 
-          <div className="w-56">
-            <PriceFilter
-              min={filters.minPrice}
-              max={filters.maxPrice}
-              onChange={(min, max) => {
-                commitFilters({ ...filtersRef.current, minPrice: min, maxPrice: max, page: 1 });
-              }}
-            />
+          <div className="hidden lg:flex items-center gap-4 mb-8">
+            <div className="flex-1 max-w-xs">
+              <LocationFilter value={filters.location} onChange={(v) => setFilter("location", v)} />
+            </div>
+
+            <div className="w-56">
+              <PriceFilter
+                min={filters.minPrice}
+                max={filters.maxPrice}
+                onChange={(min, max) => {
+                  commitFilters({ ...filtersRef.current, minPrice: min, maxPrice: max, page: 1 });
+                }}
+              />
+            </div>
+
+            <div className="ml-auto flex items-center gap-3">
+              <span className="text-sm text-text-muted">
+                {totalCount} {totalCount === 1 ? "result" : "results"}
+              </span>
+
+              <select
+                value={filters.sort}
+                onChange={(e) => setFilter("sort", e.target.value)}
+                className="px-4 py-2.5 border border-border rounded-lg bg-surface text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent cursor-pointer"
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            <span className="text-xs text-text-secondary">
+          <div className="flex lg:hidden items-center justify-between gap-3 mb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              leftIcon={SlidersHorizontal}
+              onClick={() => setMobileDrawerOpen(true)}
+              aria-label="Open filters"
+            >
+              Filters
+            </Button>
+
+            <span className="text-sm text-text-muted">
               {totalCount} {totalCount === 1 ? "result" : "results"}
             </span>
 
             <select
               value={filters.sort}
               onChange={(e) => setFilter("sort", e.target.value)}
-              className="px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="px-3 py-2 border border-border rounded-lg bg-surface text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/40 cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>
-        </div>
 
-        <div className="flex lg:hidden items-center justify-between gap-2 mb-6">
-          <Button
-            variant="outline"
-            size="sm"
-            leftIcon={SlidersHorizontal}
-            onClick={() => setMobileDrawerOpen(true)}
-            aria-label="Open filters"
-          >
-            Filters
-          </Button>
+          <ListingGrid
+            listings={listings}
+            loading={loading}
+            error={error}
+            emptyMessage="No listings match your filters."
+            onClearFilters={handleClearAll}
+          />
 
-          <span className="text-xs text-text-secondary">
-            {totalCount} {totalCount === 1 ? "result" : "results"}
-          </span>
-
-          <select
-            value={filters.sort}
-            onChange={(e) => setFilter("sort", e.target.value)}
-            className="px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <ListingGrid
-          listings={listings}
-          loading={loading}
-          error={error}
-          emptyMessage="No listings match your filters."
-          onClearFilters={handleClearAll}
-        />
-
-        <Pagination
-          page={filters.page}
-          totalPages={totalPages}
-          onPageChange={(p) => setFilter("page", p)}
-        />
+          <Pagination
+            page={filters.page}
+            totalPages={totalPages}
+            onPageChange={(p) => setFilter("page", p)}
+          />
+        </section>
 
         <MobileFilterDrawer
           open={mobileDrawerOpen}

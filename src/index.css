@@ -215,11 +215,40 @@ a {
    Focus Ring
 ========================================================================== */
 
-:focus-visible {
+/* :focus-visible {
   outline: none;
   box-shadow:
     0 0 0 3px rgba(196,83,29,.22);
   border-radius: .5rem;
+} */
+
+/* ==========================================================================
+   Native Focus Reset
+========================================================================== */
+
+/* Removes native browser focus outlines on form controls so the single
+   :focus-visible rust ring (defined above) is the only focus indicator
+   that ever renders. Native selects in particular carry browser-specific
+   focus rendering that outline: none alone doesn't fully suppress. */
+
+input,
+select,
+textarea,
+button {
+  outline: none;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
 }
 
 /* ==========================================================================

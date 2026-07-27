@@ -11,7 +11,7 @@ export default function ListingCard({ listing }) {
   return (
     <Link
       to={`/listings/${listing.id}`}
-      className="group block bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-normal"
+      className="group block bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-[3px] transition-all duration-normal"
     >
       <div className="relative aspect-4/3 overflow-hidden bg-surface-tertiary/40">
         {imageUrl ? (
@@ -29,43 +29,50 @@ export default function ListingCard({ listing }) {
           </div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-text-secondary hover:text-accent hover:bg-white transition-all duration-fast"
+          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md text-text-secondary hover:text-accent hover:bg-white transition-all duration-fast active:scale-90"
           aria-label="Add to wishlist"
         >
-          <Heart size={15} />
+          <Heart size={16} />
         </button>
 
-        <div className="absolute bottom-3 left-3">
-          <Badge variant="sage">{listing.category}</Badge>
-        </div>
+       <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
+       <Badge variant="sage-filled" className="max-w-[65%] truncate whitespace-nowrap">
+        {listing.category}
+       </Badge>
+       <Badge variant="success-filled" className="shrink-0 whitespace-nowrap">
+        Available
+       </Badge>
+       </div>
       </div>
 
-      <div className="p-4">
-        <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-xl font-mono font-bold text-text-primary">
-            ${listing.daily_price}
-          </span>
-          <span className="text-xs text-text-secondary font-body">/ day</span>
-        </div>
-
-        <h3 className="text-sm font-medium text-text-primary line-clamp-1 mb-3">
+      <div className="p-3">
+        <h3 className="text-sm font-heading font-semibold text-text-primary line-clamp-1 mb-2">
           {listing.title}
         </h3>
 
-        <div className="flex items-center gap-2">
-          <Avatar src={ownerAvatar} name={ownerName} size="sm" />
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs text-text-secondary truncate">{ownerName}</span>
-            {listing.location && (
-              <span className="flex items-center gap-1 text-xs text-text-secondary/60">
-                <MapPin size={10} />
-                <span className="truncate">{listing.location}</span>
-              </span>
-            )}
+        <div className="flex items-baseline gap-1 mb-2">
+          <span className="text-lg font-mono font-bold text-text-primary">
+            ${listing.daily_price}
+          </span>
+          <span className="text-xs text-text-muted font-body">/ day</span>
+        </div>
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <Avatar src={ownerAvatar} name={ownerName} size="sm" />
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs text-text-secondary truncate">{ownerName}</span>
+              {listing.location && (
+                <span className="flex items-center gap-1 text-xs text-text-muted">
+                  <MapPin size={10} />
+                  <span className="truncate">{listing.location}</span>
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

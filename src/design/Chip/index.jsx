@@ -9,10 +9,10 @@ function Chip({
   ...props
 }) {
   const base =
-    "inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-fast ease select-none";
+    "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-fast ease select-none";
   const appearance = selected
-    ? "bg-accent text-white shadow-xs"
-    : "bg-sage/10 text-sage hover:bg-sage/20 active:bg-sage/30";
+    ? "bg-accent text-white shadow-sm ring-1 ring-accent/30"
+    : "bg-sage/10 text-sage hover:bg-sage/20 hover:shadow-xs active:bg-sage/30 ring-1 ring-transparent hover:ring-sage/20";
   const interactive = onClick || onRemove ? "cursor-pointer" : "";
 
   const Tag = onClick ? "button" : "span";
@@ -33,7 +33,7 @@ function Chip({
       {children}
       {onRemove && (
         <X
-          size={12}
+          size={13}
           className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
           onClick={(e) => {
             e.stopPropagation();

@@ -11,6 +11,12 @@ const VARIANTS = {
     "bg-accent/10 text-accent",
   sage:
     "bg-sage/10 text-sage",
+  "sage-filled":
+    "bg-sage text-white",
+  "accent-filled":
+    "bg-accent text-white",
+  "success-filled":
+    "bg-success text-white",
 };
 
 function Badge({ variant = "neutral", className = "", children, ...props }) {

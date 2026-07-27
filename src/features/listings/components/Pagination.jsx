@@ -1,42 +1,29 @@
-/**
- * Pagination — Server-side pagination controls.
- *
- * Displays Previous/Next buttons and page indicators.
- * Disables navigation when at the bounds.
- * Hidden when there's only one page.
- */
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-/**
- * @param {{ page: number, totalPages: number, onPageChange: (page: number) => void }} props
- */
 export default function Pagination({ page, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
 
   return (
     <nav
-      className="flex items-center justify-center gap-2 mt-10"
+      className="flex items-center justify-center gap-2 mt-12"
       aria-label="Pagination"
     >
-      {/* Previous */}
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-white/10 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease"
         aria-label="Previous page"
       >
         <ChevronLeft size={16} />
         <span className="hidden sm:inline">Previous</span>
       </button>
 
-      {/* Page numbers — show up to 5 page buttons with ellipsis */}
       <div className="flex items-center gap-1">
         {getPageNumbers(page, totalPages).map((p, i) =>
           p === "..." ? (
             <span
               key={`ellipsis-${i}`}
-              className="px-2 py-2 text-sm text-text-secondary"
+              className="w-9 h-9 flex items-center justify-center text-sm text-text-muted"
             >
               ...
             </span>
@@ -44,10 +31,10 @@ export default function Pagination({ page, totalPages, onPageChange }) {
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+              className={`w-9 h-9 rounded-lg text-sm font-medium transition-all duration-fast ease ${
                 p === page
-                  ? "bg-accent text-white"
-                  : "text-text-primary hover:bg-gray-100 dark:hover:bg-white/10"
+                  ? "bg-accent text-white shadow-sm"
+                  : "text-text-secondary hover:bg-surface-secondary"
               }`}
               aria-label={`Page ${p}`}
               aria-current={p === page ? "page" : undefined}
@@ -58,11 +45,10 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         )}
       </div>
 
-      {/* Next */}
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-white/10 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease"
         aria-label="Next page"
       >
         <span className="hidden sm:inline">Next</span>
@@ -72,11 +58,6 @@ export default function Pagination({ page, totalPages, onPageChange }) {
   );
 }
 
-/**
- * Generates an array of page numbers with ellipsis for large ranges.
- * Always shows first, last, and pages around the current page.
- * @returns {(number|"[]")[]}
- */
 function getPageNumbers(current, total) {
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);

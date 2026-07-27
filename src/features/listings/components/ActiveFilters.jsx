@@ -23,8 +23,8 @@ export default function ActiveFilters({ filters, onClear, onRemove }) {
   if (chips.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-xs text-text-secondary">Active:</span>
+    <div className="flex flex-wrap items-center gap-2 mb-5">
+      <span className="text-xs text-text-muted font-medium">Active:</span>
       {chips.map((chip) => (
         <Chip key={chip.key} onRemove={() => onRemove(chip.key)}>
           {chip.label}

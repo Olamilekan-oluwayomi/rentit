@@ -15,19 +15,19 @@ function CardSkeleton({ className = "", ...props }) {
   return (
     <div
       className={[
-        "bg-surface border border-border rounded-xl overflow-hidden",
+        "bg-surface border border-border rounded-2xl overflow-hidden",
         className,
       ].join(" ")}
       aria-hidden="true"
       {...props}
     >
       <div className="aspect-4/3 bg-surface-tertiary/40" />
-      <div className="p-4 space-y-3">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-3 w-1/2" />
-        <div className="flex gap-2 pt-1">
-          <Skeleton className="h-5 w-16 rounded-full" />
-          <Skeleton className="h-5 w-20 rounded-full" />
+      <div className="p-3 space-y-2.5">
+        <Skeleton className="h-4 w-4/5" />
+        <Skeleton className="h-5 w-1/3" />
+        <div className="flex items-center gap-2 pt-1">
+          <Skeleton className="h-7 w-7 rounded-full shrink-0" />
+          <Skeleton className="h-3 w-1/2" />
         </div>
       </div>
     </div>
