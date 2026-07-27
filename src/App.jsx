@@ -12,7 +12,7 @@ import { lazy } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAuth } from './features/auth/context/AuthContext'
-import { AppLayout, DashboardLayout } from './layouts'
+import { AppLayout, DashboardShell } from './layouts'
 import LoginPage from './features/auth/components/LoginPage'
 import RegisterPage from './features/auth/components/RegisterPage'
 import EmailConfirmationPage from './features/auth/components/EmailConfirmationPage'
@@ -86,7 +86,7 @@ function App() {
             <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
             <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardShell /></ProtectedRoute>}>
               <Route index element={<DashboardHome />} />
               <Route path="analytics" element={<DashboardAnalytics />} />
               <Route path="listings" element={<DashboardListings />} />

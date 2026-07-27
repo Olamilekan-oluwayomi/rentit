@@ -2,6 +2,7 @@ export { default as AppLayout } from "./AppLayout";
 export { default as PublicLayout } from "./PublicLayout";
 export { default as AuthLayout } from "./AuthLayout";
 export { default as DashboardLayout } from "./DashboardLayout";
+export { default as DashboardShell } from "./DashboardShell";
 export { default as ListingLayout } from "./ListingLayout";
 export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
