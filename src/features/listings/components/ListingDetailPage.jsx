@@ -19,6 +19,8 @@ import { useListing } from "../hooks/useListing";
 import { useCreateBooking } from "../../bookings/hooks/useCreateBooking";
 import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { supabase } from "../../../shared/lib/supabase";
+import { Button, EmptyState, Card } from "../../../design";
+import { ListingLayout } from "../../../layouts";
 import ImageGallery from "./ImageGallery";
 import OwnerCard from "./OwnerCard";
 import ConfirmDialog from "../../../shared/components/ConfirmDialog";
@@ -107,34 +109,18 @@ export default function ListingDetailPage() {
     );
   }
 
-  // Error or missing listing.
   if (error || !listing) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-text-secondary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-            />
-          </svg>
-        </div>
-        <p className="text-text-secondary text-lg mb-4">
-          {error || "This listing could not be found."}
-        </p>
-        <Link
-          to="/"
-          className="text-sm font-medium text-accent hover:underline"
-        >
-          Back to Browse
-        </Link>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
+        <EmptyState
+          title="Not found"
+          description={error || "This listing could not be found."}
+          action={
+            <Link to="/">
+              <Button variant="outline">Back to Browse</Button>
+            </Link>
+          }
+        />
       </div>
     );
   }
@@ -166,8 +152,7 @@ export default function ListingDetailPage() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
-      {/* Image gallery */}
+    <ListingLayout>
       <ImageGallery images={listing.images || []} />
 
       {/* Availability calendar — positioned below the image gallery */}
@@ -180,17 +165,14 @@ export default function ListingDetailPage() {
             onRangeConfirmed={handleRangeConfirmed}
           />
         ) : (
-          <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-6 text-center">
+          <Card className="p-6 text-center">
             <p className="text-sm text-text-secondary mb-3">
               Log in to check availability and book this listing.
             </p>
-            <a
-              href="/login"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-            >
-              Log in to Book
-            </a>
-          </div>
+            <Link to="/login">
+              <Button>Log in to Book</Button>
+            </Link>
+          </Card>
         )}
       </div>
 
@@ -254,17 +236,11 @@ export default function ListingDetailPage() {
             </div>
 
             <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setBookingResult(null)}
-                className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              >
+              <Button variant="outline" onClick={() => setBookingResult(null)}>
                 Book More Dates
-              </button>
-              <Link
-                to="/my-bookings"
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-              >
-                View My Bookings
+              </Button>
+              <Link to="/my-bookings">
+                <Button>View My Bookings</Button>
               </Link>
             </div>
           </div>
@@ -334,25 +310,16 @@ export default function ListingDetailPage() {
 
           {/* Owner actions — only shown when the current user owns this listing */}
           {isOwner && (
-            <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
-              <Link
-                to={`/listings/${listing.id}/edit`}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
-              >
-                Edit Listing
+            <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
+              <Link to={`/listings/${listing.id}/edit`}>
+                <Button>Edit Listing</Button>
               </Link>
-              <button
-                onClick={() => setShowSoftDelete(true)}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              >
+              <Button variant="outline" onClick={() => setShowSoftDelete(true)}>
                 Remove from Browse
-              </button>
-              <button
-                onClick={() => setShowHardDelete(true)}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-              >
+              </Button>
+              <Button variant="danger" onClick={() => setShowHardDelete(true)}>
                 Delete Permanently
-              </button>
+              </Button>
             </div>
           )}
 
@@ -390,7 +357,7 @@ export default function ListingDetailPage() {
         onConfirm={handleHardDelete}
         onCancel={() => setShowHardDelete(false)}
       />
-    </div>
+    </ListingLayout>
   );
 }
 
@@ -398,25 +365,12 @@ function ContactOwnerButton({ listingId }) {
   const { contactOwner, loading } = useContactOwner();
 
   return (
-    <button
+    <Button
       onClick={() => contactOwner(listingId)}
+      loading={loading}
       disabled={loading}
-      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
     >
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-        />
-      </svg>
       {loading ? "Opening chat..." : "Contact Owner"}
-    </button>
+    </Button>
   );
 }
