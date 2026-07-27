@@ -117,14 +117,15 @@ export default function MobileNav({ open, onClose }) {
             </NavLink>
           )}
           {user && (
-            <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>
+            <NavLink to="/dashboard" end className={navLinkClass} onClick={handleNavClick}>
               <LayoutDashboard size={20} />
               Dashboard
-              {unreadCount > 0 && (
-                <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
+            </NavLink>
+          )}
+          {user && (
+            <NavLink to="/dashboard/listings" className={navLinkClass} onClick={handleNavClick}>
+              <LayoutDashboard size={20} />
+              My Listings
             </NavLink>
           )}
           {user && (

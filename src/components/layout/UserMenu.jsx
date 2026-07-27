@@ -118,18 +118,18 @@ export default function UserMenu() {
             </Link>
 
             <Link
-              to="/saved"
+              to="/dashboard/listings"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
             >
               <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
-              Saved Items
+              My Listings
             </Link>
 
             <Link
-              to="/settings"
+              to="/dashboard/settings"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
             >
