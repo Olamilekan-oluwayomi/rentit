@@ -161,7 +161,7 @@ export default function HomePage() {
                       value={searchInput}
                       onChange={(e) => handleSearchChange(e.target.value)}
                       placeholder="Search rentals..."
-                      className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none"
+                      className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none"
                     />
                   </div>
                 </div>
@@ -175,7 +175,7 @@ export default function HomePage() {
                       value={filters.location}
                       onChange={(e) => setFilter("location", e.target.value)}
                       placeholder="Where?"
-                      className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted/60 focus:outline-none pl-5"
+                      className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none pl-5"
                     />
                   </div>
                 </div>

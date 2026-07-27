@@ -51,8 +51,8 @@ export default function MessageThread({ messages, loading }) {
 
   // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: containerRef.current.scrollHeight, behavior: "instant" });
     }
   }, [messages.length]);
 

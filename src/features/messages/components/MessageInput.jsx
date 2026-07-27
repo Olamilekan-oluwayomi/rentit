@@ -41,9 +41,11 @@ export default function MessageInput({ onSend, sending, disabled }) {
   const handleInput = (e) => {
     setText(e.target.value);
 
-    const el = e.target;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+    requestAnimationFrame(() => {
+      const el = e.target;
+      el.style.height = "auto";
+      el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+    });
   };
 
   // ── Render ────────────────────────────────────────────────────────────

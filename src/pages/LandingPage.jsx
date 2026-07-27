@@ -111,7 +111,7 @@ export default function LandingPage() {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search rentals..."
-                  className="w-full bg-transparent text-sm font-mono text-text-primary placeholder:text-text-muted/60 focus:outline-none"
+                  className="w-full bg-transparent text-sm font-mono text-text-primary placeholder:text-text-muted focus:outline-none"
                   aria-label="Search rentals"
                 />
               </div>
@@ -121,7 +121,7 @@ export default function LandingPage() {
                   type="text"
                   autoComplete="address-level2"
                   placeholder="Location"
-                  className="w-full bg-transparent text-sm font-mono text-text-primary placeholder:text-text-muted/60 focus:outline-none"
+                  className="w-full bg-transparent text-sm font-mono text-text-primary placeholder:text-text-muted focus:outline-none"
                   aria-label="Location"
                 />
               </div>
