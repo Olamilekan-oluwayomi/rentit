@@ -13,6 +13,7 @@ import { useToast } from "../../shared/contexts/ToastContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { useListingBookingStats } from "../../features/bookings/hooks/useListingBookingStats";
 import { supabase } from "../../shared/lib/supabase";
+import { Button, Badge } from "../../design";
 import ConfirmDialog from "../../shared/components/ConfirmDialog";
 import ListingThumbnail from "../../shared/components/ListingThumbnail";
 import BookingListSkeleton from "../../shared/components/BookingListSkeleton";
@@ -97,15 +98,9 @@ export default function MyListingsTab() {
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing.title}</h3>
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0 ${
-                    listing.is_active
-                      ? "bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-400"
-                      : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
-                  }`}
-                >
+                <Badge variant={listing.is_active ? "success" : "neutral"}>
                   {listing.is_active ? "Active" : "Inactive"}
-                </span>
+                </Badge>
               </div>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
@@ -116,18 +111,16 @@ export default function MyListingsTab() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0 sm:self-center">
-              <Link
-                to={`/listings/${listing.id}/edit`}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              >
-                Edit
+              <Link to={`/listings/${listing.id}/edit`}>
+                <Button variant="outline" size="sm">Edit</Button>
               </Link>
-              <button
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={() => setDeleteTarget(listing)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               >
                 Delete
-              </button>
+              </Button>
             </div>
             </div>
           </AnimatedListItem>

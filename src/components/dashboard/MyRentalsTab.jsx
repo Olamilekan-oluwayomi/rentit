@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import { useToast } from "../../shared/contexts/ToastContext";
 import { supabase } from "../../shared/lib/supabase";
+import { Button } from "../../design";
 import StatusBadge from "../../features/bookings/components/StatusBadge";
 import ListingThumbnail from "../../shared/components/ListingThumbnail";
 import BookingMeta from "../../shared/components/BookingMeta";
@@ -82,17 +83,18 @@ export default function MyRentalsTab() {
 
               {canCancel && (
                 <div className="shrink-0 sm:self-center" onClick={(e) => e.preventDefault()}>
-                  <button
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    loading={isCancelling}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleCancel(booking);
                     }}
-                    disabled={isCancelling}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isCancelling ? "Cancelling..." : "Cancel"}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
