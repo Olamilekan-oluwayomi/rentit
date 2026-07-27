@@ -1,3 +1,13 @@
+/**
+ * LocationFilter — Text input with a map pin icon for filtering listings by location.
+ *
+ * Route: Listings page ("/listings") — used in the filter bar.
+ * Responsibilities: Renders a controlled text input with a MapPin icon prefix.
+ *   Uses address-level2 autocomplete hint for city-level completion.
+ * Dependencies: lucide-react/MapPin.
+ * Important notes: Pure presentational component. Parent manages the filter state.
+ */
+
 import { MapPin } from "lucide-react";
 
 export default function LocationFilter({ value, onChange }) {

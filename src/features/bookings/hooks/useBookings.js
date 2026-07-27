@@ -1,20 +1,18 @@
-/**
- * useBookings — Fetches bookings for the current user in either direction.
- *
- * When type is 'rentals', returns all bookings where the current user is the
- * renter, joined with listing data (title, images, daily_price).
- *
- * When type is 'requests', returns pending bookings for listings owned by the
- * current user, joined with listing data (title, images) and the renter's
- * profile (full_name, avatar_url). Only status='pending' is returned since
- * this tab is for action needed, not history.
- *
- * When type is 'rented-out', returns approved/completed bookings for listings
- * owned by the current user — things currently or previously rented out.
- *
- * Results are ordered by created_at descending (newest first).
- * If the user is null, returns empty data without error.
- */
+/*
+|--------------------------------------------------------------------------
+| useBookings.js
+|--------------------------------------------------------------------------
+|
+| Fetches bookings for the current user in either direction.
+|
+| Purpose: Returns bookings for 'rentals' (renter view), 'requests' (pending owner),
+|          or 'rented-out' (approved/completed owner).
+| Inputs: type ("rentals" | "requests" | "rented-out")
+| Outputs: { data, loading, error, refetch }
+| Side effects: Supabase queries; two-step fetch for owner views
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

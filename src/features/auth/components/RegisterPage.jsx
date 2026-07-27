@@ -1,10 +1,20 @@
-/**
- * RegisterPage — New user account creation page.
- *
- * Provides email/password registration with Supabase Auth.
- * On success the user sees a "check your email" confirmation
- * screen. Handles inline error display for failed sign-ups.
- */
+/*
+|--------------------------------------------------------------------------
+| RegisterPage.jsx
+|--------------------------------------------------------------------------
+|
+| New user account creation page. Email/password registration with
+| Supabase Auth. Shows a "check your email" confirmation screen
+| after successful sign-up. Inline error display for failed sign-ups.
+|
+| Route: /register (wrapped in GuestRoute → AuthLayout)
+| Responsibilities: Register new users via email/password
+| Dependencies: useAuth, AuthLayout, FadeInSection, Framer Motion, lucide-react
+| Notes: Password confirmation match checked client-side before submit.
+|        Shows password visibility toggle for both fields.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -26,11 +36,6 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const { signUp } = useAuth();
 
-  /**
-   * Calls signUp with email, password, and full name.
-   * On success, switches to the submitted confirmation view.
-   * @param {React.FormEvent} e - The form submit event.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);

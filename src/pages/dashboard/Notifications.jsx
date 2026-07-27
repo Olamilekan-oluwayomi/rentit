@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardNotifications.jsx
+|--------------------------------------------------------------------------
+|
+| Notifications page for the dashboard. Currently shows a static
+| placeholder state — no notifications yet. Notifications will appear
+| when someone interacts with the user's listings.
+|
+| Route: /dashboard/notifications (mounted inside DashboardShell)
+| Responsibilities: Display user notifications (placeholder state)
+| Dependencies: lucide-react, FadeInSection
+| Notes: Notifications system not yet implemented — static empty state only.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { Bell } from "lucide-react";
 import FadeInSection from "../../shared/components/FadeInSection";
 

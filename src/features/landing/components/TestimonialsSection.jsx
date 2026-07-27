@@ -1,3 +1,15 @@
+/**
+ * TestimonialsSection — Fetches and displays recent reviews as community testimonials.
+ *
+ * Route: Landing page ("/")
+ * Responsibilities: Loads up to 6 reviews with comments from Supabase on mount.
+ *   Renders each as a card with avatar, rating, and quote. Respects prefers-reduced-motion.
+ * Dependencies: supabase (reviews table with reviewer join), design/Avatar + StarRatingInput,
+ *   motion for staggered fade-in animations, storage/getAvatarUrl.
+ * Important notes: Returns null during loading or when no testimonials available.
+ *   Uses a cancelled flag to prevent state updates after unmount.
+ */
+
 import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { supabase } from "../../../shared/lib/supabase";
@@ -5,10 +17,12 @@ import { StarRatingInput, Avatar } from "../../../design";
 import { getAvatarUrl } from "../../../utils/storage";
 
 export default function TestimonialsSection() {
+  // ── State ────────────────────────────────────────────────────────────
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const prefersReduced = useReducedMotion();
 
+  // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
 
@@ -32,6 +46,7 @@ export default function TestimonialsSection() {
 
   if (loading || testimonials.length === 0) return null;
 
+  // ── Render ───────────────────────────────────────────────────────────
   return (
     <section className="py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">

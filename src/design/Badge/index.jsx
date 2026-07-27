@@ -1,3 +1,19 @@
+/**
+ * Badge — Small label for status, categories, or counts.
+ *
+ * Variants: success | warning | danger | neutral | accent | sage
+ *           sage-filled | accent-filled | success-filled
+ *
+ * Usage:
+ *   <Badge variant="success">Available</Badge>
+ *
+ * Accessibility:
+ *   - Rendered as a <span>; colour alone should not convey meaning
+ *   - Use children text to describe the status for screen readers
+ */
+
+// ==== Variants ====
+
 const VARIANTS = {
   success:
     "bg-success/10 text-success",

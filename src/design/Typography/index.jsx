@@ -1,3 +1,25 @@
+/**
+ * Typography — Heading and Text primitives for consistent type scale.
+ *
+ * Heading:
+ *   @as  "h1" | "h2" | "h3" | "h4" | "h5" | "h6"  (default: "h2")
+ *
+ * Text:
+ *   @variant "body" | "secondary" | "muted" | "caption"  (default: "body")
+ *   @mono     Toggles font-mono class
+ *
+ * Usage:
+ *   <Heading as="h1">Page Title</Heading>
+ *   <Text variant="secondary">Supporting text</Text>
+ *   <Text variant="caption" mono>Code snippet</Text>
+ *
+ * Accessibility:
+ *   - Heading renders the correct semantic HTML tag matching `as`
+ *   - Text renders as <p>; wrap in a semantic element for non-paragraphs
+ */
+
+// ==== Heading ====
+
 const HEADING_TAGS = {
   h1: "h1",
   h2: "h2",

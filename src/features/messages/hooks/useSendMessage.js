@@ -1,10 +1,17 @@
-/**
- * useSendMessage — Inserts a new row into the messages table.
- *
- * Returns a sendMessage function and a sending state flag.
- * Callers should use addOptimistic from useMessages to show the
- * message instantly, then call sendMessage for the actual insert.
- */
+/*
+|--------------------------------------------------------------------------
+| useSendMessage.js
+|--------------------------------------------------------------------------
+|
+| Inserts a new row into the messages table.
+|
+| Purpose: Provides sendMessage for adding messages to a booking conversation.
+| Inputs: (via sendMessage) bookingId (string), content (string)
+| Outputs: { sendMessage, sending }
+| Side effects: Supabase insert
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

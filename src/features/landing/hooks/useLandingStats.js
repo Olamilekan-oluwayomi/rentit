@@ -1,3 +1,18 @@
+/*
+|--------------------------------------------------------------------------
+| useLandingStats.js
+|--------------------------------------------------------------------------
+|
+| Fetches aggregate stats for the landing page hero section.
+|
+| Purpose: Returns active listings count, unique cities, trusted hosts, and average rating.
+| Inputs: (none)
+| Outputs: { stats ({ activeListings, citiesServed, trustedHosts, avgRating }), loading }
+| Side effects: Multiple parallel Supabase queries
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, useEffect } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 
@@ -5,6 +20,8 @@ export function useLandingStats() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Run independent aggregate queries in parallel via Promise.allSettled
+  // so a single failing query doesn't prevent the others from completing.
   useEffect(() => {
     let cancelled = false;
 

@@ -23,7 +23,6 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
-  // Click-outside and Escape-key listeners to auto-close the dropdown.
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -50,7 +49,6 @@ export default function UserMenu() {
     navigate("/");
   };
 
-  // Derive display name and initials from profile or auth metadata.
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
   const initials = displayName
     .split(" ")

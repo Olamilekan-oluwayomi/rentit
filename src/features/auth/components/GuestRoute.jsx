@@ -1,22 +1,24 @@
-/**
- * GuestRoute — Auth gate that restricts access to unauthenticated visitors.
- *
- * This is the inverse of ProtectedRoute: it redirects already-logged-in
- * users away from pages like /login and /register. A spinner is shown
- * while the auth session resolves to prevent a redirect flash.
- *
- * @param {Object} props
- * @param {React.ReactNode} props.children - The guest-only page content to render.
- * @returns {JSX.Element} Either the children, a loading spinner, or a redirect to /.
- */
+/*
+|--------------------------------------------------------------------------
+| GuestRoute.jsx
+|--------------------------------------------------------------------------
+|
+| Auth gate that restricts access to unauthenticated visitors. Inverse of
+| ProtectedRoute: redirects already-logged-in users away from pages like
+| /login and /register. Shows a spinner while auth state resolves.
+|
+| Route: Wraps guest-only pages (/login, /register, /forgot-password, etc.)
+| Responsibilities: Guard pages from authenticated users
+| Dependencies: useAuth (AuthContext), React Router Navigate
+| Notes: Uses Navigate with `replace` to prevent redirect from appearing
+|        in browser history.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-/**
- * @param {{ children: React.ReactNode }} props
- * @returns {JSX.Element} Guest-only content or redirect.
- */
 export default function GuestRoute({ children }) {
   const { user, loading } = useAuth();
 

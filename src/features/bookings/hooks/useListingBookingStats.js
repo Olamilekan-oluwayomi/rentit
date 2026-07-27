@@ -1,10 +1,18 @@
-/**
- * useListingBookingStats — Returns a map of booking counts per listing.
- *
- * Given an array of listing IDs, queries the bookings table and returns
- * an object mapping each listing_id to its total booking count.
- * Used on the My Listings tab to show "X requests" per listing.
- */
+/*
+|--------------------------------------------------------------------------
+| useListingBookingStats.js
+|--------------------------------------------------------------------------
+|
+| Returns a map of booking counts per listing.
+|
+| Purpose: Given listing IDs, maps each listing_id to its total booking count.
+|          Used on the My Listings tab to show "X requests" per listing.
+| Inputs: listingIds (string[])
+| Outputs: { stats (Record<string,number>), loading, error, refetch }
+| Side effects: Supabase select query
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
@@ -43,7 +51,6 @@ export function useListingBookingStats(listingIds) {
       setError(fetchError.message);
       setStats({});
     } else {
-      // Count occurrences client-side
       const counts = {};
       for (const row of data ?? []) {
         counts[row.listing_id] = (counts[row.listing_id] || 0) + 1;

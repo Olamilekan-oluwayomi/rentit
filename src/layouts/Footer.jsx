@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| Footer.jsx
+|--------------------------------------------------------------------------
+|
+| Site-wide footer with Marketplace links, Company links, social icons
+| (GitHub, Twitter/X, LinkedIn, Email), and a brief brand description.
+| Rendered inside AppLayout and PublicLayout — suppressed on chat pages.
+|
+| Route: Rendered on most pages
+| Responsibilities: Provide footer navigation and brand info
+| Dependencies: React Router, Logo component
+| Notes: Social links open in new tabs with rel="noopener noreferrer".
+|
+|--------------------------------------------------------------------------
+*/
+
 import { Link } from "react-router-dom";
 import Logo from "../components/layout/Logo";
 

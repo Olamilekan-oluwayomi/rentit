@@ -1,3 +1,21 @@
+/**
+ * Avatar — User profile image with fallback initials and optional status indicator.
+ *
+ * Sizes   | sm | md | lg | xl | 2xl
+ * Status  | online | away | busy | offline
+ *
+ * Usage:
+ *   <Avatar src={url} alt="User" status="online" size="lg" />
+ *   <Avatar name="Jane Doe" />
+ *
+ * Accessibility:
+ *   - Falls back to initials computed from name or alt when no image src
+ *   - Status dot has an aria-label describing the status
+ *   - Image renders with alt or name as descriptive text
+ */
+
+// ==== Sizes ====
+
 const SIZES = {
   sm: "w-8 h-8 text-xs",
   md: "w-10 h-10 text-sm",

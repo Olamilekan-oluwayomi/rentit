@@ -1,4 +1,20 @@
+/**
+ * IconButton — Compact icon-only action button.
+ *
+ * Sizes  | sm | md | lg
+ *
+ * Usage:
+ *   <IconButton icon={Heart} label="Add to favourites" active={isFav} />
+ *
+ * Accessibility:
+ *   - Requires a `label` prop used as aria-label on the button
+ *   - Icon is aria-hidden; `label` is the accessible name
+ *   - Focus-visible ring for keyboard users
+ */
+
 import { forwardRef } from "react";
+
+// ==== Sizes ====
 
 const SIZES = {
   sm: "w-8 h-8",

@@ -1,3 +1,23 @@
+/**
+ * ConfirmDialog — Modal confirmation dialog with loading state and danger variant.
+ *
+ * Usage:
+ *   <ConfirmDialog
+ *     open={showDelete}
+ *     title="Delete listing?"
+ *     message="This cannot be undone."
+ *     danger
+ *     loading={deleting}
+ *     onConfirm={handleDelete}
+ *     onCancel={() => setShowDelete(false)}
+ *   />
+ *
+ * Accessibility:
+ *   - role="dialog" with aria-modal="true" and aria-label
+ *   - Overlay dismiss via backdrop click
+ *   - Buttons disabled while loading to prevent double-submit
+ */
+
 import { Button } from "../../design";
 
 export default function ConfirmDialog({

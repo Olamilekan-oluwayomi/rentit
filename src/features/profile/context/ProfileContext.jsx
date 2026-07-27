@@ -1,17 +1,18 @@
-/**
- * ProfileContext — Provides the current user's profile data and completion
- * state to the component tree.
- *
- * Fetches the profile row from Supabase on auth changes, auto-creates one
- * if it doesn't exist yet (first login / new user), and pre-fills avatar_url
- * from OAuth provider metadata when available.
- *
- * Exposes:
- *   - profile / setProfile / refreshProfile / loading — profile CRUD state
- *   - isProfileLoading — true until the initial fetch (+ retry) resolves
- *   - isProfileComplete — derived: avatar_url set AND full_name >= 2 chars
- *   - showCompletion / hideCompletion / completionPending — overlay visibility
- */
+/*
+|--------------------------------------------------------------------------
+| ProfileContext.jsx
+|--------------------------------------------------------------------------
+|
+| Provides the current user's profile data and completion state.
+|
+| Purpose: Fetches profile row from Supabase on auth changes, auto-creates
+|          one if missing, and pre-fills avatar_url from OAuth metadata.
+| Inputs: children (ReactNode)
+| Outputs: Renders ProfileContext.Provider wrapping children
+| Side effects: API calls to supabase/profiles; retries fetch for new users
+|
+|--------------------------------------------------------------------------
+*/
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";

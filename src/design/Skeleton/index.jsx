@@ -1,3 +1,22 @@
+/**
+ * Skeleton — Loading placeholder primitives and pre-composed layouts.
+ *
+ * Sub-components:
+ *   Skeleton        — Single rounded rect placeholder
+ *   CardSkeleton    — Listing card skeleton with image, text, avatar areas
+ *   AvatarSkeleton  — Circular avatar placeholder
+ *   TextSkeleton    — Multi-line text placeholder (last line shorter)
+ *   GridSkeleton    — Responsive grid of CardSkeleton items
+ *
+ * Usage:
+ *   <Skeleton className="h-4 w-3/4" />
+ *   <GridSkeleton count={6} />
+ *
+ * Accessibility:
+ *   - All skeletons use aria-hidden="true"
+ *   - Intended for use inside a parent with aria-busy="true"
+ */
+
 function Skeleton({ className = "", ...props }) {
   return (
     <div

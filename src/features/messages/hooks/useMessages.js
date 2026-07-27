@@ -1,12 +1,17 @@
-/**
- * useMessages — Fetches message history for a specific booking with
- * a real-time Supabase subscription so new messages appear live.
- *
- * Returns a local messages array that includes optimistic messages
- * (added before the server confirms them). When the real-time event
- * arrives for a message that was already inserted optimistically,
- * it replaces the placeholder with the server-confirmed row.
- */
+/*
+|--------------------------------------------------------------------------
+| useMessages.js
+|--------------------------------------------------------------------------
+|
+| Fetches message history for a booking with real-time subscription.
+|
+| Purpose: Loads messages and subscribes to INSERT/UPDATE events; supports optimistic messages.
+| Inputs: bookingId (string|null)
+| Outputs: { messages, loading, error, addOptimistic, refetch }
+| Side effects: Supabase select + real-time subscription via channel
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

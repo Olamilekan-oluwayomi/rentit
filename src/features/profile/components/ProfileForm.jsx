@@ -1,15 +1,14 @@
 /**
  * ProfileForm — Editable form for the user's profile fields (name, location, bio).
  *
- * Includes client-side validation with character limits, a geolocation-based
- * "detect my location" button, and inline error messages. Form state is
- * local; the parent calls onSave with the validated payload.
- *
- * @param {Object} props
- * @param {Object} props.profile - The current profile data to populate defaults from.
- * @param {boolean} props.saving - Whether a save operation is in progress.
- * @param {(updates: { full_name: string, location: string, bio: string }) => void} props.onSave - Callback to persist the form data.
- * @returns {JSX.Element} The profile edit form.
+ * Route: Profile page ("/profile") — used inside ProfileHeader.
+ * Responsibilities: Manages local form state with validation (character limits).
+ *   Provides a geolocation-based "detect my location" button that auto-fills the
+ *   location field. Validates all fields before calling onSave with the payload.
+ * Dependencies: lucide-react/MapPinned, useCurrentLocation hook, useToast context.
+ * Important notes: Form state is local — the parent calls onSave with validated data.
+ *   Character limit counters shown for location and bio fields.
+ *   The detect-location button shows a spinner while geolocating.
  */
 
 import { useState } from "react";
@@ -29,6 +28,7 @@ const LIMITS = {
  * @returns {JSX.Element} The profile form with validation and location detection.
  */
 export default function ProfileForm({ profile, saving, onSave }) {
+  // ── State ────────────────────────────────────────────────────────────
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [location, setLocation] = useState(profile?.location || "");
   const [bio, setBio] = useState(profile?.bio || "");
@@ -37,10 +37,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
   const { getCurrentLocation, loading: locationLoading } = useCurrentLocation();
   const { addToast } = useToast();
 
-  /**
-   * Uses the browser Geolocation API to auto-fill the location field.
-   * Converts coordinates to a human-readable string via the useCurrentLocation hook.
-   */
+  // ── Event Handlers ────────────────────────────────────────────────────
   const handleDetectLocation = async () => {
     const { location: detected, error } = await getCurrentLocation();
 
@@ -80,10 +77,6 @@ export default function ProfileForm({ profile, saving, onSave }) {
     return Object.keys(errs).length === 0;
   };
 
-  /**
-   * Validates then passes the cleaned form data to the parent's onSave callback.
-   * @param {React.FormEvent} e
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -94,6 +87,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
     });
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Full Name field */}
@@ -115,7 +109,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
           className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
         />
         {errors.full_name && (
-          <p className="text-xs text-red-500 mt-1">{errors.full_name}</p>
+          <p className="text-xs text-danger mt-1">{errors.full_name}</p>
         )}
       </div>
 
@@ -155,7 +149,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         </div>
         <div className="flex items-center justify-between mt-1">
           {errors.location ? (
-            <p className="text-xs text-red-500">{errors.location}</p>
+            <p className="text-xs text-danger">{errors.location}</p>
           ) : (
             <span />
           )}
@@ -185,7 +179,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
         />
         <div className="flex items-center justify-between mt-1">
           {errors.bio ? (
-            <p className="text-xs text-red-500">{errors.bio}</p>
+            <p className="text-xs text-danger">{errors.bio}</p>
           ) : (
             <span />
           )}

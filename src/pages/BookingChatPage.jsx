@@ -1,13 +1,21 @@
-/**
- * BookingChatPage — Dedicated chat page for a specific booking.
- *
- * Route: /booking/:id
- *
- * Full-viewport messaging layout (no global header/footer rendered).
- * Combines the MessageThread (scrollable list) with the MessageInput box.
- * Shows the listing title, counterparty avatar/name, and a back button
- * in a fixed-height header. Marks unread messages as read when opened.
- */
+/*
+|--------------------------------------------------------------------------
+| BookingChatPage.jsx
+|--------------------------------------------------------------------------
+|
+| Dedicated chat page for a specific booking. Full-viewport messaging
+| layout (no global header/footer). Combines MessageThread and MessageInput.
+| Marks unread messages as read on open. Gates first message behind
+| profile completion.
+|
+| Route: /booking/:id
+| Responsibilities: Real-time chat for a single booking; auto-mark read; profile gate
+| Dependencies: useMessages, useSendMessage, useRequireCompleteProfile, supabase
+| Notes: Suppressed global Navbar/Footer via AppLayout's NO_FOOTER_PATHS.
+|        Counterparty determined by comparing renter_id to current user.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -20,9 +28,7 @@ import { getAvatarUrl } from "../utils/storage";
 import MessageThread from "../features/messages/components/MessageThread";
 import MessageInput from "../features/messages/components/MessageInput";
 
-/**
- * Marks all unread messages in this booking as read for the current user.
- */
+// Marks all unread messages in this booking as read for the current user.
 async function markMessagesRead(bookingId, userId) {
   await supabase
     .from("messages")

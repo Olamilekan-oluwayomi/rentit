@@ -1,4 +1,22 @@
+/**
+ * Button — Primary action trigger.
+ *
+ * Variants  | primary | secondary | ghost | outline | danger
+ * Sizes     | sm | md | lg
+ *
+ * Usage:
+ *   <Button variant="primary" loading={isLoading}>Submit</Button>
+ *   <Button variant="outline" leftIcon={Plus}>Add</Button>
+ *
+ * Accessibility:
+ *   - Native <button> with disabled state for screen readers
+ *   - Focus-visible ring for keyboard navigation
+ *   - Spinner is aria-hidden; loadin disables interaction
+ */
+
 import { forwardRef } from "react";
+
+// ==== Variants ====
 
 const VARIANTS = {
   primary:

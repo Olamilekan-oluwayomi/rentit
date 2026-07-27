@@ -1,23 +1,14 @@
 /**
  * ProfileHeader — Responsive wrapper that combines avatar and form into the profile page layout.
  *
- * Desktop (lg+): renders a 3-column grid with the avatar on the left and
- * the form taking the remaining two columns.
- *
- * Mobile/tablet: stacks the avatar and a toggle button. The form is only
- * shown when the user taps "Edit Profile", keeping the initial view clean.
- *
- * @param {Object} props
- * @param {Object} props.profile - The current user's profile data.
- * @param {boolean} props.saving - Whether a profile save is in progress.
- * @param {boolean} props.uploading - Whether an avatar upload is in progress.
- * @param {string|null} props.avatarError - Avatar validation/upload error to display.
- * @param {boolean} props.editing - Whether the form is currently visible (mobile only).
- * @param {(file: File|null, error?: string) => void} props.onUploadAvatar - Avatar upload handler.
- * @param {() => void} props.onDeleteAvatar - Avatar delete handler.
- * @param {(updates: Object) => void} props.onSaveProfile - Profile save handler.
- * @param {() => void} props.onEditToggle - Toggles the editing state on mobile.
- * @returns {JSX.Element} The responsive profile header layout.
+ * Route: Profile page ("/profile") — top section of the page.
+ * Responsibilities: Desktop (lg+): renders a 3-column grid with the avatar on the left and
+ *   the form taking the remaining two columns. Mobile/tablet: stacks the avatar with an
+ *   "Edit Profile" toggle button; form is hidden by default and shown on tap.
+ * Dependencies: lucide-react/Pencil, design/Button, ProfileAvatar, ProfileForm.
+ * Important notes: All event handlers (upload, delete, save, edit toggle) are passed as props
+ *   from the parent page component which manages the actual data flow.
+ *   editing state only affects mobile layout — desktop always shows the form.
  */
 
 import { Pencil } from "lucide-react";
@@ -25,10 +16,6 @@ import { Button } from "../../../design";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileForm from "./ProfileForm";
 
-/**
- * @param {Object} props
- * @returns {JSX.Element} The profile header with avatar and form.
- */
 export default function ProfileHeader({
   profile,
   saving,
@@ -40,6 +27,7 @@ export default function ProfileHeader({
   onSaveProfile,
   onEditToggle,
 }) {
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <>
       {/* Desktop: side-by-side avatar + form, always visible */}

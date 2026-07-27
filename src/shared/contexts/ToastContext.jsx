@@ -1,10 +1,17 @@
-/**
- * ToastContext — Lightweight toast notification system.
- *
- * Provides an addToast() function that pushes a temporary notification
- * to the UI. Toasts auto-dismiss after 3 seconds and can also be closed
- * manually.
- */
+/*
+|--------------------------------------------------------------------------
+| ToastContext.jsx
+|--------------------------------------------------------------------------
+|
+| Lightweight toast notification system.
+|
+| Purpose: Provides addToast() for temporary notifications.
+| Inputs: children (ReactNode)
+| Outputs: Renders ToastContext.Provider + toast overlay container
+| Side effects: Auto-dismisses toasts after 3 seconds
+|
+|--------------------------------------------------------------------------
+*/
 
 import { createContext, useCallback, useContext, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -67,20 +74,17 @@ export function ToastProvider({ children }) {
                     : "bg-surface text-text-primary border border-border"
               }`}
             >
-            {/* Success icon */}
             {toast.type === "success" && (
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             )}
-            {/* Error icon */}
             {toast.type === "error" && (
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             )}
             <span>{toast.message}</span>
-            {/* Manual dismiss button */}
             <button
               onClick={() => removeToast(toast.id)}
               className="ml-2 shrink-0 opacity-70 hover:opacity-100"

@@ -1,3 +1,9 @@
+/**
+ * ListingThumbnail — Renders the first listing image or a "No image" fallback.
+ *
+ * @param {{ listing: { images?: string[], title?: string }, className?: string }} props
+ */
+
 import { getListingImageUrl } from "../../utils/storage";
 
 export default function ListingThumbnail({ listing, className = "" }) {

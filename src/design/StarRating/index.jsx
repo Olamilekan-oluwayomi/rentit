@@ -1,4 +1,25 @@
+/**
+ * StarRatingInput — Interactive star rating with keyboard-navigation support.
+ *
+ * @value     Current rating (0–5; supports half-stars for read-only display)
+ * @onChange  Called with the new rating value on click or Enter/Space
+ * @readOnly  Display-only mode with half-star support
+ * @size      "sm" | "md" | "lg"
+ *
+ * Usage:
+ *   <StarRatingInput value={rating} onChange={setRating} />
+ *   <StarRatingInput value={4} readOnly />
+ *
+ * Accessibility:
+ *   - role="radiogroup" in interactive mode, role="img" in read-only
+ *   - Keyboard navigation: ArrowLeft / ArrowRight to adjust value
+ *   - Each star is a radio button with aria-label and aria-checked
+ *   - aria-label on the group describes current rating
+ */
+
 import { useState, useCallback, useId } from "react";
+
+// ==== Star SVG path ====
 
 const STAR_PATH = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
 

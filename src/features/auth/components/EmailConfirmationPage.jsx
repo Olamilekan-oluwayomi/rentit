@@ -1,10 +1,21 @@
-/**
- * EmailConfirmationPage — Handles the email verification callback.
- *
- * Extracts access/refresh tokens from the URL hash, establishes
- * the Supabase session, then auto-redirects to login after 2s.
- * Displays loading, success, or error states as appropriate.
- */
+/*
+|--------------------------------------------------------------------------
+| EmailConfirmationPage.jsx
+|--------------------------------------------------------------------------
+|
+| Handles the email verification callback. Extracts access/refresh tokens
+| from the URL hash, establishes the Supabase session, strips tokens from
+| the URL, then auto-redirects to login after 2 seconds. Shows loading,
+| success, or error states.
+|
+| Route: /confirm (reached via email verification link)
+| Responsibilities: Verify email by processing Supabase auth tokens
+| Dependencies: supabase client, AuthLayout, FadeInSection, React Router
+| Notes: Auto-redirects to /login after 2s on success.
+|        Strips tokens from URL via history.replaceState.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";

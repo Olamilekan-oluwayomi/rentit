@@ -26,6 +26,8 @@ export default function RentedOutTab() {
     setRefreshKey((k) => k + 1);
   }, []);
 
+  // ── Render ──
+
   if (loading) return <BookingListSkeleton />;
 
   if (error) {

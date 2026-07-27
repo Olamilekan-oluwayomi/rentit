@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| HomePage.jsx
+|--------------------------------------------------------------------------
+|
+| Main browse / search page with hero search section, category filter,
+| price/location/sort controls, listing grid, and pagination. Filters
+| are persisted to URL search params. Debounces text search (300ms).
+|
+| Route: /
+| Responsibilities: Display and filter listings; manage URL-synced filter state
+| Dependencies: useListings hook, CategoryFilter, PriceFilter, LocationFilter,
+|               ListingGrid, Pagination, MobileFilterDrawer, ActiveFilters
+| Notes: Shows a FAB "New Listing" button for authenticated users.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, SlidersHorizontal, MapPin } from "lucide-react";

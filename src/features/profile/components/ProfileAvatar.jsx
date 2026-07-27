@@ -1,17 +1,13 @@
 /**
  * ProfileAvatar — Uploadable user avatar with hover overlay and fallback initials.
  *
- * Displays the user's avatar image or their initials as a fallback.
- * On hover, a camera overlay appears that triggers a hidden file input.
- * Supports upload and delete actions, with inline loading and error states.
- *
- * @param {Object} props
- * @param {string|null} props.avatarUrl - The storage path of the current avatar image.
- * @param {boolean} props.uploading - Whether an upload is currently in progress.
- * @param {(file: File|null, error?: string) => void} props.onUpload - Callback to handle file upload or validation error.
- * @param {() => void} props.onDelete - Callback to remove the current avatar.
- * @param {string|null} props.error - Validation/server error message to display.
- * @returns {JSX.Element} The avatar circle with overlay and action buttons.
+ * Route: Profile page ("/profile") — used in ProfileHeader and ProfileCompletionOverlay.
+ * Responsibilities: Displays the user's avatar image or initials as a fallback.
+ *   On hover, a camera overlay appears that triggers a hidden file input.
+ *   Supports upload (with client-side validation) and delete actions, with inline loading/error states.
+ * Dependencies: useAuth (for user metadata), storage/getAvatarUrl, utils/avatar (getInitials, validateAvatar).
+ * Important notes: Validates files client-side before calling onUpload.
+ *   File input value is cleared after selection to allow re-selecting the same file.
  */
 
 import { useRef } from "react";
@@ -19,10 +15,6 @@ import { useAuth } from "../../auth/context/AuthContext";
 import { getAvatarUrl } from "../../../utils/storage";
 import { getInitials, validateAvatar } from "../../../utils/avatar";
 
-/**
- * @param {{ avatarUrl: string|null, uploading: boolean, onUpload: (file: File|null, error?: string) => void, onDelete: () => void, error: string|null }} props
- * @returns {JSX.Element} The profile avatar component.
- */
 export default function ProfileAvatar({
   avatarUrl,
   uploading,
@@ -30,6 +22,7 @@ export default function ProfileAvatar({
   onDelete,
   error,
 }) {
+  // ── State & Refs ──────────────────────────────────────────────────────
   const { user } = useAuth();
   const inputRef = useRef(null);
 
@@ -37,11 +30,7 @@ export default function ProfileAvatar({
   const initials = getInitials(displayName);
   const avatarSrc = getAvatarUrl(avatarUrl);
 
-  /**
-   * Validates the selected file client-side before passing it to the parent.
-   * If invalid, the error is bubbled up via onUpload(null, error).
-   * @param {React.ChangeEvent<HTMLInputElement>} e
-   */
+  // ── Event Handlers ────────────────────────────────────────────────────
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -56,6 +45,7 @@ export default function ProfileAvatar({
     e.target.value = "";
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col items-center lg:items-start">
       {/* Avatar circle with hover-to-upload overlay */}

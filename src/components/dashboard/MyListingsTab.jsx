@@ -43,10 +43,13 @@ export default function MyListingsTab() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  // ── Handlers ──
+
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
 
+    // Clean up associated images from storage before removing the listing record
     if (deleteTarget.images?.length) {
       await supabase.storage.from("listing-images").remove(deleteTarget.images);
     }
@@ -66,6 +69,8 @@ export default function MyListingsTab() {
       refreshListings();
     }
   };
+
+  // ── Render ──
 
   if (loading) return <BookingListSkeleton />;
 

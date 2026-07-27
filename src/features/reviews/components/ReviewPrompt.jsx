@@ -1,3 +1,15 @@
+/**
+ * ReviewPrompt — Conditionally renders a "Leave a review" button or existing review summary.
+ *
+ * Route: Used inside booking detail views.
+ * Responsibilities: Uses useReviewEligibility to determine if the current user can leave/edit a review
+ *   for a given booking. Shows: nothing (ineligible/loading), "Leave a review" button (canLeave),
+ *   existing review summary with "Edit review" (canEdit), or the full ReviewForm (when expanded).
+ * Dependencies: useAuth, useReviewEligibility hook, design/StarRatingInput + Button, ReviewForm.
+ * Important notes: Returns null when loading, ineligible, or no booking context.
+ *   onClick handlers use e.preventDefault() to prevent parent link navigation.
+ */
+
 import { useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useReviewEligibility } from "../hooks/useReviewEligibility";
@@ -5,6 +17,7 @@ import { StarRatingInput, Button } from "../../../design";
 import ReviewForm from "./ReviewForm";
 
 export default function ReviewPrompt({ booking, revieweeId, onReviewUpdate }) {
+  // ── State ────────────────────────────────────────────────────────────
   const { user } = useAuth();
   const { eligibility, existingReview, loading } = useReviewEligibility({
     booking,

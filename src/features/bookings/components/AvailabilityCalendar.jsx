@@ -1,3 +1,18 @@
+/**
+ * AvailabilityCalendar — Date range picker for checking/blocking listing availability.
+ *
+ * Route: Listing detail page ("/listings/:id") — sidebar section.
+ * Responsibilities: Tenants select a date range to see pricing and request booking.
+ *   Owners select ranges to block dates (with optional reason) or manage existing blocks.
+ *   Validates that no selected range overlaps already-blocked dates.
+ * Dependencies: react-day-picker, date-fns (format, differenceInCalendarDays, eachDayOfInterval, parseISO),
+ *   motion/react, lucide-react icons, ToastContext, useAvailability hook, supabase client.
+ * Important notes: Owner and tenant views are mutually exclusive via isOwner prop.
+ *   Overlapping ranges are blocked client-side before any DB write.
+ *   Custom PrevButton/NextButton replace DayPicker defaults for full styling control.
+ *   The total price is computed as nights * dailyPrice (not inclusive of the checkout day).
+ */
+
 import { useState, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -128,7 +143,6 @@ export default function AvailabilityCalendar({
     return d;
   }, []);
 
-  /** Returns true if a date is in the past or falls within a blocked range. */
   const isDisabled = useMemo(() => {
     return (date) => {
       if (date < today) return true;
@@ -136,7 +150,6 @@ export default function AvailabilityCalendar({
     };
   }, [today, blockedRanges]);
 
-  /** Number of nights in the selected range. */
   const nights = useMemo(() => {
     if (!selectedRange?.from || !selectedRange?.to) return 0;
     return differenceInCalendarDays(selectedRange.to, selectedRange.from);
@@ -145,11 +158,8 @@ export default function AvailabilityCalendar({
   const totalPrice = nights * dailyPrice;
 
   /**
-   * Wrapped onSelect for DayPicker: intercepts every range selection
-   * and rejects it if the proposed range spans any already-blocked date.
-   * This prevents the visual "paint-over" bug where clicking a start
-   * date before a blocked range and an end date after it would silently
-   * accept the invalid selection.
+   * Rejects range selection if it overlaps blocked dates.
+   * This prevents a bug where valid-looking ranges spanning blocked dates were silently accepted.
    */
   const handleRangeSelect = (range) => {
     if (range?.from && range?.to) {
@@ -164,7 +174,7 @@ export default function AvailabilityCalendar({
     setSelectedRange(range);
   };
 
-  /** Handles owner block: inserts a row into availability and refreshes. */
+  /** Inserts a blocked range into the availability table and refreshes the calendar. */
   const handleBlockDates = async () => {
     setBlockError("");
 
@@ -200,7 +210,7 @@ export default function AvailabilityCalendar({
     }
   };
 
-  /** Removes a blocked range by id and refreshes the calendar. */
+  /** Deletes a blocked range and refreshes the calendar. */
   const handleRemoveRange = async (rangeId) => {
     const { error: deleteError } = await supabase
       .from("availability")
@@ -215,7 +225,7 @@ export default function AvailabilityCalendar({
     }
   };
 
-  /** Calls the onRangeConfirmed callback with selected range and total price. */
+  /** Calls onRangeConfirmed with the selected range and calculated total price. */
   const handleRequestToBook = () => {
     if (!selectedRange?.from || !selectedRange?.to) return;
     onRangeConfirmed?.(selectedRange.from, selectedRange.to, totalPrice);

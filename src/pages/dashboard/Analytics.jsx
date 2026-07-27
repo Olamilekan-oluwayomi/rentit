@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardAnalytics.jsx
+|--------------------------------------------------------------------------
+|
+| Analytics dashboard showing key metrics (revenue, bookings, views,
+| conversion rate), placeholder chart areas for revenue and bookings
+| over time, and a top-performing listings table sorted by view count.
+|
+| Route: /dashboard/analytics (mounted inside DashboardShell)
+| Responsibilities: Display listing performance metrics and analytics
+| Dependencies: useListings, useBookings, lucide-react, FadeInSection
+| Notes: Revenue and booking charts are placeholder (no data wired yet).
+|        Conversion rate = total requests / total views * 100.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { useBookings } from "../../features/bookings/hooks/useBookings";

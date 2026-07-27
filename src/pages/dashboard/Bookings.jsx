@@ -1,3 +1,22 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardBookings.jsx
+|--------------------------------------------------------------------------
+|
+| Booking management page for the dashboard. Shows bookings for the
+| user's listings ("rented-out") with status filter tabs (All, Pending,
+| Approved, Completed, Cancelled). Desktop renders as a table; mobile
+| renders as card list.
+|
+| Route: /dashboard/bookings (mounted inside DashboardShell)
+| Responsibilities: Display and filter owner-side bookings
+| Dependencies: useBookings, lucide-react, FadeInSection
+| Notes: Only shows "rented-out" bookings (bookings on user's listings).
+|        StatusTag is a file-private component.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays } from "lucide-react";

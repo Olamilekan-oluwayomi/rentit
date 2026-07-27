@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| MobileNav.jsx
+|--------------------------------------------------------------------------
+|
+| Slide-in navigation drawer for mobile viewports. Triggered by hamburger
+| menu in Navbar. Shows user info, navigation links (Home, Profile,
+| New Listing, Dashboard, My Listings, Messages), and login/logout area.
+| Locks body scroll while open and supports Escape key dismissal.
+|
+| Route: N/A (overlay rendered inside Navbar)
+| Responsibilities: Provide mobile-friendly navigation; prevent body scroll while open
+| Dependencies: React Router, AuthContext, ProfileContext, useUnreadCount
+| Notes: Visible at lg breakpoint and below. Uses slide-in from right.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { X, Home, User, Plus, LayoutDashboard, Mail, LogOut } from "lucide-react";

@@ -1,3 +1,14 @@
+/**
+ * ActiveFilters — Displays currently applied filters as removable chips with a "Clear All" button.
+ *
+ * Route: Listings page ("/listings") — used in the filter bar.
+ * Responsibilities: Lists all non-empty filter values (search, category, location, price range)
+ *   as dismissible Chip components. Calls onRemove to remove a single filter or onClear to reset all.
+ * Dependencies: design/Chip, design/Button.
+ * Important notes: Returns null when no filters are active. Each chip key maps to a filter field name
+ *   that the parent uses to clear that specific filter.
+ */
+
 import { Chip } from "../../../design";
 import { Button } from "../../../design";
 

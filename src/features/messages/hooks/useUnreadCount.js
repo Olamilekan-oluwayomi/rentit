@@ -1,9 +1,17 @@
-/**
- * useUnreadCount — Returns the total number of unread messages across
- * all bookings for the current user. Updates in real-time.
- *
- * Used to render the unread badge in the site header.
- */
+/*
+|--------------------------------------------------------------------------
+| useUnreadCount.js
+|--------------------------------------------------------------------------
+|
+| Returns the total unread message count across all bookings, updated in real-time.
+|
+| Purpose: Provides unread badge count for the site header.
+| Inputs: (none — uses useAuth internally)
+| Outputs: { count, loading, refetch }
+| Side effects: Supabase count query + real-time subscription for INSERT/UPDATE
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

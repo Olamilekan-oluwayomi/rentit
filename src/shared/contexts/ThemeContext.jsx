@@ -1,9 +1,17 @@
-/**
- * ThemeContext — Manages light/dark theme preference across the app.
- *
- * Persists the user's choice to localStorage and syncs the `dark` class
- * on the document root so Tailwind's `dark:` variants work.
- */
+/*
+|--------------------------------------------------------------------------
+| ThemeContext.jsx
+|--------------------------------------------------------------------------
+|
+| Manages light/dark theme preference across the app.
+|
+| Purpose: Persists theme to localStorage and syncs `dark` class on <html>.
+| Inputs: children (ReactNode)
+| Outputs: Renders ThemeContext.Provider wrapping children
+| Side effects: Reads/writes localStorage; adds/removes classList on documentElement
+|
+|--------------------------------------------------------------------------
+*/
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
@@ -45,7 +53,6 @@ export function ThemeProvider({ children }) {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  /** Flip between "dark" and "light". */
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);

@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| InboxPage.jsx
+|--------------------------------------------------------------------------
+|
+| Full-page message inbox listing all conversations. Each conversation
+| links to /booking/:id for the full chat view. Shows last message
+| preview, relative timestamps, counterparty avatar, and unread badge.
+|
+| Route: /inbox
+| Responsibilities: List all conversations with previews and unread indicators
+| Dependencies: useConversations hook, AnimatedList, FadeInSection
+| Notes: Uses full viewport height (suppressed global footer via AppLayout).
+|        Relative timestamps formatted as "2m", "3h", "5d", or date.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { Link } from "react-router-dom";
 import { useConversations } from "../features/messages/hooks/useConversations";
 import { getAvatarUrl } from "../utils/storage";

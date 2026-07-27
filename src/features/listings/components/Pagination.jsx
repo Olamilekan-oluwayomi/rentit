@@ -1,8 +1,20 @@
+/**
+ * Pagination — Page navigation with ellipsis for large page sets.
+ *
+ * Route: Listings page ("/listings") — at the bottom of the listing grid.
+ * Responsibilities: Renders Previous/Next buttons and a compact page number list
+ *   with ellipsis for large page counts. Highlights the current page.
+ * Dependencies: lucide-react/ChevronLeft + ChevronRight, getPageNumbers helper.
+ * Important notes: Hidden when totalPages <= 1. Uses "..." as a visual separator
+ *   when page ranges grow beyond 7. Previous/Next show/hide labels on small screens.
+ */
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Pagination({ page, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <nav
       className="flex items-center justify-center gap-2 mt-12"

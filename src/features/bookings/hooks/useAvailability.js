@@ -1,11 +1,17 @@
-/**
- * useAvailability — Fetches blocked date ranges for a listing.
- *
- * Queries the `availability` table for a given listing_id where
- * `is_blocked = true` and returns the rows as an array of date range
- * objects. Also exposes a `refetch` callback so the parent can force
- * a re-query after mutations (insert/delete).
- */
+/*
+|--------------------------------------------------------------------------
+| useAvailability.js
+|--------------------------------------------------------------------------
+|
+| Fetches blocked date ranges for a listing.
+|
+| Purpose: Query availability table where is_blocked = true for a given listing.
+| Inputs: listingId (string|null)
+| Outputs: { blockedRanges, loading, error, refetch }
+| Side effects: Supabase query on mount and when listingId changes
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
@@ -26,7 +32,6 @@ export function useAvailability(listingId) {
   // Bump this counter to trigger a re-fetch from the effect below.
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Auto-fetch on mount and when listingId or refreshKey changes
   useEffect(() => {
     if (!listingId) return;
 

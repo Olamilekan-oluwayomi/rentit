@@ -1,15 +1,21 @@
-/**
- * DashboardPage — Owner/renter dashboard with tabbed navigation.
- *
- * Four tabs: My Listings, My Rentals, Requests, Rented Out.
- * Tab state is persisted via useSearchParams so the active tab survives
- * page refreshes and is shareable/bookmarkable.
- *
- * On desktop, tabs render as a horizontal tab bar. On mobile (< sm),
- * they render as a dropdown <select> for compact navigation.
- *
- * Top of page: 4 stat cards summarising key metrics.
- */
+/*
+|--------------------------------------------------------------------------
+| DashboardPage.jsx
+|--------------------------------------------------------------------------
+|
+| Owner/renter dashboard with tabbed navigation. Four tabs: My Listings,
+| My Rentals, Requests, Rented Out. Tab state persisted via useSearchParams.
+| Shows 4 stat cards at the top summarizing key metrics.
+|
+| Route: /dashboard (legacy — routes through DashboardShell)
+| Responsibilities: Aggregate and display dashboard stats; provide tab navigation
+| Dependencies: useListings, useBookings, PageHeader, DashboardLayout,
+|               MyListingsTab, MyRentalsTab, RequestsTab, RentedOutTab
+| Notes: Desktop tabs render as horizontal bar; mobile as <select> dropdown.
+|        Active Bookings count combines approved bookings on both renter and owner sides.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../features/auth/context/AuthContext";
@@ -28,9 +34,6 @@ const TABS = [
   { key: "rented-out", label: "Rented Out" },
 ];
 
-/**
- * @returns {JSX.Element} The dashboard page with stat cards and tabbed content.
- */
 export default function DashboardPage() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -114,10 +117,6 @@ export default function DashboardPage() {
   );
 }
 
-/**
- * Individual stat card component.
- * @param {{ label: string, value: string|number, subtitle?: string }} props
- */
 function StatCard({ label, value, subtitle }) {
   return (
     <div className="bg-surface rounded-2xl border border-border p-4 sm:p-5">

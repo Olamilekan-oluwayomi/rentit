@@ -1,3 +1,9 @@
+/**
+ * BookingMeta — Displays a formatted date range and total price for a booking.
+ *
+ * @param {{ booking: { start_date: string, end_date: string, total_price: number } }} props
+ */
+
 import { format, parseISO } from "date-fns";
 
 export default function BookingMeta({ booking }) {

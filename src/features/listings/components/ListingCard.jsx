@@ -1,3 +1,14 @@
+/**
+ * ListingCard — Card preview for a single listing in grid views.
+ *
+ * Route: Listings page ("/listings") — rendered inside ListingGrid.
+ * Responsibilities: Displays listing image (with fallback), category/availability badges,
+ *   title, daily price, owner avatar + name, and location. Links to the detail page.
+ * Dependencies: react-router-dom (Link), design/Badge + Avatar, storage URL helpers.
+ * Important notes: Uses gradient overlay on the image for readability. Wishlist button
+ *   prevents link navigation via e.preventDefault(). First image only is shown.
+ */
+
 import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { Badge, Avatar } from "../../../design";

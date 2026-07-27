@@ -4,28 +4,26 @@
  * Full-featured image gallery with a hero image, thumbnail strip, and lightbox.
  * Supports keyboard navigation (arrow keys + Escape) and prevents body scroll
  * when the lightbox is open. Used on listing detail pages to showcase item images.
+ *
+ * Route: Listing detail page ("/listings/:id")
+ * Responsibilities: Displays images with hero + thumbnail navigation, full-screen lightbox
+ *   overlay with keyboard nav, image counter, and responsive empty state.
+ * Dependencies: lucide-react icons, storage/getListingImageUrl.
+ * Important notes: Uses useCallback for navigation functions to avoid unnecessary
+ *   re-renders of the keyboard event listener. Body scroll is locked while lightbox is open.
  */
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { getListingImageUrl } from "../../../utils/storage";
 
-/**
- * Image gallery with hero + thumbnails + lightbox.
- * Keyboard: arrows navigate, Escape closes lightbox.
- * @param {{ images: string[] }} props - Array of Supabase storage paths for listing images
- */
 export default function ImageGallery({ images = [] }) {
-  // Index of the currently displayed image in both hero and lightbox views.
   const [active, setActive] = useState(0);
-  // Lightbox overlay visibility state.
   const [lightbox, setLightbox] = useState(false);
 
-  // Convert storage paths to full URLs, filtering out any null/empty entries.
   const urls = images.map(getListingImageUrl).filter(Boolean);
   const hasImages = urls.length > 0;
 
   // ── Navigation Callbacks ──────────────────────────────────────────
-  // Wrapping index arithmetic in useCallback avoids recalculating on every render.
   const goNext = useCallback(() => {
     setActive((i) => (i + 1) % urls.length);
   }, [urls.length]);
@@ -35,8 +33,7 @@ export default function ImageGallery({ images = [] }) {
   }, [urls.length]);
 
   // ── Keyboard Navigation ───────────────────────────────────────────
-  // Handles arrow keys for image navigation and Escape to close the lightbox.
-  // Only active when lightbox is open to avoid interfering with page-level shortcuts.
+  // Only active while lightbox is open to avoid interfering with page-level shortcuts.
   const handleKey = useCallback(
     (e) => {
       if (e.key === "ArrowRight") setActive((i) => (i + 1) % urls.length);
@@ -47,8 +44,7 @@ export default function ImageGallery({ images = [] }) {
     [urls.length]
   );
 
-  // Attach/detach keyboard listener and lock body scroll when lightbox is open.
-  // Body scroll lock prevents background content from scrolling while the overlay is visible.
+  // Lock body scroll while lightbox is open to prevent background scrolling underneath the overlay.
   useEffect(() => {
     if (lightbox) {
       document.addEventListener("keydown", handleKey);
@@ -72,7 +68,7 @@ export default function ImageGallery({ images = [] }) {
     <>
       {/* ── Main Gallery ─────────────────────────────────────── */}
       <div className="space-y-3">
-        {/* Hero image — clicking opens the lightbox for full-screen viewing */}
+        {/* ── Hero Image ───────────────────────────────────── */}
         <div
           className="relative aspect-video rounded-2xl overflow-hidden cursor-zoom-in bg-surface-secondary active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={() => setLightbox(true)}
@@ -89,7 +85,7 @@ export default function ImageGallery({ images = [] }) {
             loading={active === 0 ? "eager" : "lazy"}
           />
 
-          {/* Navigation arrows — only shown when there are multiple images */}
+          {/* stopPropagation prevents the click from also opening the lightbox */}
           {urls.length > 1 && (
             <>
               <button
@@ -116,14 +112,12 @@ export default function ImageGallery({ images = [] }) {
             </>
           )}
 
-          {/* Image counter badge */}
           <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full">
             {active + 1} / {urls.length}
           </div>
         </div>
 
         {/* ── Thumbnail Strip ─────────────────────────────────── */}
-        {/* Only displayed when there's more than one image to browse */}
         {urls.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {urls.map((url, i) => (
@@ -156,7 +150,6 @@ export default function ImageGallery({ images = [] }) {
           role="dialog"
           aria-label="Image viewer"
         >
-          {/* Close button */}
           <button
             onClick={() => setLightbox(false)}
             className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors z-10 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
@@ -164,15 +157,12 @@ export default function ImageGallery({ images = [] }) {
           >
             <X size={20} />
           </button>
-
-          {/* Lightbox image — max constraints keep it within viewport */}
           <img
             src={urls[active]}
             alt={`Listing image ${active + 1}`}
             className="max-w-[90vw] max-h-[85vh] object-contain"
           />
 
-          {/* Lightbox navigation arrows */}
           {urls.length > 1 && (
             <>
               <button
@@ -192,7 +182,6 @@ export default function ImageGallery({ images = [] }) {
             </>
           )}
 
-          {/* Lightbox counter */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/10 text-white text-sm px-3 py-1.5 rounded-full">
             {active + 1} / {urls.length}
           </div>

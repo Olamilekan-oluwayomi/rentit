@@ -1,3 +1,14 @@
+/**
+ * ListingGrid — Displays listings in a responsive grid with loading/error/empty states.
+ *
+ * Route: Listings page ("/listings") — main listing display area.
+ * Responsibilities: Handles all visual states: loading (skeleton grid), error (empty state with
+ *   message), empty (with optional "Clear Filters" action), and data (animated grid of ListingCard).
+ * Dependencies: ListingCard, ListingSkeleton, AnimatedList, design/EmptyState + Button.
+ * Important notes: The grid uses AnimatedList for staggered entrance animations. Passes
+ *   onClearFilters to show a button in the empty state when filters are active.
+ */
+
 import ListingCard from "./ListingCard";
 import ListingSkeleton from "./ListingSkeleton";
 import AnimatedList, { AnimatedListItem } from "../../../shared/components/AnimatedList";

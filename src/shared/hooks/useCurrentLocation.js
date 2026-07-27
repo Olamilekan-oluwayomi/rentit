@@ -1,11 +1,17 @@
-/**
- * Hook for resolving the user's current geographic location.
- *
- * Uses the browser Geolocation API to get coordinates, then reverse-
- * geocodes them into a human-readable string (e.g. "Paris, France")
- * via OpenStreetMap's Nominatim service. Maps all Geolocation error
- * codes to friendly messages.
- */
+/*
+|--------------------------------------------------------------------------
+| useCurrentLocation.js
+|--------------------------------------------------------------------------
+|
+| Resolves the user's current geographic location.
+|
+| Purpose: Uses browser Geolocation API + OpenStreetMap Nominatim reverse-geocoding.
+| Inputs: (none)
+| Outputs: { getCurrentLocation, loading, error }
+| Side effects: Browser geolocation prompt; HTTP request to Nominatim
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useState } from "react";
 import { reverseGeocode, formatLocation } from "../../utils/location";

@@ -1,3 +1,13 @@
+/**
+ * FAQSection — Accordion-style frequently asked questions for the landing page.
+ *
+ * Route: Landing page ("/")
+ * Responsibilities: Renders a list of expandable Q&A items with animated open/close.
+ * Dependencies: motion/AnimatePresence for animation, useState for open state.
+ * Important notes: Only one item can be open at a time (accordion pattern).
+ *   Uses AnimatePresence for smooth enter/exit transitions on the answer content.
+ */
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -25,12 +35,15 @@ const FAQS = [
 ];
 
 export default function FAQSection() {
+  // ── State ────────────────────────────────────────────────────────────
   const [openIndex, setOpenIndex] = useState(null);
 
+  // ── Event Handlers ────────────────────────────────────────────────────
   const toggle = (i) => {
     setOpenIndex(openIndex === i ? null : i);
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <section className="py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">

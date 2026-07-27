@@ -1,11 +1,17 @@
-/**
- * Hook for managing a single listing's lifecycle.
- *
- * Provides CRUD operations scoped to one listing ID: fetch, update,
- * soft-delete, restore, and hard-delete. Hard-delete also cleans up
- * associated images in Supabase Storage before removing the DB row,
- * and redirects the user to the home page via React Router.
- */
+/*
+|--------------------------------------------------------------------------
+| useListing.js
+|--------------------------------------------------------------------------
+|
+| Manages a single listing's lifecycle (CRUD operations).
+|
+| Purpose: Fetch, update, soft-delete, restore, and hard-delete a listing.
+| Inputs: id (string|null)
+| Outputs: { listing, loading, error, updateListing, softDeleteListing, hardDeleteListing, restoreListing, refreshListing }
+| Side effects: Supabase queries/mutations; storage cleanup; navigate on hard delete
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +51,6 @@ export function useListing(id) {
     setLoading(false);
   }, [id]);
 
-  // Auto-fetch when the component mounts or the listing ID changes
   useEffect(() => {
     (async () => {
       await fetchListing();

@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| AppLayout.jsx
+|--------------------------------------------------------------------------
+|
+| Primary application layout wrapping most authenticated pages. Renders Navbar,
+| main content, and Footer. Suppresses Footer on /inbox and /booking/:id routes.
+| Passes through dashboard routes unwrapped (DashboardShell handles its own chrome).
+| Shows ProfileCompletionOverlay when triggered.
+|
+| Route: All pages except /login, /register, /dashboard/*
+| Responsibilities: Provide global Navbar/Footer chrome; profile completion gate
+| Dependencies: React Router, ProfileContext, Navbar, Footer, ProfileCompletionOverlay
+| Notes: Dashboard routes short-circuit to render children directly.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useLocation } from "react-router-dom";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import Navbar from "./Navbar";

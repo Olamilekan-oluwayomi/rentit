@@ -42,7 +42,6 @@ export default function MobileMenu({ open, onClose }) {
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url);
 
-  // Lock body scroll when the menu is open so the background doesn't scroll.
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -54,7 +53,6 @@ export default function MobileMenu({ open, onClose }) {
     };
   }, [open]);
 
-  // Close on Escape key for keyboard accessibility.
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && open) onClose();
@@ -70,7 +68,6 @@ export default function MobileMenu({ open, onClose }) {
     navigate("/");
   };
 
-  /** Closes the menu when any nav link is clicked. */
   const handleNavClick = () => onClose();
 
   return (

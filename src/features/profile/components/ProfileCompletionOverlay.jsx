@@ -3,8 +3,14 @@
  * to upload an avatar and confirm their full name before they can perform
  * actions that require a trustworthy profile (booking, messaging, listing).
  *
- * Reuses ProfileAvatar for upload/preview and validates the name field
- * with the same rules as ProfileForm (min 2 chars, max 60).
+ * Route: Any protected page — conditionally rendered by ProfileContext when profile is incomplete.
+ * Responsibilities: Presents a modal with avatar upload and name fields.
+ *   Validates name (2-60 chars) and requires an avatar before allowing submission.
+ *   Calls updateProfile and hides the overlay on success.
+ * Dependencies: ProfileContext (profile, hideCompletion), useProfile (updateProfile, uploadAvatar),
+ *   ProfileAvatar subcomponent.
+ * Important notes: Cannot be dismissed by the user (no close button, no backdrop click).
+ *   Reuses ProfileAvatar for upload/preview. The submit button shows a spinner during save.
  */
 
 import { useState } from "react";
@@ -16,6 +22,7 @@ const NAME_MIN = 2;
 const NAME_MAX = 60;
 
 export default function ProfileCompletionOverlay() {
+  // ── State ────────────────────────────────────────────────────────────
   const { profile, hideCompletion } = useProfileContext();
   const { updateProfile, uploadAvatar, uploading, saving } = useProfile();
 
@@ -29,6 +36,7 @@ export default function ProfileCompletionOverlay() {
   const nameValid = trimmedName.length >= NAME_MIN && trimmedName.length <= NAME_MAX;
   const canSubmit = nameValid && hasAvatar && !submitting;
 
+  // ── Event Handlers ────────────────────────────────────────────────────
   const handleUpload = async (file, validationError) => {
     if (validationError) {
       setAvatarError(validationError);
@@ -58,6 +66,7 @@ export default function ProfileCompletionOverlay() {
     hideCompletion();
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
       <div className="bg-white dark:bg-surface rounded-2xl shadow-2xl w-full max-w-md p-8">

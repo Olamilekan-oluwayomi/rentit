@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardHome.jsx
+|--------------------------------------------------------------------------
+|
+| Dashboard home / welcome page. Shows a welcome greeting, stat cards
+| (Total Listings, Active Bookings, Pending Requests, Earnings), recent
+| bookings list, quick action buttons, and upcoming rentals section.
+|
+| Route: /dashboard (mounted inside DashboardShell)
+| Responsibilities: Provide dashboard overview with stats and recent activity
+| Dependencies: useListings, useBookings, lucide-react, FadeInSection, Button
+| Notes: StatCard and StatusTag are file-private components.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { Link } from "react-router-dom";
 import { Plus, MessageSquare, BarChart3, CalendarDays, Clock } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";

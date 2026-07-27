@@ -1,3 +1,19 @@
+/*
+|--------------------------------------------------------------------------
+| AuthLayout.jsx
+|--------------------------------------------------------------------------
+|
+| Wrapper layout for authentication pages (login, register, forgot/reset password).
+| Renders a centered card with a logo in the top-left corner.
+|
+| Route: /login, /register, /forgot-password, /reset-password (via GuestRoute wrappers)
+| Responsibilities: Provide consistent auth page chrome
+| Dependencies: Logo component
+| Notes: Minimal layout without Navbar or Footer.
+|
+|--------------------------------------------------------------------------
+*/
+
 import Logo from "../components/layout/Logo";
 
 export default function AuthLayout({ children }) {

@@ -1,3 +1,22 @@
+/**
+ * Card — Content container with composable header/body/footer sub-components.
+ *
+ * Variants  | default | outlined | interactive | elevated
+ *
+ * Usage:
+ *   <Card variant="interactive" onClick={handleClick}>
+ *     <CardHeader>Title</CardHeader>
+ *     <CardBody>Content</CardBody>
+ *     <CardFooter>Actions</CardFooter>
+ *   </Card>
+ *
+ * Accessibility:
+ *   - Interactive variant adds cursor-pointer and hover/active transforms
+ *   - Semantic div container; use heading elements inside for structure
+ */
+
+// ==== Variants ====
+
 const VARIANTS = {
   default:
     "bg-surface border border-border",

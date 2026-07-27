@@ -25,6 +25,8 @@ export default function RequestsTab() {
   const { addToast } = useToast();
   const [actionId, setActionId] = useState(null);
 
+  // ── Handlers ──
+
   const handleApprove = async (booking) => {
     setActionId(booking.id);
 
@@ -39,6 +41,7 @@ export default function RequestsTab() {
       return;
     }
 
+    // Block the listing's calendar to prevent double-booking for the approved dates
     const { error: blockError } = await supabase.from("availability").insert({
       listing_id: booking.listing_id,
       start_date: booking.start_date,
@@ -73,6 +76,8 @@ export default function RequestsTab() {
 
     setActionId(null);
   };
+
+  // ── Render ──
 
   if (loading) return <BookingListSkeleton />;
 

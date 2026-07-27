@@ -1,3 +1,14 @@
+/**
+ * BackToTop — Fixed floating button that appears after scrolling past 400px.
+ *
+ * Smoothly scrolls to the top of the page on click.
+ *
+ * Accessibility:
+ *   - aria-label="Back to top" on the button
+ *   - Focus-visible ring for keyboard navigation
+ *   - Hidden from pointer events and tab order when not visible
+ */
+
 import { useState, useEffect } from "react";
 import { ChevronUp } from "lucide-react";
 

@@ -1,3 +1,22 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardShell.jsx
+|--------------------------------------------------------------------------
+|
+| Full dashboard layout with sidebar navigation, mobile bottom nav,
+| and a top header showing the current page title. Handles tab parameter
+| redirects (e.g. ?tab=listings → /dashboard/listings). Shows unread
+| message badge on the Messages nav item.
+|
+| Route: /dashboard/*
+| Responsibilities: Render sidebar, mobile nav, header, and nested routes via Outlet
+| Dependencies: React Router, AuthContext, ProfileContext, useUnreadCount, lucide-react
+| Notes: Uses Suspense with DashboardFallback for lazy-loaded sub-routes.
+|        Sidebar shows user avatar, name, email, and logout button.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, Suspense, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Home, BarChart3, List, CalendarDays, MessageSquare, Bell, Settings, Menu, X, LogOut, ArrowLeft } from "lucide-react";
@@ -105,13 +124,11 @@ export default function DashboardLayout() {
 
   return (
     <div className="h-screen flex flex-col bg-background text-text-primary">
-      {/* ── Mobile top bar ── */}
       <header className="shrink-0 flex items-center justify-between h-16 px-4 border-b border-border bg-surface lg:hidden">
         <Logo />
         <IconButton icon={sidebarOpen ? X : Menu} label={sidebarOpen ? "Close menu" : "Open menu"} onClick={() => setSidebarOpen(!sidebarOpen)} />
       </header>
 
-      {/* ── Desktop sidebar overlay on mobile ── */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
@@ -153,9 +170,7 @@ export default function DashboardLayout() {
         </div>
       )}
 
-      {/* ── Desktop layout ── */}
       <div className="flex flex-1 min-h-0">
-        {/* Sidebar — hidden on mobile */}
         <aside aria-label="Dashboard navigation" className="hidden lg:flex lg:flex-col lg:w-60 lg:shrink-0 bg-surface border-r border-border">
           <div className="flex items-center h-16 px-5 border-b border-border">
             <Logo />
@@ -180,9 +195,7 @@ export default function DashboardLayout() {
           </div>
         </aside>
 
-        {/* Main content area */}
         <div className="flex flex-col flex-1 min-w-0">
-          {/* Top bar */}
           <header className="shrink-0 hidden lg:flex items-center justify-between h-16 px-6 border-b border-border bg-background">
             <div className="flex items-center gap-4">
               <Link
@@ -197,7 +210,6 @@ export default function DashboardLayout() {
             </div>
           </header>
 
-          {/* Page content */}
           <main className="flex-1 overflow-y-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
               <Suspense fallback={<DashboardFallback />}>
@@ -208,7 +220,6 @@ export default function DashboardLayout() {
         </div>
       </div>
 
-      {/* ── Mobile bottom nav ── */}
       <nav className="shrink-0 lg:hidden flex items-center justify-around h-16 border-t border-border bg-surface" aria-label="Dashboard navigation">
         {MOBILE_NAV.map((item) => {
           const Icon = item.icon;

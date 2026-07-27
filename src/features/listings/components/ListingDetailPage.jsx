@@ -1,3 +1,23 @@
+/*
+|--------------------------------------------------------------------------
+| ListingDetailPage.jsx
+|--------------------------------------------------------------------------
+|
+| Full listing detail view with image gallery, description, owner info,
+| booking calendar, reviews, and related listings. Owners see edit/delete
+| actions; non-owners see booking controls and contact owner button.
+| Uses sticky desktop booking card and mobile booking bar/panel.
+|
+| Route: /listings/:id
+| Responsibilities: Display listing details, handle booking flow, soft/hard delete
+| Dependencies: useListing, useCreateBooking, useContactOwner, supabase,
+|               ListingGallery, OwnerCard, AvailabilityCalendar, ReviewsSection
+| Notes: Soft delete hides listing from browse; hard delete removes permanently.
+|        Related listings fetched directly via supabase by category.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -248,20 +268,24 @@ export default function ListingDetailPage() {
         </div>
       </div>
 
-      <MobileBookingBar
-        visible={!isOwner && !showMobileBooking}
-        price={listing.daily_price}
-        onOpen={() => setShowMobileBooking(true)}
-      />
+      {!!user && (
+        <MobileBookingBar
+          visible={!isOwner && !showMobileBooking}
+          price={listing.daily_price}
+          onOpen={() => setShowMobileBooking(true)}
+        />
+      )}
 
-      <MobileBookingPanel
-        open={showMobileBooking}
-        onClose={() => setShowMobileBooking(false)}
-        price={listing.daily_price}
-        listingId={listing.id}
-        isOwner={isOwner}
-        onRangeConfirmed={handleRangeConfirmed}
-      />
+      {!!user && (
+        <MobileBookingPanel
+          open={showMobileBooking}
+          onClose={() => setShowMobileBooking(false)}
+          price={listing.daily_price}
+          listingId={listing.id}
+          isOwner={isOwner}
+          onRangeConfirmed={handleRangeConfirmed}
+        />
+      )}
 
       {bookingResult && (
         <BookingConfirmationModal

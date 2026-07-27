@@ -1,13 +1,15 @@
 /**
  * MobileFilterDrawer — Bottom-sheet filter panel for mobile/tablet.
  *
- * Opens as a slide-up overlay containing all filter controls
- * (Category, Location, Price, Sort) plus Clear and Apply buttons.
- * Applies filters only when "Apply" is tapped to avoid constant
- * re-fetching while the user is still filling in fields.
- *
- * The component unmounts when closed, so draft state is always
- * initialized from the current filters when opened.
+ * Route: Listings page ("/listings") — replaces inline filters on small screens.
+ * Responsibilities: Opens as a slide-up overlay containing all filter controls
+ *   (Category, Location, Price, Sort) plus Clear and Apply buttons. Uses local draft state
+ *   so filters are only committed when "Apply" is tapped, avoiding constant re-fetching.
+ * Dependencies: useState/useEffect, lucide-react/X, SORT_OPTIONS/CATEGORIES constants,
+ *   PriceFilter subcomponent.
+ * Important notes: The component unmounts when closed, so draft state re-initializes from
+ *   current filters each time it opens. Body scroll is locked while open.
+ *   Sets page to 1 whenever any filter changes to reset pagination.
  */
 
 import { useState, useEffect } from "react";
@@ -15,20 +17,12 @@ import { X } from "lucide-react";
 import { CATEGORIES, SORT_OPTIONS } from "../../../shared/lib/constants";
 import PriceFilter from "./PriceFilter";
 
-/**
- * @param {{
- *   open: boolean,
- *   onClose: () => void,
- *   onApply: (filters: object) => void,
- *   filters: object
- * }} props
- */
 export default function MobileFilterDrawer({ open, onClose, onApply, filters }) {
-  // Local draft state — only committed on "Apply".
-  // Initialized from props each time the component mounts (when open becomes true).
+  // ── State ────────────────────────────────────────────────────────────
+  // Local draft prevents filters from being applied until "Apply" is tapped.
   const [draft, setDraft] = useState(filters);
 
-  // Lock body scroll when open
+  // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";

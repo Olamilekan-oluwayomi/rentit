@@ -94,7 +94,7 @@ export default function ListingForm({
         <div className="flex items-center justify-between mt-1">
           {/* Show validation error or empty span to keep layout stable */}
           {errors.title ? (
-            <p className="text-xs text-red-500">{errors.title.message}</p>
+            <p className="text-xs text-danger">{errors.title.message}</p>
           ) : (
             <span />
           )}
@@ -121,7 +121,7 @@ export default function ListingForm({
         />
         <div className="flex items-center justify-between mt-1">
           {errors.description ? (
-            <p className="text-xs text-red-500">{errors.description.message}</p>
+            <p className="text-xs text-danger">{errors.description.message}</p>
           ) : (
             <span />
           )}
@@ -154,7 +154,7 @@ export default function ListingForm({
             ))}
           </select>
           {errors.category && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs text-danger mt-1">
               {errors.category.message}
             </p>
           )}
@@ -185,7 +185,7 @@ export default function ListingForm({
             />
           </div>
           {errors.daily_price && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs text-danger mt-1">
               {errors.daily_price.message}
             </p>
           )}
@@ -226,7 +226,7 @@ export default function ListingForm({
           </button>
         </div>
         {errors.location && (
-          <p className="text-xs text-red-500 mt-1">
+          <p className="text-xs text-danger mt-1">
             {errors.location.message}
           </p>
         )}
@@ -251,7 +251,7 @@ export default function ListingForm({
               uploading={submitting}
             />
             {errors.images && (
-              <p className="text-xs text-red-500 mt-1">
+              <p className="text-xs text-danger mt-1">
                 {errors.images.message}
               </p>
             )}

@@ -1,19 +1,17 @@
-/**
- * useListings — Central data-fetching hook for listing queries.
- *
- * Queries the `listings` table and supports:
- *   - Free-text search (title + description via ilike)
- *   - Category filter (exact match)
- *   - Location filter (ilike partial match)
- *   - Price range filter (min / max daily_price)
- *   - Owner filter (owner_id exact match)
- *   - Include inactive listings toggle (for owner management view)
- *   - Sort order
- *   - Server-side pagination via Supabase range()
- *
- * Returns both the page of results and total count so the
- * Pagination component can calculate total pages.
- */
+/*
+|--------------------------------------------------------------------------
+| useListings.js
+|--------------------------------------------------------------------------
+|
+| Central data-fetching hook for listing queries.
+|
+| Purpose: Queries listings with filters (search, category, location, price, owner, active status), sort, and pagination.
+| Inputs: filters (object with search, category, location, minPrice, maxPrice, owner_id, includeInactive, sort, page, limit)
+| Outputs: { listings, loading, error, totalCount, totalPages, refreshListings }
+| Side effects: Supabase queries with count + range
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

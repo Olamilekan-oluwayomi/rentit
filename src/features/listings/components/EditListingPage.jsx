@@ -1,13 +1,22 @@
-/**
- * EditListingPage — Form page for editing an existing rental listing.
- *
- * Loads the listing by ID, verifies ownership, and allows the owner to
- * modify details and manage images. Image handling accounts for both
- * existing (kept) and newly uploaded images while enforcing a minimum
- * of one image per listing.
- *
- * Non-owners are immediately redirected to the listing detail page.
- */
+/*
+|--------------------------------------------------------------------------
+| EditListingPage.jsx
+|--------------------------------------------------------------------------
+|
+| Form for editing an existing rental listing. Loads the listing by ID,
+| verifies ownership, and allows the owner to modify details and manage
+| images. Enforces a minimum of one image. Non-owners are redirected.
+|
+| Route: /listings/:id/edit
+| Responsibilities: Handle listing update flow with image add/remove
+| Dependencies: useListing, useAuth, useToast, supabase, compressImage,
+|               ListingForm, ListingSkeleton, MAX_LISTING_IMAGES
+| Notes: Ownership verified client-side with redirect. Image removal is
+|        deferred until save to allow undo. Storage cleanup failures
+|        are non-fatal to prevent blocking the listing update.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,10 +28,6 @@ import { MAX_LISTING_IMAGES } from "../../../shared/lib/constants";
 import { compressImage } from "../../../utils/imageCompression";
 import ListingForm from "./ListingForm";
 import ListingSkeleton from "./ListingSkeleton";
-
-/**
- * @returns {JSX.Element} The edit-listing page, or a skeleton/error state while loading.
- */
 export default function EditListingPage() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -40,18 +45,10 @@ export default function EditListingPage() {
     }
   }, [loading, listing, user, id, navigate]);
 
-  /**
-   * Marks an existing image path for removal (deferred until save).
-   * @param {string} path - The storage path of the image to remove.
-   */
   const handleExistingRemove = (path) => {
     setRemovedImages((prev) => [...prev, path]);
   };
 
-  /**
-   * Handles the full listing update flow: remove old images → upload new → update DB.
-   * @param {Object} data - Validated form data from ListingForm.
-   */
   const onSubmit = async (data) => {
     if (!user || !listing) return;
 
@@ -69,7 +66,7 @@ export default function EditListingPage() {
     setSubmitting(true);
 
     try {
-      // Step 1: Delete removed images from Supabase Storage.
+      // Delete removed images from Supabase Storage first.
       let removalFailed = false;
       if (removedImages.length > 0) {
         const { error: removeError } = await supabase.storage
@@ -82,7 +79,6 @@ export default function EditListingPage() {
         }
       }
 
-      // Step 2: Compress and upload new images, starting from the kept existing ones.
       const newImagePaths = [...keptExisting];
 
       for (let i = 0; i < data.images.length && newImagePaths.length < MAX_LISTING_IMAGES; i++) {
@@ -121,7 +117,7 @@ export default function EditListingPage() {
         return;
       }
 
-      // Step 3: Update the listing row with new metadata and image paths.
+      // Update the listing row with new metadata and image paths.
       const { error: updateError } = await supabase
         .from("listings")
         .update({
@@ -157,7 +153,6 @@ export default function EditListingPage() {
     }
   };
 
-  // Loading state: show a skeleton placeholder that mirrors the form layout.
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
@@ -166,7 +161,6 @@ export default function EditListingPage() {
     );
   }
 
-  // Error / not-found state.
   if (error || !listing) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-16 text-center">
@@ -177,7 +171,6 @@ export default function EditListingPage() {
     );
   }
 
-  // Compute which existing images are still visible (not removed).
   const existingImages = listing.images?.filter(
     (img) => !removedImages.includes(img)
   ) || [];

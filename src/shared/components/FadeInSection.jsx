@@ -1,3 +1,16 @@
+/**
+ * FadeInSection — Scroll-triggered fade-in + vertical slide animation wrapper.
+ *
+ * Disables animation for users who prefer reduced motion.
+ *
+ * Usage:
+ *   <FadeInSection>Animated content</FadeInSection>
+ *
+ * Accessibility:
+ *   - Respects prefers-reduced-motion via useReducedMotion()
+ *   - Falls back to a plain <div> when reduced motion is preferred
+ */
+
 import { motion, useReducedMotion } from "motion/react";
 
 export default function FadeInSection({ children, className = "" }) {

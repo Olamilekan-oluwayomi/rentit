@@ -1,12 +1,17 @@
-/**
- * Hook for managing the authenticated user's profile data.
- *
- * Wraps Supabase reads/writes for the `profiles` table and the `avatars`
- * storage bucket, exposing simple async helpers for the rest of the app.
- * Profile state is shared globally through ProfileContext — this hook
- * simply provides convenient accessors that keep local loading / error
- * states in sync with those global updates.
- */
+/*
+|--------------------------------------------------------------------------
+| useProfile.js
+|--------------------------------------------------------------------------
+|
+| Manages the authenticated user's profile data.
+|
+| Purpose: Wraps Supabase CRUD for profiles table and avatars storage bucket.
+| Inputs: (none — uses useAuth + useProfileContext internally)
+| Outputs: { profile, saving, uploading, error, updateProfile, uploadAvatar, deleteAvatar, refreshProfile }
+| Side effects: Supabase queries/mutations; storage upload/remove; image compression
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";

@@ -1,8 +1,22 @@
+/**
+ * ListingGallery — Responsive image gallery for listing detail pages with lightbox.
+ *
+ * Route: Listing detail page ("/listings/:id") — hero image area.
+ * Responsibilities: Provides responsive layouts: desktop shows a grid of 1-5+ images
+ *   (1, 2, 3, or 4+ layout variants), mobile shows a swipeable single-image viewer.
+ *   Both views open a full-screen lightbox with keyboard navigation (arrows + Escape).
+ * Dependencies: lucide-react icons, storage/getListingImageUrl.
+ * Important notes: Desktop layout adapts based on image count (1, 2, 3, or 4+).
+ *   Shows "+N more" overlay on the 5th slot when count exceeds 5.
+ *   Body scroll locked while lightbox is open via useEffect.
+ */
+
 import { useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { getListingImageUrl } from "../../../utils/storage";
 
 export default function ListingGallery({ images = [] }) {
+  // ── State ────────────────────────────────────────────────────────────
   const urls = images.map(getListingImageUrl).filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -19,6 +33,7 @@ export default function ListingGallery({ images = [] }) {
     [goNext, goPrev]
   );
 
+  // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (lightbox) {
       document.addEventListener("keydown", handleKey);

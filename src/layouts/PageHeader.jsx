@@ -1,3 +1,19 @@
+/*
+|--------------------------------------------------------------------------
+| PageHeader.jsx
+|--------------------------------------------------------------------------
+|
+| Reusable page heading component with optional description and action slot.
+| Used at the top of dashboard pages and other content sections.
+|
+| Route: N/A (presentational component)
+| Responsibilities: Render consistent page titles with description and optional CTA
+| Dependencies: None
+| Notes: The `action` prop accepts a React node rendered on the right side.
+|
+|--------------------------------------------------------------------------
+*/
+
 export default function PageHeader({
   title,
   description,

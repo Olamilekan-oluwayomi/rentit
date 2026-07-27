@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardSettings.jsx
+|--------------------------------------------------------------------------
+|
+| Settings page for the dashboard. Profile editing (name, location, bio),
+| with security, notification preferences, and payment method sections
+| (security and payment sections show "coming soon" placeholders).
+|
+| Route: /dashboard/settings (mounted inside DashboardShell)
+| Responsibilities: Allow user to edit profile and manage account settings
+| Dependencies: AuthContext, ProfileContext, FadeInSection
+| Notes: Email field is read-only. Avatar upload handled via ProfileContext.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState } from "react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";

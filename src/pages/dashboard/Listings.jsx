@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardListings.jsx
+|--------------------------------------------------------------------------
+|
+| My Listings management page for the dashboard. Shows all user listings
+| in either list or grid view (toggleable). Links to create new listings
+| and edit existing ones.
+|
+| Route: /dashboard/listings (mounted inside DashboardShell)
+| Responsibilities: List user's listings with view mode toggle
+| Dependencies: useListings, MyListingsTab, lucide-react, FadeInSection
+| Notes: List view uses MyListingsTab component; grid view is file-private.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, LayoutGrid, List as ListIcon } from "lucide-react";

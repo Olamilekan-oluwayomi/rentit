@@ -1,3 +1,16 @@
+/**
+ * Chip — Compact filter/tag element with optional selection and removal.
+ *
+ * Usage:
+ *   <Chip selected={isActive} onClick={toggle}>Tools</Chip>
+ *   <Chip onRemove={() => remove(tag)}>Cameras</Chip>
+ *
+ * Accessibility:
+ *   - Renders as <button> when onClick is provided, <span> when static
+ *   - Remove icon (X) is aria-hidden; stopPropagation prevents double-firing
+ *   - Focus-visible ring for keyboard navigation
+ */
+
 import { X } from "lucide-react";
 
 function Chip({

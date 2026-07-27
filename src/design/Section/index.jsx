@@ -1,3 +1,20 @@
+/**
+ * Section — Page section wrapper with optional heading, subtitle, and action slot.
+ *
+ * Usage:
+ *   <Section
+ *     title="Featured Items"
+ *     subtitle="Popular rentals near you"
+ *     action={<Button>View All</Button>}
+ *   >
+ *     <ListingGrid />
+ *   </Section>
+ *
+ * Accessibility:
+ *   - Renders a semantic <section> element
+ *   - Title renders as <h2> for heading hierarchy
+ */
+
 function Section({
   title,
   subtitle,

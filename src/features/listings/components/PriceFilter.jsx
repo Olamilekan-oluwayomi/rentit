@@ -1,3 +1,14 @@
+/**
+ * PriceFilter — Dual-input range filter for minimum/maximum daily price.
+ *
+ * Route: Listings page ("/listings") — used in the filter bar and mobile drawer.
+ * Responsibilities: Renders two number inputs (min/max) with dollar sign prefixes
+ *   separated by a dash. Calls onChange with both values on each input change.
+ * Dependencies: None (pure presentational component).
+ * Important notes: Uses type="number" with min=0 to prevent negative values.
+ *   Both inputs are uncontrolled from the parent's perspective (parent owns state).
+ */
+
 export default function PriceFilter({ min, max, onChange }) {
   return (
     <div className="flex items-center gap-2">

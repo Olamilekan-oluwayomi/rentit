@@ -1,11 +1,17 @@
-/**
- * useContactOwner — Finds or creates an inquiry booking for a listing,
- * then returns a function that navigates to the chat thread.
- *
- * Used by the "Contact Owner" buttons on listing detail pages and owner cards.
- * Gated behind profile completion — if the user's profile is incomplete,
- * the completion overlay opens first.
- */
+/*
+|--------------------------------------------------------------------------
+| useContactOwner.js
+|--------------------------------------------------------------------------
+|
+| Finds or creates an inquiry booking and navigates to the chat thread.
+|
+| Purpose: "Contact Owner" button handler on listing details / owner cards.
+| Inputs: (via contactOwner) listingId (string)
+| Outputs: { contactOwner, loading }
+| Side effects: Supabase queries/inserts; navigation; gated behind profile completion
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,9 +77,13 @@ export function useContactOwner() {
 
   const contactOwner = useCallback(
     (listingId) => {
+      if (!user) {
+        navigate(`/login?redirect=/listings/${listingId}`);
+        return;
+      }
       requireProfile(() => contactOwnerAction(listingId));
     },
-    [requireProfile, contactOwnerAction]
+    [user, requireProfile, contactOwnerAction, navigate]
   );
 
   return { contactOwner, loading };

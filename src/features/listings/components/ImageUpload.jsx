@@ -5,6 +5,14 @@
  * Supports both newly selected images (as File objects) and existing images
  * (as Supabase storage paths). Handles file validation (type + size limits),
  * object URL lifecycle management, and slot-based max image enforcement.
+ *
+ * Route: Create/edit listing forms.
+ * Responsibilities: Handles drag-and-drop file selection, preview generation, file validation
+ *   (type/size), and management of both existing server-side images and new local Files.
+ *   Enforces a configurable max image count across both sets.
+ * Dependencies: react-dropzone, lucide-react/X, storage/getListingImageUrl.
+ * Important notes: Object URLs are memoized and revoked on cleanup to prevent memory leaks.
+ *   The upload is disabled when the slot cap is reached or while an upload is in progress.
  */
 import { useCallback, useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
@@ -16,12 +24,6 @@ const MAX_FILES = 5;
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB per file — matches Supabase storage limits
 const ACCEPT = { "image/jpeg": [], "image/png": [], "image/webp": [] };
 
-/**
- * Drag-and-drop image upload with preview thumbnails.
- * Manages two separate image sets: existing (stored remotely) and new (local Files).
- * The `maxImages` prop enforces a total cap across both sets.
- * @param {{ images: File[], existingImages: string[], onImagesChange: (files: File[]) => void, onExistingRemove: (path: string) => void, maxImages: number, uploading: boolean }} props
- */
 export default function ImageUpload({
   images = [],
   existingImages = [],
@@ -120,7 +122,7 @@ export default function ImageUpload({
         <div className="space-y-1">
           {fileRejections.map(({ file, errors }) => (
             <p key={file.name} className="text-xs text-red-500">
-              {file.name}: {errors.map((e) => e.message).join(", ")}
+              <span className="text-danger">{file.name}: {errors.map((e) => e.message).join(", ")}</span>
             </p>
           ))}
         </div>

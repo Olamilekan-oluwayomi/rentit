@@ -1,11 +1,19 @@
 /* eslint-disable react-refresh/only-export-components -- Provider + hook in same file is idiomatic for context modules. */
 
-/**
- * AuthContext — Provides authentication state and methods to the component tree.
- *
- * Wraps Supabase Auth to manage the current user session, exposing sign-up,
- * sign-in (password & OAuth), and sign-out helpers via context.
- */
+/*
+|--------------------------------------------------------------------------
+| AuthContext.jsx
+|--------------------------------------------------------------------------
+|
+| Provides authentication state and methods to the component tree.
+|
+| Purpose: Wraps Supabase Auth to manage the current user session.
+| Inputs: children (ReactNode)
+| Outputs: Renders AuthContext.Provider wrapping children
+| Side effects: Fetches persisted session on mount; subscribes to auth state changes
+|
+|--------------------------------------------------------------------------
+*/
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
@@ -27,7 +35,6 @@ export function AuthProvider({ children }) {
 
   // Hydrate user from the persisted session & listen for auth events
   useEffect(() => {
-    // Fetch the current session once on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
@@ -60,7 +67,6 @@ export function AuthProvider({ children }) {
       },
     });
 
-  /** Authenticate an existing user with email & password. */
   const signIn = (email, password) =>
     supabase.auth.signInWithPassword({ email, password });
 
@@ -68,7 +74,6 @@ export function AuthProvider({ children }) {
   const signInWithOAuth = (provider) =>
     supabase.auth.signInWithOAuth({ provider });
 
-  /** Terminate the current session. */
   const signOut = () => supabase.auth.signOut();
 
   return (

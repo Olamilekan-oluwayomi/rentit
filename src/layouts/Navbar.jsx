@@ -1,3 +1,20 @@
+/*
+|--------------------------------------------------------------------------
+| Navbar.jsx
+|--------------------------------------------------------------------------
+|
+| Sticky top navigation bar. Logo, desktop search form, theme toggle,
+| user menu / auth buttons, and "New Listing" CTA. Renders MobileNav
+| drawer for small screens. Search navigates to /?q=<query>.
+|
+| Route: Rendered on all pages using AppLayout or PublicLayout
+| Responsibilities: Global navigation, search, auth controls, theme toggle
+| Dependencies: React Router, AuthContext, ThemeContext, useUnreadCount, UserMenu, MobileNav
+| Notes: Sticky with backdrop-blur. Unread count badge on inbox bell.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState } from "react";
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { Search, Sun, Moon, Bell, Plus, Menu } from "lucide-react";

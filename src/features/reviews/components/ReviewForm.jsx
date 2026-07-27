@@ -1,3 +1,16 @@
+/**
+ * ReviewForm — Form for creating or editing a review for a completed booking.
+ *
+ * Route: Used inside booking detail views and ReviewPrompt.
+ * Responsibilities: Handles both create and update operations on the reviews table.
+ *   Validates that rating >= 1 before submission. Maps database constraint errors
+ *   to user-friendly messages. Calls onSuccess with the returned review data.
+ * Dependencies: design/StarRatingInput + Button, supabase client.
+ * Important notes: Supports both insert (new review) and update (existing review) modes
+ *   based on whether existingReview prop is provided. The submit button text and behavior
+ *   changes accordingly. onCancel is optional (hidden when not provided).
+ */
+
 import { useState } from "react";
 import { StarRatingInput, Button } from "../../../design";
 import { supabase } from "../../../shared/lib/supabase";
@@ -10,11 +23,13 @@ export default function ReviewForm({
   onSuccess,
   onCancel,
 }) {
+  // ── State ────────────────────────────────────────────────────────────
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [comment, setComment] = useState(existingReview?.comment || "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // ── Event Handlers ────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating < 1) return;
@@ -65,6 +80,7 @@ export default function ReviewForm({
     onSuccess?.(result.data);
   };
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>

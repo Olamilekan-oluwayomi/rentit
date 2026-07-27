@@ -1,3 +1,20 @@
+/**
+ * EmptyState — Placeholder for empty lists, no-results, or empty-content states.
+ *
+ * Usage:
+ *   <EmptyState
+ *     icon={Package}
+ *     title="No listings yet"
+ *     description="Create your first listing to get started"
+ *     action={<Button>Create Listing</Button>}
+ *   />
+ *
+ * Accessibility:
+ *   - Icon is purely decorative (aria-hidden via the icon component)
+ *   - Title uses <h3> for heading hierarchy
+ *   - Action slot accepts any interactive element
+ */
+
 function EmptyState({
   icon: Icon,
   title,

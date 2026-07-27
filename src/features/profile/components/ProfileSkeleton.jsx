@@ -1,3 +1,13 @@
+/**
+ * ProfileSkeleton — Loading placeholder for the profile page layout.
+ *
+ * Route: Profile page ("/profile") — shown while profile data is being fetched.
+ * Responsibilities: Renders skeleton shapes matching the profile layout:
+ *   avatar (left), form fields (right), matching the lg:grid-cols-3 structure.
+ * Dependencies: design/Skeleton, design/AvatarSkeleton.
+ * Important notes: Matches the responsive layout of the ProfileHeader/ProfileForm structure.
+ */
+
 import { Skeleton, AvatarSkeleton } from "../../../design";
 
 export default function ProfileSkeleton() {

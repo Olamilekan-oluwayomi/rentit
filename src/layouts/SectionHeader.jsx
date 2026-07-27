@@ -1,3 +1,19 @@
+/*
+|--------------------------------------------------------------------------
+| SectionHeader.jsx
+|--------------------------------------------------------------------------
+|
+| Reusable section heading component with optional subtitle and action slot.
+| Smaller than PageHeader — intended for sub-sections within a page.
+|
+| Route: N/A (presentational component)
+| Responsibilities: Render consistent section titles with context and optional CTA
+| Dependencies: None
+| Notes: The `action` prop accepts a React node rendered on the right side.
+|
+|--------------------------------------------------------------------------
+*/
+
 export default function SectionHeader({
   title,
   subtitle,

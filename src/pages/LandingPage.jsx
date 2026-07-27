@@ -1,3 +1,22 @@
+/*
+|--------------------------------------------------------------------------
+| LandingPage.jsx
+|--------------------------------------------------------------------------
+|
+| Marketing/public landing page shown to unauthenticated visitors.
+| Sections: Hero with search, Trust Bar stats, Popular Categories,
+| Featured Rentals, How It Works, Why Rent, Become a Host,
+| Testimonials, FAQ, Final CTA. Most CTAs point to /register.
+|
+| Route: / (when user is not authenticated, typically via PublicLayout)
+| Responsibilities: Convert visitors into registered users
+| Dependencies: useLandingStats, useCategoryCounts, supabase direct queries, Framer Motion
+| Notes: Hero and featured listings fetched directly via supabase (not useListings).
+|        All browse/host CTAs lead to registration.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Wrench, Monitor, Camera, Gamepad2, Music, Mountain, Car } from "lucide-react";
@@ -71,7 +90,6 @@ export default function LandingPage() {
 
   return (
     <div className="bg-background">
-      {/* ──────────────── 1. HERO ──────────────── */}
       <section className="pt-14 lg:pt-20 pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
@@ -192,7 +210,6 @@ export default function LandingPage() {
             </FadeInSection>
           )}
 
-          {/* CTA pair */}
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link to="/register">
               <Button size="lg">Browse Rentals</Button>
@@ -204,7 +221,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ──────────────── 2. TRUST BAR ──────────────── */}
       <FadeInSection>
         <div className="bg-neutral-950 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -227,7 +243,6 @@ export default function LandingPage() {
         </div>
       </FadeInSection>
 
-      {/* ──────────────── 3. POPULAR CATEGORIES ──────────────── */}
       <FadeInSection>
         <section className="py-16 lg:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -272,7 +287,6 @@ export default function LandingPage() {
         </section>
       </FadeInSection>
 
-      {/* ──────────────── 4. FEATURED RENTALS ──────────────── */}
       {featuredListings.length > 0 && (
         <FadeInSection>
           <section className="py-16 lg:py-20 bg-surface-secondary/30">
@@ -356,7 +370,6 @@ export default function LandingPage() {
         </FadeInSection>
       )}
 
-      {/* ──────────────── 5. HOW IT WORKS ──────────────── */}
       <FadeInSection>
         <section className="py-16 lg:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -424,7 +437,6 @@ export default function LandingPage() {
         </section>
       </FadeInSection>
 
-      {/* ──────────────── 6. WHY RENT INSTEAD OF BUY ──────────────── */}
       <FadeInSection>
         <section className="py-16 lg:py-20 bg-surface-secondary/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -471,7 +483,6 @@ export default function LandingPage() {
         </section>
       </FadeInSection>
 
-      {/* ──────────────── 7. BECOME A HOST ──────────────── */}
       <FadeInSection>
         <section className="py-16 lg:py-20" style={{ backgroundColor: "rgba(107, 122, 94, 0.08)" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -525,13 +536,10 @@ export default function LandingPage() {
         </section>
       </FadeInSection>
 
-      {/* ──────────────── 8. TESTIMONIALS ──────────────── */}
       <TestimonialsSection />
 
-      {/* ──────────────── 9. FAQ ──────────────── */}
       <FAQSection />
 
-      {/* ──────────────── 10. FINAL CTA ──────────────── */}
       <FadeInSection>
         <section className="py-16 lg:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">

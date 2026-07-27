@@ -1,12 +1,17 @@
-/**
- * useConversations — Fetches all active conversations for the current user
- * across all bookings (both as renter and owner).
- *
- * Uses the conversation_summaries view which returns the latest message
- * and unread count per booking the user participates in.
- *
- * Enriches each conversation with listing and counterparty profile data.
- */
+/*
+|--------------------------------------------------------------------------
+| useConversations.js
+|--------------------------------------------------------------------------
+|
+| Fetches all active conversations for the current user.
+|
+| Purpose: Retrieves conversations across all bookings (renter + owner), enriched with listing and profile data.
+| Inputs: (none — uses useAuth internally)
+| Outputs: { conversations, loading, error, refetch }
+| Side effects: Multiple Supabase queries; message deduplication
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";

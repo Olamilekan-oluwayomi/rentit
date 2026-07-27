@@ -1,3 +1,9 @@
+/**
+ * RenterInfo — Displays a renter's avatar (with initial fallback) and full name.
+ *
+ * @param {{ renter: { avatar_url?: string, full_name?: string } | null }} props
+ */
+
 export default function RenterInfo({ renter }) {
   if (!renter) return null;
 

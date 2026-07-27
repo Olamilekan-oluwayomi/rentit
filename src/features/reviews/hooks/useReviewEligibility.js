@@ -1,3 +1,18 @@
+/*
+|--------------------------------------------------------------------------
+| useReviewEligibility.js
+|--------------------------------------------------------------------------
+|
+| Checks whether the current user can leave or edit a review for a booking.
+|
+| Purpose: Determines eligibility based on booking status (approved/completed) and end date.
+| Inputs: { booking, reviewerId }
+| Outputs: { eligibility ({ eligible, canLeave, canEdit, reason }), existingReview, loading, refetch }
+| Side effects: Supabase query to check for existing review
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
@@ -13,6 +28,8 @@ export function useReviewEligibility({ booking, reviewerId }) {
     reason: "",
   });
 
+  // Reviews are only allowed after the rental period has ended and the
+  // booking was approved — prevents spam/revenge reviews before service is rendered.
   const checkEligibility = useCallback(async () => {
     if (!booking || !user) {
       setEligibility({ eligible: false, canLeave: false, canEdit: false, reason: "" });
@@ -33,6 +50,7 @@ export function useReviewEligibility({ booking, reviewerId }) {
 
     setLoading(true);
 
+    // Check if the user already left a review — if so they can edit, not re-leave
     const { data: reviews } = await supabase
       .from("reviews")
       .select("*")

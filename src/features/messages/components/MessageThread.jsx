@@ -2,13 +2,15 @@
  * MessageThread — Scrollable list of chat messages with sender-aligned
  * bubbles, timestamps, and auto-scroll to newest message.
  *
- * Own messages are right-aligned with the accent color; messages from
- * the other party are left-aligned with a neutral surface color.
- * Optimistic messages (not yet confirmed by the server) are rendered
- * with reduced opacity.
- *
- * Consecutive messages from the same sender are spaced tightly; when
- * the sender changes the gap widens to visually separate turns.
+ * Route: Messages page ("/messages/:conversationId") — main message list.
+ * Responsibilities: Renders messages with right-aligned (own) / left-aligned (other) bubbles.
+ *   Groups consecutive same-sender messages tightly. Shows timestamps only on the last
+ *   message of a group. Renders optimistic messages with reduced opacity.
+ *   Handles loading (skeleton) and empty states. Auto-scrolls to bottom on new messages.
+ * Dependencies: useAuth (for current user ID), useRef for scroll anchoring.
+ * Important notes: Messages are ordered by created_at ascending (oldest first).
+ *   Optimistic messages are identified by a _optimistic flag set by the sending hook.
+ *   formatTime handles today, yesterday, and older date formats.
  */
 
 import { useEffect, useRef } from "react";
@@ -42,11 +44,12 @@ function formatTime(isoString) {
  * @param {{ messages: Array<object>, loading: boolean }} props
  */
 export default function MessageThread({ messages, loading }) {
+  // ── State & Refs ──────────────────────────────────────────────────────
   const { user } = useAuth();
   const bottomRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -90,6 +93,7 @@ export default function MessageThread({ messages, loading }) {
     );
   }
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div
       ref={containerRef}

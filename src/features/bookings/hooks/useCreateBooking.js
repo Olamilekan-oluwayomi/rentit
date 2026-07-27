@@ -1,9 +1,19 @@
-/**
- * useCreateBooking — Handles the full booking request flow for a renter.
- *
- * Before inserting a booking, re-fetches current availability for the listing
- * and re-validates the selected date range doesn't overlap any blocked range.
- *
+/*
+|--------------------------------------------------------------------------
+| useCreateBooking.js
+|--------------------------------------------------------------------------
+|
+| Handles the full booking request flow for a renter.
+|
+| Purpose: Re-validates availability at submission time before inserting booking.
+| Inputs: (via createBooking) listingId, startDate, endDate, totalPrice
+| Outputs: { createBooking, submitting }
+| Side effects: Supabase queries/inserts; race-condition defense
+|
+|--------------------------------------------------------------------------
+*/
+
+/*
  * RACE-CONDITION DEFENSE:
  * Between the moment a renter views the calendar and the moment they click
  * "Request to Book", another booking may have been approved (which inserts a
@@ -14,6 +24,7 @@
  */
 
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { format, eachDayOfInterval } from "date-fns";
 import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
@@ -30,6 +41,7 @@ export function useCreateBooking() {
   const { user } = useAuth();
   const { addToast } = useToast();
   const { requireProfile } = useRequireCompleteProfile();
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
   /**
@@ -117,13 +129,17 @@ export function useCreateBooking() {
 
   const createBookingGated = useCallback(
     (listingId, startDate, endDate, totalPrice) => {
+      if (!user) {
+        navigate(`/login?redirect=/listings/${listingId}`);
+        return Promise.resolve({ error: "Not authenticated" });
+      }
       return new Promise((resolve) => {
         requireProfile(() => {
           createBooking(listingId, startDate, endDate, totalPrice).then(resolve);
         });
       });
     },
-    [requireProfile, createBooking]
+    [user, requireProfile, createBooking, navigate]
   );
 
   return { createBooking: createBookingGated, submitting };

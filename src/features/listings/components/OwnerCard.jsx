@@ -1,9 +1,22 @@
+/**
+ * OwnerCard — Displays the listing owner's profile card with a "Message Host" button.
+ *
+ * Route: Listing detail page ("/listings/:id") — sidebar on desktop, below content on mobile.
+ * Responsibilities: Shows owner avatar, name, bio, location, and member-since date.
+ *   Provides a "Message Host" button that initiates or opens a conversation via useContactOwner.
+ *   Handles loading/empty states for the owner data.
+ * Dependencies: useAuth, useContactOwner, design/Avatar + Button, storage/getAvatarUrl.
+ * Important notes: Button is hidden if the viewer is the owner themselves (user.id !== owner.id).
+ *   Button requires a listingId to create the conversation context.
+ */
+
 import { getAvatarUrl } from "../../../utils/storage";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { Avatar, Button } from "../../../design";
 
 export default function OwnerCard({ owner, loading, listingId }) {
+  // ── State ────────────────────────────────────────────────────────────
   const { user } = useAuth();
   const { contactOwner, loading: contactLoading } = useContactOwner();
 
@@ -33,6 +46,7 @@ export default function OwnerCard({ owner, loading, listingId }) {
     month: "long",
   });
 
+  // ── Render ────────────────────────────────────────────────────────────
   return (
     <div className="bg-surface rounded-2xl border border-border p-6 space-y-5">
       <div className="flex items-center gap-4">

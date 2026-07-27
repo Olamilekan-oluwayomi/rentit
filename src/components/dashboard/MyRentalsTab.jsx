@@ -30,6 +30,8 @@ export default function MyRentalsTab() {
     setRefreshKey((k) => k + 1);
   }, []);
 
+  // ── Handlers ──
+
   const handleCancel = async (booking) => {
     setCancellingId(booking.id);
 
@@ -47,6 +49,8 @@ export default function MyRentalsTab() {
 
     setCancellingId(null);
   };
+
+  // ── Render ──
 
   if (loading) return <BookingListSkeleton />;
 

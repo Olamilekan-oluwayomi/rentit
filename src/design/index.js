@@ -1,3 +1,10 @@
+/**
+ * Design System — Public API barrel file.
+ *
+ * Re-exports all design-system components from a single entry point.
+ * Import via: import { Button, Card, Input } from "../../design";
+ */
+
 export { Button } from "./Button";
 export { Input } from "./Input";
 export { Card, CardHeader, CardBody, CardFooter } from "./Card";

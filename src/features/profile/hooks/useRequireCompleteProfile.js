@@ -1,12 +1,17 @@
-/**
- * useRequireCompleteProfile — Action-gated profile completion.
- *
- * Returns a `requireProfile` function that callers wrap around any
- * mutating action (booking, messaging, listing creation). If the user's
- * profile is complete, the action fires immediately. If not, the
- * ProfileCompletionOverlay opens and the action fires only after the
- * user completes their profile.
- */
+/*
+|--------------------------------------------------------------------------
+| useRequireCompleteProfile.js
+|--------------------------------------------------------------------------
+|
+| Action-gated profile completion.
+|
+| Purpose: Wraps actions so they only proceed after the user completes their profile.
+| Inputs: (none — uses useProfileContext internally)
+| Outputs: { requireProfile }
+| Side effects: Triggers ProfileCompletionOverlay if profile is incomplete
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useCallback } from "react";
 import { useProfileContext } from "../context/ProfileContext";

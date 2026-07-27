@@ -1,4 +1,21 @@
+/**
+ * Input — Form input with label, error state, and leading/trailing icon support.
+ *
+ * Usage:
+ *   <Input label="Email" type="email" error={errors.email} />
+ *   <Input type="textarea" label="Description" helperText="Tell us about it" />
+ *   <Input label="Search" leadingIcon={Search} />
+ *
+ * Accessibility:
+ *   - Built-in <label> with htmlFor linked to input id
+ *   - aria-invalid and aria-describedby set on validation error
+ *   - Error message has role="alert" for screen-reader announcements
+ *   - Uses useId() for auto-generated unique ids
+ */
+
 import { forwardRef, useId } from "react";
+
+// ==== Base styles ====
 
 const INPUT_CLASSES =
   "w-full bg-surface border border-border text-text-primary placeholder:text-text-muted rounded-md px-4 py-2.5 text-sm transition-all duration-fast ease focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-surface-secondary";

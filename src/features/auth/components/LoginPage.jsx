@@ -1,14 +1,21 @@
-/**
- * LoginPage — Email/password and Google OAuth sign-in page.
- *
- * Provides email + password authentication via Supabase Auth,
- * plus a Google OAuth button. On successful sign-in the user is
- * redirected to the home page. Includes a link to the forgot
- * password flow for password recovery.
- */
+/*
+|--------------------------------------------------------------------------
+| LoginPage.jsx
+|--------------------------------------------------------------------------
+|
+| Email/password and Google OAuth sign-in page. Validates credentials,
+| shows inline errors, and redirects to home on success with a welcome toast.
+|
+| Route: /login (wrapped in GuestRoute → AuthLayout)
+| Responsibilities: Authenticate users via email/password or Google OAuth
+| Dependencies: useAuth, useToast, AuthLayout, FadeInSection, Framer Motion
+| Notes: OAuth errors displayed inline; success navigates to /.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
@@ -23,12 +30,9 @@ export default function LoginPage() {
   const { signIn, signInWithOAuth } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
-  /**
-   * Validates email and password, then calls signIn.
-   * On success, shows a welcome toast and navigates to home.
-   * @param {React.FormEvent} e - The form submit event.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -40,14 +44,10 @@ export default function LoginPage() {
       setLoading(false);
     } else {
       addToast("Welcome back!");
-      navigate("/");
+      navigate(redirectTo);
     }
   };
 
-  /**
-   * Initiates OAuth sign-in for the given provider (e.g. "google").
-   * @param {string} provider - The OAuth provider identifier.
-   */
   const handleOAuth = async (provider) => {
     setError(null);
     const { error } = await signInWithOAuth(provider);

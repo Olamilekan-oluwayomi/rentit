@@ -1,3 +1,21 @@
+/*
+|--------------------------------------------------------------------------
+| DashboardMessages.jsx
+|--------------------------------------------------------------------------
+|
+| Messages page for the dashboard. Lists all conversations with previews,
+| counterparty avatars, timestamps, and unread badges. Each conversation
+| links to /booking/:id for the full chat.
+|
+| Route: /dashboard/messages (mounted inside DashboardShell)
+| Responsibilities: Display conversations with unread indicators
+| Dependencies: useConversations, AnimatedList, FadeInSection
+| Notes: Similar to InboxPage but rendered inside DashboardShell chrome
+|        instead of full-viewport AppLayout.
+|
+|--------------------------------------------------------------------------
+*/
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useConversations } from "../../features/messages/hooks/useConversations";

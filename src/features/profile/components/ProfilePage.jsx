@@ -1,10 +1,21 @@
-/**
- * ProfilePage — User profile view and edit page.
- *
- * Displays the user's avatar, name, location, and bio. Supports
- * avatar upload/delete and inline profile editing. All mutations
- * are delegated to the useProfile hook which handles Supabase calls.
- */
+/*
+|--------------------------------------------------------------------------
+| ProfilePage.jsx
+|--------------------------------------------------------------------------
+|
+| User profile view and edit page. Displays avatar, name, location, bio.
+| Supports avatar upload/delete and inline profile editing. All mutations
+| delegated to useProfile hook (Supabase calls). Enforces 10MB file size
+| limit on avatar uploads before compression.
+|
+| Route: /profile (wrapped in ProtectedRoute)
+| Responsibilities: Display and edit user profile; manage avatar
+| Dependencies: useProfile, useToast, ProfileHeader, ProfileSkeleton, DashboardLayout
+| Notes: Shows skeleton while profile loads. Editing mode toggled via
+|        local state. Avatar validation (size) done client-side.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useState } from "react";
 import { useToast } from "../../../shared/contexts/ToastContext";
@@ -15,9 +26,6 @@ import ProfileHeader from "./ProfileHeader";
 import ProfileSkeleton from "./ProfileSkeleton";
 import FadeInSection from "../../../shared/components/FadeInSection";
 
-/**
- * @returns {JSX.Element} The profile page with avatar management and editable details.
- */
 export default function ProfilePage() {
   const {
     profile,
@@ -31,13 +39,6 @@ export default function ProfilePage() {
   const [avatarError, setAvatarError] = useState(null);
   const [editing, setEditing] = useState(false);
 
-  /**
-   * Validates and uploads a new avatar file.
-   * Rejects files over 10MB before compression runs.
-   * Displays a validation error inline if the file is invalid.
-   * @param {File|null} file - The image file selected by the user.
-   * @param {string|null} validationError - Error string from client-side validation.
-   */
   const handleUploadAvatar = async (file, validationError) => {
     setAvatarError(null);
 
@@ -61,7 +62,6 @@ export default function ProfilePage() {
     }
   };
 
-  /** Removes the user's avatar image from storage. */
   const handleDeleteAvatar = async () => {
     setAvatarError(null);
     const result = await deleteAvatar();
@@ -72,10 +72,6 @@ export default function ProfilePage() {
     }
   };
 
-  /**
-   * Persists profile field updates and exits editing mode on success.
-   * @param {Object} updates - The fields to update (full_name, location, bio).
-   */
   const handleSaveProfile = async (updates) => {
     const result = await updateProfile(updates);
     if (result.error) {
@@ -86,7 +82,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Show a skeleton while the initial profile data is being fetched.
   if (saving || uploading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">

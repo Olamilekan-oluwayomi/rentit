@@ -1,14 +1,23 @@
-/**
- * NewListingPage — Form page for creating a new rental listing.
- *
- * Handles a three-step process:
- *   1. Insert a listing row into Supabase (without images).
- *   2. Upload each selected image to Supabase Storage.
- *   3. Update the listing row with the uploaded image paths.
- *
- * This ordering guarantees a listing always has a valid row before any
- * storage references are written, preventing orphaned files.
- */
+/*
+|--------------------------------------------------------------------------
+| NewListingPage.jsx
+|--------------------------------------------------------------------------
+|
+| Form for creating a new rental listing. Three-step process:
+| 1. Insert listing row (without images) to obtain a listing.id.
+| 2. Upload images to Supabase Storage, keyed by userId/listingId.
+| 3. Backfill the listing row with uploaded image paths.
+| This ordering prevents orphaned storage files.
+|
+| Route: /listings/new
+| Responsibilities: Handle listing creation flow with image upload
+| Dependencies: useAuth, useToast, useRequireCompleteProfile, supabase,
+|               compressImage, ListingForm, MAX_LISTING_IMAGES
+| Notes: Gated behind profile completion. Images compressed client-side
+|        (1200x1200, 0.8 quality) before upload.
+|
+|--------------------------------------------------------------------------
+*/
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,10 +28,6 @@ import { supabase } from "../../../shared/lib/supabase";
 import { MAX_LISTING_IMAGES } from "../../../shared/lib/constants";
 import { compressImage } from "../../../utils/imageCompression";
 import ListingForm from "./ListingForm";
-
-/**
- * @returns {JSX.Element} The new-listing creation page.
- */
 export default function NewListingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -30,11 +35,6 @@ export default function NewListingPage() {
   const { requireProfile } = useRequireCompleteProfile();
   const [submitting, setSubmitting] = useState(false);
 
-  /**
-   * Handles the full listing creation flow: DB insert → image uploads → DB update.
-   * Gated behind profile completion.
-   * @param {Object} data - Validated form data from ListingForm.
-   */
   const onSubmit = async (data) => {
     if (!user) return;
     requireProfile(async () => {
@@ -69,7 +69,6 @@ export default function NewListingPage() {
         return;
       }
 
-      // Step 2: Compress and upload each image to Supabase Storage, capped by MAX_LISTING_IMAGES.
       const imagePaths = [];
       for (let i = 0; i < data.images.length && i < MAX_LISTING_IMAGES; i++) {
         const file = data.images[i];
