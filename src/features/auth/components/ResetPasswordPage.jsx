@@ -152,7 +152,8 @@ export default function ResetPasswordPage() {
           <Link to="/login" className="text-accent hover:underline font-medium">
             Back to login
         </Link>
-        </div>
+        </p>
+      </div>
       </FadeInSection>
     </AuthLayout>
   );

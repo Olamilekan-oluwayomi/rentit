@@ -110,7 +110,8 @@ export default function ForgotPasswordPage() {
           <Link to="/login" className="text-accent hover:underline font-medium">
             Log in
         </Link>
-        </div>
+        </p>
+      </div>
       </FadeInSection>
     </AuthLayout>
   );
