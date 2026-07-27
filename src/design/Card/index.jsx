@@ -18,14 +18,14 @@
 // ==== Variants ====
 
 const VARIANTS = {
-  default:
-    "bg-surface border border-border",
-  outlined:
-    "bg-surface border-2 border-border",
+  default: "bg-surface border border-border",
+
+  outlined: "bg-surface border-2 border-border",
+
   interactive:
-    "bg-surface border border-border hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] cursor-pointer transition-all duration-normal ease",
-  elevated:
-    "bg-surface border border-border",
+    "bg-surface border border-border hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] cursor-pointer transition-[border-color,transform] duration-normal ease",
+
+  elevated: "bg-surface border border-border",
 };
 
 function Card({ variant = "default", className = "", children, ...props }) {

@@ -17,15 +17,15 @@
 |--------------------------------------------------------------------------
 */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, MapPin, Wrench, Monitor, Camera, Gamepad2, Music, Mountain, Car } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { supabase } from "../shared/lib/supabase";
 import { useLandingStats } from "../features/landing/hooks/useLandingStats";
 import { useCategoryCounts } from "../features/landing/hooks/useCategoryCounts";
-import { CATEGORIES } from "../shared/lib/constants";
-import { Button, Badge, Avatar, StarRatingInput } from "../design";
+// import { CATEGORIES } from "../shared/lib/constants";
+import { Button, Badge, Avatar } from "../design";
 import { getListingImageUrl, getAvatarUrl } from "../utils/storage";
 import FadeInSection from "../shared/components/FadeInSection";
 import TestimonialsSection from "../features/landing/components/TestimonialsSection";
@@ -57,29 +57,46 @@ export default function LandingPage() {
   const { counts } = useCategoryCounts();
   const [heroListing, setHeroListing] = useState(null);
   const [featuredListings, setFeaturedListings] = useState([]);
-  const [featuredLoading, setFeaturedLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    let cancelled = false;
+  let cancelled = false;
 
-    (async () => {
-      const { data } = await supabase
-        .from("listings")
-        .select("*, owner:owner_id(id, full_name, avatar_url)")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false })
-        .limit(8);
+  const loadFeaturedListings = async () => {
+    const { data } = await supabase
+      .from("listings")
+      .select("*, owner:owner_id(id, full_name, avatar_url)")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(8);
 
-      if (!cancelled && data) {
-        if (data.length > 0) setHeroListing(data[0]);
-        setFeaturedListings(data);
-        setFeaturedLoading(false);
-      }
-    })();
+    if (!cancelled && data) {
+      if (data.length > 0) setHeroListing(data[0]);
+      setFeaturedListings(data);
+    }
+  };
 
-    return () => { cancelled = true; };
-  }, []);
+  let idleId;
+  let timeoutId;
+
+  if ("requestIdleCallback" in window) {
+    idleId = window.requestIdleCallback(loadFeaturedListings);
+  } else {
+    timeoutId = window.setTimeout(loadFeaturedListings, 1);
+  }
+
+  return () => {
+    cancelled = true;
+
+    if (idleId) {
+      window.cancelIdleCallback(idleId);
+    }
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  };
+}, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -257,7 +274,6 @@ export default function LandingPage() {
               {["Tools", "Electronics", "Cameras & Photography", "Gaming", "Musical Instruments", "Sports & Outdoors", "Vehicles"].map((cat) => {
                 const Icon = CATEGORY_ICONS[cat];
                 const count = counts[cat];
-                const hasItems = count > 0;
 
                 return (
                   <Link

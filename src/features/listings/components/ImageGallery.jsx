@@ -125,7 +125,7 @@ export default function ImageGallery({ images = [] }) {
               <button
                 key={i}
                 onClick={() => setActive(i)}
-                className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                   i === active
                     ? "border-accent ring-1 ring-accent"
                     : "border-transparent opacity-60 hover:opacity-100"

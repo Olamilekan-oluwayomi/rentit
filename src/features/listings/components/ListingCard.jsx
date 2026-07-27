@@ -9,12 +9,13 @@
  *   prevents link navigation via e.preventDefault(). First image only is shown.
  */
 
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { Badge, Avatar } from "../../../design";
 import { getListingImageUrl, getAvatarUrl } from "../../../utils/storage";
 
-export default function ListingCard({ listing }) {
+const ListingCard = memo(function ListingCard({ listing }) {
   const imageUrl = getListingImageUrl(listing.images?.[0], { width: 480, height: 480 });
   const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url, { width: 32, height: 32 }) : null;
   const ownerName = listing.owner?.full_name || "Owner";
@@ -22,7 +23,7 @@ export default function ListingCard({ listing }) {
   return (
     <Link
       to={`/listings/${listing.id}`}
-      className="group block bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] transition-all duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+      className="group block bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/30 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <div className="relative aspect-4/3 overflow-hidden bg-surface-tertiary/40">
         {imageUrl ? (
@@ -40,7 +41,7 @@ export default function ListingCard({ listing }) {
           </div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
 
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
@@ -89,4 +90,6 @@ export default function ListingCard({ listing }) {
       </div>
     </Link>
   );
-}
+});
+
+export default ListingCard;

@@ -108,7 +108,7 @@ export default function Header() {
                   >
                     <IconButton icon={MessageSquare} label="Inbox" />
                     {unreadCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-danger text-white text-[9px] font-bold leading-none">
+                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-danger text-white text-[9px] font-bold leading-none">
                         {unreadCount > 99 ? "99+" : unreadCount}
                       </span>
                     )}
