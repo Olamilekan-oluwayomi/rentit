@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
+import { AuthLayout } from "../../../layouts";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -53,8 +54,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8">
+    <AuthLayout>
+      <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">Welcome Back</h1>
 
         {error && (
@@ -126,9 +127,9 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link to="/register" className="text-accent hover:underline font-medium">
             Sign up
-          </Link>
-        </p>
-      </div>
-    </div>
+        </Link>
+          </p>
+        </div>
+    </AuthLayout>
   );
 }

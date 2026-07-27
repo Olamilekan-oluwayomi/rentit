@@ -9,7 +9,9 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
+import { AuthLayout } from "../../../layouts";
 import { useToast } from "../../../shared/contexts/ToastContext";
 
 export default function ResetPasswordPage() {
@@ -82,8 +84,8 @@ export default function ResetPasswordPage() {
 
   if (!validSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8 text-center">
+      <AuthLayout>
+        <div className="w-full bg-surface rounded-2xl shadow-lg p-8 text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -100,13 +102,13 @@ export default function ResetPasswordPage() {
             Request a new link
           </Link>
         </div>
-      </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8">
+    <AuthLayout>
+      <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">
           Set New Password
         </h1>
@@ -147,6 +149,6 @@ export default function ResetPasswordPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

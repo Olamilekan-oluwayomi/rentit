@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { AuthLayout } from "../../../layouts";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -61,8 +62,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8">
+    <AuthLayout>
+      <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         {submitted ? (
           <div className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -185,6 +186,6 @@ export default function RegisterPage() {
           </>
         )}
       </div>
-    </div>
+    </AuthLayout>
   );
 }

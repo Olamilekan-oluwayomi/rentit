@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
+import { AuthLayout } from "../../../layouts";
 
 export default function EmailConfirmationPage() {
   const [status, setStatus] = useState("loading");
@@ -67,8 +68,8 @@ export default function EmailConfirmationPage() {
   }, [status, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8 text-center">
+    <AuthLayout>
+      <div className="w-full bg-surface rounded-2xl shadow-lg p-8 text-center">
         {status === "loading" && (
           <>
             <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
@@ -152,6 +153,6 @@ export default function EmailConfirmationPage() {
           </>
         )}
       </div>
-    </div>
+    </AuthLayout>
   );
 }

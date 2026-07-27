@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
+import { AuthLayout } from "../../../layouts";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -60,8 +61,8 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8">
+    <AuthLayout>
+      <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">
           Reset Password
         </h1>
@@ -106,6 +107,6 @@ export default function ForgotPasswordPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
