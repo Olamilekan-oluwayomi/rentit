@@ -70,7 +70,7 @@ const socialLinks = [
  */
 export default function Footer() {
   return (
-    <footer className="bg-surface border-t border-gray-100 dark:border-white/10">
+    <footer className="bg-surface border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Branding / tagline */}
@@ -91,7 +91,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-text-secondary hover:text-accent transition-colors"
+                    className="text-sm text-text-secondary hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                   >
                     {link.label}
                   </Link>
@@ -110,7 +110,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-text-secondary hover:text-accent transition-colors"
+                    className="text-sm text-text-secondary hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                   >
                     {link.label}
                   </Link>
@@ -131,7 +131,7 @@ export default function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent transition-colors"
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                   >
                     {link.icon}
                     {link.label}
@@ -144,7 +144,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright bar */}
-      <div className="border-t border-gray-100 dark:border-white/10">
+      <div className="border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <p className="text-sm text-text-secondary text-center">
             &copy; 2026 RentIt. All rights reserved.

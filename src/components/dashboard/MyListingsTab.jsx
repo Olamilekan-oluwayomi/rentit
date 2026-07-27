@@ -91,7 +91,7 @@ export default function MyListingsTab() {
         {listings.map((listing) => (
           <AnimatedListItem key={listing.id}>
             <div
-              className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 flex flex-col sm:flex-row gap-4"
+              className="bg-surface rounded-2xl border border-border p-4 flex flex-col sm:flex-row gap-4"
             >
             <ListingThumbnail listing={listing} />
 

@@ -44,7 +44,7 @@ export default function RentedOutTab() {
 
         return (
           <AnimatedListItem key={booking.id}>
-            <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow">
+            <div className="bg-surface rounded-2xl border border-border p-4 hover:border-accent/30 transition-colors">
               <Link to={`/booking/${booking.id}`} className="block">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <ListingThumbnail listing={listing} />

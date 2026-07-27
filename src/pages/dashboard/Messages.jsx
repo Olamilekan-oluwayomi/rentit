@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useConversations } from "../../features/messages/hooks/useConversations";
 import { getAvatarUrl } from "../../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
+import FadeInSection from "../../shared/components/FadeInSection";
 
 function formatRelativeTime(isoString) {
   const date = new Date(isoString);
@@ -24,6 +25,7 @@ export default function DashboardMessages() {
   const { conversations, loading, error } = useConversations();
 
   return (
+    <FadeInSection>
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-heading font-bold text-text-primary">
@@ -65,7 +67,7 @@ export default function DashboardMessages() {
             <p className="text-sm text-text-muted text-center">
               No conversations yet. Messages will appear here when you book a listing or receive a booking request.
             </p>
-            <Link to="/" className="inline-block mt-3 text-sm font-medium text-accent hover:underline">
+            <Link to="/" className="inline-block mt-3 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
               Browse Listings
             </Link>
           </div>
@@ -77,7 +79,7 @@ export default function DashboardMessages() {
               <AnimatedListItem key={conv.bookingId}>
                 <Link
                   to={`/booking/${conv.bookingId}`}
-                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-border ${
+                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-border active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                     conv.unreadCount > 0
                       ? "bg-accent/[0.03]"
                       : "hover:bg-surface-secondary"
@@ -122,5 +124,6 @@ export default function DashboardMessages() {
         )}
       </div>
     </div>
+    </FadeInSection>
   );
 }

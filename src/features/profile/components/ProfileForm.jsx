@@ -111,7 +111,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
           onChange={(e) => setFullName(e.target.value)}
           maxLength={LIMITS.full_name.max}
           required
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+          className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
         />
         {errors.full_name && (
           <p className="text-xs text-red-500 mt-1">{errors.full_name}</p>
@@ -134,7 +134,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
             onChange={(e) => setLocation(e.target.value)}
             maxLength={LIMITS.location.max}
             placeholder="City, Country"
-            className="w-full px-4 py-2.5 pr-11 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 pr-11 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
           />
           <button
             type="button"
@@ -142,7 +142,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
             disabled={locationLoading}
             title="Use current location"
             aria-label="Use current location"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-text-secondary hover:text-accent hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-40 disabled:pointer-events-none transition-all"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-text-secondary hover:text-accent hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-40 disabled:pointer-events-none transition-all active:scale-[0.97]"
           >
             {locationLoading ? (
               <div className="w-[18px] h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -178,7 +178,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
           maxLength={LIMITS.bio.max}
           rows={4}
           placeholder="Tell others about yourself..."
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm resize-none"
+          className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm resize-none"
         />
         <div className="flex items-center justify-between mt-1">
           {errors.bio ? (
@@ -196,7 +196,7 @@ export default function ProfileForm({ profile, saving, onSave }) {
       <button
         type="submit"
         disabled={saving}
-        className="bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-2"
+        className="bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-2 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         {saving && (
           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

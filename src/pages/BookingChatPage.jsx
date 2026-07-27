@@ -108,12 +108,12 @@ export default function BookingChatPage() {
   const counterpartyAvatar = getAvatarUrl(counterpartyProfile?.avatar_url);
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-background">
+    <div className="h-full flex flex-col bg-background">
       {/* Chat header — fixed height, shadow separates from thread */}
-      <div className="shrink-0 h-14 flex items-center gap-3 px-3 bg-white dark:bg-surface border-b border-gray-200/80 dark:border-white/[0.06] shadow-sm z-10">
+      <div className="shrink-0 h-14 flex items-center gap-3 px-3 bg-surface border-b border-border z-10">
         <Link
           to="/inbox"
-          className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-text-secondary hover:bg-surface-secondary transition-colors"
           aria-label="Back to inbox"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -148,7 +148,7 @@ export default function BookingChatPage() {
 
       {/* Error state */}
       {error && (
-        <div className="shrink-0 px-4 py-2.5 text-sm text-red-600 bg-red-50 dark:bg-red-500/10 border-b border-red-100 dark:border-red-500/10">
+        <div className="shrink-0 px-4 py-2.5 text-sm text-danger bg-danger/5 border-b border-danger/10">
           {error}
         </div>
       )}

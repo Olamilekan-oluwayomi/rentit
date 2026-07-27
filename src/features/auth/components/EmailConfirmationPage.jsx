@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
 import { AuthLayout } from "../../../layouts";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function EmailConfirmationPage() {
   const [status, setStatus] = useState("loading");
@@ -69,6 +70,7 @@ export default function EmailConfirmationPage() {
 
   return (
     <AuthLayout>
+      <FadeInSection>
       <div className="w-full bg-surface rounded-2xl shadow-lg p-8 text-center">
         {status === "loading" && (
           <>
@@ -111,7 +113,7 @@ export default function EmailConfirmationPage() {
 
             <Link
               to="/login"
-              className="inline-block bg-accent text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+              className="inline-block bg-accent text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
             >
               Go to Login Now
             </Link>
@@ -146,13 +148,14 @@ export default function EmailConfirmationPage() {
 
             <Link
               to="/register"
-              className="inline-block bg-accent text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+              className="inline-block bg-accent text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
             >
               Register Again
             </Link>
           </>
         )}
       </div>
+      </FadeInSection>
     </AuthLayout>
   );
 }

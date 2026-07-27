@@ -55,7 +55,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="shrink-0 sticky top-0 z-40 bg-surface/80 dark:bg-surface/80 backdrop-blur-lg border-b border-gray-100 dark:border-white/10">
+      <header className="shrink-0 sticky top-0 z-40 bg-surface/80 dark:bg-surface/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             {/* Left: logo + desktop nav links */}
@@ -63,7 +63,7 @@ export default function Header() {
               <Logo />
 
               <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-                <NavLink to="/" end className={navLinkClass}>
+                <NavLink to="/" end className={`${navLinkClass} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40`}>
                   Browse
                 </NavLink>
               </nav>

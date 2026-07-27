@@ -44,7 +44,7 @@ export default function DashboardBookings() {
             <button
               key={tab.key}
               onClick={() => setStatusFilter(tab.key)}
-              className={`shrink-0 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+              className={`shrink-0 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                 statusFilter === tab.key
                   ? "border-accent text-accent"
                   : "border-transparent text-text-secondary hover:text-text-primary hover:border-text-muted/30"
@@ -78,7 +78,7 @@ export default function DashboardBookings() {
                 ? "No bookings yet. When someone books your listing, it will appear here."
                 : `No ${statusFilter} bookings.`}
             </p>
-            <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline">
+            <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
               Browse listings
             </Link>
           </div>
@@ -125,7 +125,7 @@ export default function DashboardBookings() {
                         <td className="px-4 py-3.5 text-right">
                           <Link
                             to={`/booking/${booking.id}`}
-                            className="text-sm font-medium text-accent hover:text-accent-hover transition-colors"
+                            className="text-sm font-medium text-accent hover:text-accent-hover transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                           >
                             View
                           </Link>
@@ -146,7 +146,7 @@ export default function DashboardBookings() {
                   <Link
                     key={booking.id}
                     to={`/booking/${booking.id}`}
-                    className="block bg-surface border border-border rounded-lg p-4 hover:bg-surface-secondary transition-colors"
+                    className="block bg-surface border border-border rounded-lg p-4 hover:bg-surface-secondary transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div className="min-w-0">

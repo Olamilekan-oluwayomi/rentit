@@ -13,6 +13,7 @@ import { useAuth } from "../context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
 import { AuthLayout } from "../../../layouts";
 import { useToast } from "../../../shared/contexts/ToastContext";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -85,6 +86,7 @@ export default function ResetPasswordPage() {
   if (!validSession) {
     return (
       <AuthLayout>
+        <FadeInSection>
         <div className="w-full bg-surface rounded-2xl shadow-lg p-8 text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,12 +104,14 @@ export default function ResetPasswordPage() {
             Request a new link
           </Link>
         </div>
+        </FadeInSection>
       </AuthLayout>
     );
   }
 
   return (
     <AuthLayout>
+      <FadeInSection>
       <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">
           Set New Password
@@ -130,14 +134,14 @@ export default function ResetPasswordPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+            className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
           >
             {loading ? "Updating..." : "Update Password"}
           </button>
@@ -146,9 +150,10 @@ export default function ResetPasswordPage() {
         <p className="text-center text-sm text-text-secondary mt-6">
           <Link to="/login" className="text-accent hover:underline font-medium">
             Back to login
-          </Link>
-        </p>
+        </Link>
+        </div>
       </div>
+      </FadeInSection>
     </AuthLayout>
   );
 }

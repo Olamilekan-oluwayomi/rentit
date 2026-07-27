@@ -188,7 +188,7 @@ export default function EditListingPage() {
         Edit Listing
       </h1>
 
-      <div className="bg-surface rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 p-6 sm:p-8">
+      <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8">
         <ListingForm
           defaultValues={{
             title: listing.title,

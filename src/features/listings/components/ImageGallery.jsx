@@ -62,7 +62,7 @@ export default function ImageGallery({ images = [] }) {
 
   if (!hasImages) {
     return (
-      <div className="aspect-video bg-gray-100 dark:bg-white/5 rounded-2xl flex items-center justify-center">
+      <div className="aspect-video bg-surface-secondary rounded-2xl flex items-center justify-center">
         <p className="text-sm text-text-secondary">No images available</p>
       </div>
     );
@@ -74,7 +74,7 @@ export default function ImageGallery({ images = [] }) {
       <div className="space-y-3">
         {/* Hero image — clicking opens the lightbox for full-screen viewing */}
         <div
-          className="relative aspect-video rounded-2xl overflow-hidden cursor-zoom-in bg-gray-100 dark:bg-white/5"
+          className="relative aspect-video rounded-2xl overflow-hidden cursor-zoom-in bg-surface-secondary active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={() => setLightbox(true)}
           role="button"
           tabIndex={0}
@@ -98,7 +98,7 @@ export default function ImageGallery({ images = [] }) {
                   e.stopPropagation();
                   goPrev();
                 }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={18} />
@@ -108,7 +108,7 @@ export default function ImageGallery({ images = [] }) {
                   e.stopPropagation();
                   goNext();
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Next image"
               >
                 <ChevronRight size={18} />
@@ -130,7 +130,7 @@ export default function ImageGallery({ images = [] }) {
               <button
                 key={i}
                 onClick={() => setActive(i)}
-                className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                   i === active
                     ? "border-accent ring-1 ring-accent"
                     : "border-transparent opacity-60 hover:opacity-100"
@@ -159,7 +159,7 @@ export default function ImageGallery({ images = [] }) {
           {/* Close button */}
           <button
             onClick={() => setLightbox(false)}
-            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors z-10"
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors z-10 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             aria-label="Close viewer"
           >
             <X size={20} />
@@ -177,14 +177,14 @@ export default function ImageGallery({ images = [] }) {
             <>
               <button
                 onClick={goPrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={22} />
               </button>
               <button
                 onClick={goNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Next image"
               >
                 <ChevronRight size={22} />

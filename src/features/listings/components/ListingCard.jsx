@@ -11,7 +11,7 @@ export default function ListingCard({ listing }) {
   return (
     <Link
       to={`/listings/${listing.id}`}
-      className="group block bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-[3px] transition-all duration-normal"
+      className="group block bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] transition-all duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <div className="relative aspect-4/3 overflow-hidden bg-surface-tertiary/40">
         {imageUrl ? (
@@ -33,7 +33,7 @@ export default function ListingCard({ listing }) {
 
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md text-text-secondary hover:text-accent hover:bg-white transition-all duration-fast active:scale-90"
+          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 text-text-secondary hover:text-accent hover:bg-white transition-all duration-fast active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           aria-label="Add to wishlist"
         >
           <Heart size={16} />

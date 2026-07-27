@@ -55,7 +55,7 @@ export default function MessageThread({ messages, loading }) {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
+      <div className="flex-1 flex items-center justify-center bg-surface-secondary/50">
         <div className="w-6 h-6 border-3 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -63,9 +63,9 @@ export default function MessageThread({ messages, loading }) {
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
+      <div className="flex-1 flex items-center justify-center bg-surface-secondary/50">
         <div className="text-center px-6">
-          <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+          <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-surface-secondary flex items-center justify-center">
             <svg className="w-7 h-7 text-text-secondary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
@@ -81,7 +81,7 @@ export default function MessageThread({ messages, loading }) {
   return (
     <div
       ref={containerRef}
-      className="flex-1 min-h-0 overflow-y-auto bg-gray-50/50 dark:bg-white/[0.02] px-4 py-4"
+      className="flex-1 min-h-0 overflow-y-auto bg-surface-secondary/50 px-4 py-4"
     >
       <div className="max-w-2xl mx-auto space-y-1">
         {messages.map((msg, idx) => {
@@ -107,7 +107,7 @@ export default function MessageThread({ messages, loading }) {
                           ? "rounded-2xl"
                           : "rounded-2xl rounded-br-md"
                       }`
-                    : `bg-white dark:bg-white/10 text-text-primary shadow-sm ${
+                    : `bg-surface text-text-primary ${
                         sameSenderAsNext
                           ? "rounded-2xl"
                           : "rounded-2xl rounded-bl-md"

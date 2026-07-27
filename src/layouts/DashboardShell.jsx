@@ -47,7 +47,7 @@ function NavLinkItem({ item, onClick }) {
       onClick={onClick}
       className={({ isActive }) =>
         [
-          "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-fast",
+          "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]",
           isActive
             ? "bg-accent/5 text-accent border-l-2 border-accent -ml-px"
             : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary border-l-2 border-transparent -ml-px",
@@ -124,7 +124,7 @@ export default function DashboardLayout() {
               <Link
                 to="/"
                 onClick={() => setSidebarOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all duration-fast border-l-2 border-transparent -ml-px"
+                className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all duration-fast border-l-2 border-transparent -ml-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
               >
                 <ArrowLeft size={18} className="shrink-0" />
                 Back to Browse
@@ -144,7 +144,7 @@ export default function DashboardLayout() {
                   <p className="text-xs text-text-secondary truncate">{user?.email}</p>
                 </div>
               </div>
-              <button onClick={handleLogout} className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 transition-colors">
+              <button onClick={handleLogout} className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]">
                 <LogOut size={16} />
                 Log Out
               </button>
@@ -187,7 +187,7 @@ export default function DashboardLayout() {
             <div className="flex items-center gap-4">
               <Link
                 to="/"
-                className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
+                className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
               >
                 <ArrowLeft size={15} />
                 Browse
@@ -217,8 +217,8 @@ export default function DashboardLayout() {
               key={item.to}
               to={item.to}
               end={item.to === "/dashboard"}
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 px-3 py-1.5 text-[11px] font-medium transition-colors min-w-0 ${
+               className={({ isActive }) =>
+                `flex flex-col items-center gap-0.5 px-3 py-1.5 text-[11px] font-medium transition-colors min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97] ${
                   isActive ? "text-accent" : "text-text-muted"
                 }`
               }

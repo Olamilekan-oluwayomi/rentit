@@ -11,7 +11,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease"
+        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
         aria-label="Previous page"
       >
         <ChevronLeft size={16} />
@@ -34,7 +34,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
               className={`w-9 h-9 rounded-lg text-sm font-medium transition-all duration-fast ease ${
                 p === page
                   ? "bg-accent text-white shadow-sm"
-                  : "text-text-secondary hover:bg-surface-secondary"
+                  : "text-text-secondary hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
               }`}
               aria-label={`Page ${p}`}
               aria-current={p === page ? "page" : undefined}
@@ -48,7 +48,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease"
+        className="flex items-center gap-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:pointer-events-none transition-all duration-fast ease focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
         aria-label="Next page"
       >
         <span className="hidden sm:inline">Next</span>

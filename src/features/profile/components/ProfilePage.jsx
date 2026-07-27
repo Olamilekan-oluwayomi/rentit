@@ -13,6 +13,7 @@ import { Card, Heading } from "../../../design";
 import { DashboardLayout } from "../../../layouts";
 import ProfileHeader from "./ProfileHeader";
 import ProfileSkeleton from "./ProfileSkeleton";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 /**
  * @returns {JSX.Element} The profile page with avatar management and editable details.
@@ -96,6 +97,7 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
+      <FadeInSection>
       <Heading as="h1" className="mb-6">
         My Profile
       </Heading>
@@ -113,6 +115,7 @@ export default function ProfilePage() {
           onEditToggle={() => setEditing((prev) => !prev)}
         />
       </Card>
+      </FadeInSection>
     </DashboardLayout>
   );
 }

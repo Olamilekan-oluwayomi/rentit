@@ -96,7 +96,7 @@ export default function RequestsTab() {
           <AnimatedListItem key={booking.id}>
             <Link
               to={`/booking/${booking.id}`}
-              className="block bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 hover:shadow-md transition-shadow"
+              className="block bg-surface rounded-2xl border border-border p-4 hover:border-accent/30 transition-colors"
             >
             <div className="flex flex-col sm:flex-row gap-4">
               <ListingThumbnail listing={listing} />

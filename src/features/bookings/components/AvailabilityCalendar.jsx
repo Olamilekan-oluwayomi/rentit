@@ -54,7 +54,7 @@ function PrevButton(props) {
     <button
       type="button"
       {...props}
-      className="p-1.5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 text-text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      className="p-1.5 rounded-lg border border-border hover:bg-surface-secondary text-text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <ChevronLeft size={18} strokeWidth={2.5} />
     </button>
@@ -67,7 +67,7 @@ function NextButton(props) {
     <button
       type="button"
       {...props}
-      className="p-1.5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 text-text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      className="p-1.5 rounded-lg border border-border hover:bg-surface-secondary text-text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <ChevronRight size={18} strokeWidth={2.5} />
     </button>
@@ -224,7 +224,7 @@ export default function AvailabilityCalendar({
   const ownerRanges = blockedRanges;
 
   return (
-    <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-6 space-y-6">
+    <div className="bg-surface rounded-2xl border border-border p-6 space-y-6">
       <h2 className="text-lg font-heading font-semibold text-text-primary">
         {isOwner ? "Manage Availability" : "Check Availability"}
       </h2>
@@ -274,7 +274,7 @@ export default function AvailabilityCalendar({
       {blockedError && <p className="text-xs text-red-500">{blockedError}</p>}
 
       {isOwner && (
-        <div className="space-y-6 pt-4 border-t border-gray-100 dark:border-white/10">
+        <div className="space-y-6 pt-4 border-t border-border">
           <div className="space-y-3">
             <p className="text-sm text-text-secondary">
               Select a range on the calendar, optionally add a reason, then
@@ -296,7 +296,7 @@ export default function AvailabilityCalendar({
               value={blockReason}
               onChange={(e) => setBlockReason(e.target.value)}
               placeholder="Reason (optional, e.g. Personal use)"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-transparent text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2 rounded-lg border border-border bg-transparent text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
             />
 
             {blockError && <p className="text-xs text-red-500">{blockError}</p>}
@@ -304,7 +304,7 @@ export default function AvailabilityCalendar({
             <button
               onClick={handleBlockDates}
               disabled={blockLoading || !selectedRange?.from || !selectedRange?.to}
-              className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
               {blockLoading ? "Blocking..." : "Block these dates"}
             </button>
@@ -319,7 +319,7 @@ export default function AvailabilityCalendar({
                 {ownerRanges.map((r) => (
                   <li
                     key={r.id}
-                    className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-sm"
+                    className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-surface-secondary text-sm"
                   >
                     <div className="min-w-0">
                       <p className="text-text-primary">
@@ -334,7 +334,7 @@ export default function AvailabilityCalendar({
                     </div>
                     <button
                       onClick={() => handleRemoveRange(r.id)}
-                      className="shrink-0 px-3 py-1 rounded-lg text-xs font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                      className="shrink-0 px-3 py-1 rounded-lg text-xs font-medium text-red-600 border border-red-200 dark:border-red-500/20 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                     >
                       Remove
                     </button>
@@ -347,7 +347,7 @@ export default function AvailabilityCalendar({
       )}
 
       {!isOwner && (
-        <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-white/10">
+        <div className="space-y-4 pt-4 border-t border-border">
           {selectedRange?.from && selectedRange?.to ? (
             <div className="space-y-3">
               <div className="flex items-baseline justify-between text-sm">

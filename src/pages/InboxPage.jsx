@@ -1,19 +1,8 @@
-/**
- * InboxPage — Lists all active conversations for the current user.
- *
- * Route: /inbox
- *
- * Full-viewport layout (no global header/footer rendered).
- * Shows every booking the user participates in (as renter or owner) that
- * has at least one message, sorted by most recent activity. Each row
- * displays the listing title, counterparty name/avatar, last message
- * preview, timestamp, and an unread badge.
- */
-
 import { Link } from "react-router-dom";
 import { useConversations } from "../features/messages/hooks/useConversations";
 import { getAvatarUrl } from "../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../shared/components/AnimatedList";
+import FadeInSection from "../shared/components/FadeInSection";
 
 function formatRelativeTime(isoString) {
   const date = new Date(isoString);
@@ -35,19 +24,26 @@ export default function InboxPage() {
   const { conversations, loading, error } = useConversations();
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-background">
-      {/* Header bar — matches chat page header height and style */}
-      <div className="shrink-0 h-14 flex items-center px-5 bg-white dark:bg-surface border-b border-gray-200/80 dark:border-white/[0.06] shadow-sm z-10">
+    <FadeInSection>
+    <div className="h-full flex flex-col bg-background">
+      <div className="shrink-0 h-14 flex items-center px-5 bg-surface border-b border-border z-10">
         <h1 className="text-base font-heading font-semibold text-text-primary">
           Messages
         </h1>
       </div>
 
-      {/* Content — fills remaining space */}
       <div className="flex-1 min-h-0 overflow-y-auto">
         {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-6 h-6 border-3 border-accent border-t-transparent rounded-full animate-spin" />
+          <div className="divide-y divide-border">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 px-5 py-4 animate-pulse">
+                <div className="w-11 h-11 rounded-full bg-surface-tertiary/60 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-surface-tertiary/60 rounded w-1/3" />
+                  <div className="h-2.5 bg-surface-tertiary/40 rounded w-2/3" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -57,9 +53,9 @@ export default function InboxPage() {
 
         {!loading && !error && conversations.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 px-6">
-            <div className="w-16 h-16 mb-4 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-lg bg-surface-secondary flex items-center justify-center mb-4">
               <svg
-                className="w-8 h-8 text-text-secondary/30"
+                className="w-7 h-7 text-text-muted"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -72,12 +68,12 @@ export default function InboxPage() {
                 />
               </svg>
             </div>
-            <p className="text-text-secondary/60 text-sm text-center">
+            <p className="text-text-secondary text-sm text-center">
               No conversations yet
             </p>
             <Link
               to="/"
-              className="inline-block mt-3 text-sm font-medium text-accent hover:underline"
+              className="inline-block mt-3 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
             >
               Browse Listings
             </Link>
@@ -90,13 +86,12 @@ export default function InboxPage() {
               <AnimatedListItem key={conv.bookingId}>
                 <Link
                   to={`/booking/${conv.bookingId}`}
-                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-gray-100 dark:border-white/[0.04] ${
+                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-border active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                     conv.unreadCount > 0
-                      ? "bg-accent/[0.03] dark:bg-accent/[0.05]"
-                      : "hover:bg-gray-50 dark:hover:bg-white/[0.02]"
+                      ? "bg-accent/[0.03]"
+                      : "hover:bg-surface-secondary"
                   }`}
                 >
-                  {/* Avatar */}
                   <div className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
                     {getAvatarUrl(conv.counterparty?.avatar_url) ? (
                       <img
@@ -111,7 +106,6 @@ export default function InboxPage() {
                     )}
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <h3
@@ -143,7 +137,6 @@ export default function InboxPage() {
                     </p>
                   </div>
 
-                  {/* Unread badge */}
                   {conv.unreadCount > 0 && (
                     <span className="shrink-0 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
                       {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
@@ -156,5 +149,6 @@ export default function InboxPage() {
         )}
       </div>
     </div>
+    </FadeInSection>
   );
 }

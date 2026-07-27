@@ -1,12 +1,12 @@
 const VARIANTS = {
   default:
-    "bg-surface border border-border shadow-sm",
+    "bg-surface border border-border",
   outlined:
     "bg-surface border-2 border-border",
   interactive:
-    "bg-surface border border-border shadow-sm hover:shadow-md hover:-translate-y-1 cursor-pointer transition-all duration-normal ease",
+    "bg-surface border border-border hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] cursor-pointer transition-all duration-normal ease",
   elevated:
-    "bg-surface border border-border shadow-md",
+    "bg-surface border border-border",
 };
 
 function Card({ variant = "default", className = "", children, ...props }) {

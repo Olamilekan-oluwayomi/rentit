@@ -64,7 +64,7 @@ export function ToastProvider({ children }) {
                   ? "bg-green-600 text-white"
                   : toast.type === "error"
                     ? "bg-red-600 text-white"
-                    : "bg-gray-800 text-white"
+                    : "bg-surface text-text-primary border border-border"
               }`}
             >
             {/* Success icon */}

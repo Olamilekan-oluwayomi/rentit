@@ -78,7 +78,7 @@ export default function ProfileAvatar({
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center disabled:opacity-50"
+          className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center disabled:opacity-50 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           aria-label="Change photo"
         >
           {uploading ? (
@@ -107,7 +107,7 @@ export default function ProfileAvatar({
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="text-sm text-accent hover:underline font-medium disabled:opacity-50"
+          className="text-sm text-accent hover:underline font-medium disabled:opacity-50 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
           {avatarSrc ? "Change Photo" : "Upload Photo"}
         </button>
@@ -116,7 +116,7 @@ export default function ProfileAvatar({
           <button
             onClick={onDelete}
             disabled={uploading}
-            className="text-sm text-red-500 hover:underline font-medium disabled:opacity-50"
+            className="text-sm text-red-500 hover:underline font-medium disabled:opacity-50 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             Remove Photo
           </button>

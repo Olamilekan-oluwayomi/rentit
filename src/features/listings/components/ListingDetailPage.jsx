@@ -105,7 +105,7 @@ export default function ListingDetailPage() {
   });
 
   const bookingCard = (
-    <div className="bg-surface rounded-2xl border border-border shadow-md p-6 space-y-5">
+    <div className="bg-surface rounded-2xl border border-border p-6 space-y-5">
       <div className="flex items-baseline gap-1.5">
         <span className="text-2xl font-mono font-bold text-text-primary">
           ${listing.daily_price}
@@ -148,7 +148,7 @@ export default function ListingDetailPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
       <Link
         to="/"
-        className="hidden lg:inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-6"
+        className="hidden lg:inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded active:scale-[0.97]"
       >
         <ChevronLeft size={16} />
         Back to browse
@@ -373,7 +373,7 @@ function RelatedListingCard({ listing }) {
   return (
     <Link
       to={`/listings/${listing.id}`}
-      className="group block bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-[3px] transition-all duration-normal"
+      className="group block bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/30 hover:-translate-y-[2px] active:scale-[0.99] transition-all duration-normal"
     >
       <div className="relative aspect-4/3 overflow-hidden bg-surface-tertiary/40">
         {imageUrl ? (
@@ -434,7 +434,7 @@ function MobileBookingPanel({ open, onClose, price, listingId, isOwner, onRangeC
           <h2 className="text-lg font-heading font-semibold text-text-primary">Book this listing</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-secondary transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

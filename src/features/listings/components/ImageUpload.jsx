@@ -85,7 +85,7 @@ export default function ImageUpload({
         className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
           isDragActive
             ? "border-accent bg-accent/5"
-            : "border-gray-300 dark:border-white/15 hover:border-accent/50"
+            : "border-border hover:border-accent/50"
         } ${uploading || !canAddMore ? "opacity-50 pointer-events-none" : ""}`}
       >
         <input {...getInputProps()} />
@@ -132,7 +132,7 @@ export default function ImageUpload({
           {existingImages.map((path, i) => (
             <div
               key={`existing-${i}`}
-              className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10"
+              className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-border"
             >
               <img
                 src={getListingImageUrl(path)}
@@ -144,7 +144,7 @@ export default function ImageUpload({
                 type="button"
                 onClick={() => onExistingRemove(path)}
                 disabled={uploading}
-                className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Remove image"
               >
                 <X size={12} />
@@ -160,7 +160,7 @@ export default function ImageUpload({
           {images.map((file, i) => (
             <div
               key={`new-${i}-${file.name}`}
-              className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10"
+              className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-border"
             >
               <img
                 src={previews[i]}
@@ -171,7 +171,7 @@ export default function ImageUpload({
                 type="button"
                 onClick={() => removeNew(i)}
                 disabled={uploading}
-                className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 aria-label="Remove image"
               >
                 <X size={12} />

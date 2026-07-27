@@ -74,7 +74,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Tab bar — desktop */}
-      <div className="hidden sm:flex items-center gap-1 border-b border-gray-200 dark:border-white/10 mb-6">
+      <div className="hidden sm:flex items-center gap-1 border-b border-border mb-6">
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -82,7 +82,7 @@ export default function DashboardPage() {
             className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
               activeTab === tab.key
                 ? "border-accent text-accent"
-                : "border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300 dark:hover:border-white/20"
+                : "border-transparent text-text-secondary hover:text-text-primary hover:border-text-muted/30"
             }`}
           >
             {tab.label}
@@ -95,7 +95,7 @@ export default function DashboardPage() {
         <select
           value={activeTab}
           onChange={(e) => handleTabChange(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-surface text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+          className="w-full px-3 py-2.5 rounded-lg border border-border bg-surface text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/40"
         >
           {TABS.map((tab) => (
             <option key={tab.key} value={tab.key}>
@@ -120,7 +120,7 @@ export default function DashboardPage() {
  */
 function StatCard({ label, value, subtitle }) {
   return (
-    <div className="bg-surface rounded-2xl border border-gray-100 dark:border-white/10 p-4 sm:p-5">
+    <div className="bg-surface rounded-2xl border border-border p-4 sm:p-5">
       <p className="text-xs text-text-secondary mb-1">{label}</p>
       <p className="text-xl sm:text-2xl font-heading font-bold text-text-primary">
         {value}

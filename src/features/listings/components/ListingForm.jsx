@@ -88,7 +88,7 @@ export default function ListingForm({
           {...register("title")}
           maxLength={100}
           placeholder="e.g. Professional DSLR Camera"
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+          className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
         />
         <div className="flex items-center justify-between mt-1">
           {/* Show validation error or empty span to keep layout stable */}
@@ -115,7 +115,7 @@ export default function ListingForm({
           maxLength={1000}
           rows={4}
           placeholder="Describe your item, its condition, and any accessories included..."
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm resize-none"
+          className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm resize-none"
         />
         <div className="flex items-center justify-between mt-1">
           {errors.description ? (
@@ -142,7 +142,7 @@ export default function ListingForm({
           <select
             id="category"
             {...register("category")}
-            className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
           >
             <option value="">Select a category</option>
             {CATEGORIES.map((cat) => (
@@ -178,7 +178,7 @@ export default function ListingForm({
               min="0.01"
               {...register("daily_price")}
               placeholder="0.00"
-              className="w-full pl-8 pr-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+              className="w-full pl-8 pr-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
             />
           </div>
           {errors.daily_price && (
@@ -203,7 +203,7 @@ export default function ListingForm({
             {...register("location")}
             maxLength={100}
             placeholder="City, Country"
-            className="w-full px-4 py-2.5 pr-11 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 pr-11 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
           />
           {/* Geolocation button — uses browser API to auto-fill the location field */}
           <button
@@ -212,7 +212,7 @@ export default function ListingForm({
             disabled={locationLoading || submitting}
             title="Use current location"
             aria-label="Use current location"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-text-secondary hover:text-accent hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-40 disabled:pointer-events-none transition-all"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-text-secondary hover:text-accent hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-40 disabled:pointer-events-none transition-all active:scale-[0.97]"
           >
             {locationLoading ? (
               <div className="w-[18px] h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -259,7 +259,7 @@ export default function ListingForm({
       <button
         type="submit"
         disabled={submitting}
-        className="w-full sm:w-auto bg-accent text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+        className="w-full sm:w-auto bg-accent text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         {submitting && (
           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

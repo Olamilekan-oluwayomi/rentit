@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { AuthLayout } from "../../../layouts";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -63,6 +64,7 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout>
+      <FadeInSection>
       <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         {submitted ? (
           <div className="text-center">
@@ -102,7 +104,7 @@ export default function RegisterPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
                 />
               </div>
 
@@ -115,7 +117,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
                 />
               </div>
 
@@ -130,12 +132,12 @@ export default function RegisterPage() {
                     onChange={handlePasswordChange}
                     required
                     minLength={6}
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+                    className="w-full px-4 py-2 pr-10 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded active:scale-[0.97]"
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -154,12 +156,12 @@ export default function RegisterPage() {
                     onChange={handleConfirmPasswordChange}
                     required
                     minLength={6}
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+                    className="w-full px-4 py-2 pr-10 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded active:scale-[0.97]"
                     tabIndex={-1}
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -186,6 +188,7 @@ export default function RegisterPage() {
           </>
         )}
       </div>
+      </FadeInSection>
     </AuthLayout>
   );
 }

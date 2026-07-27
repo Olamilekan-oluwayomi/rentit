@@ -65,11 +65,11 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
       {/* Panel */}
       <div className="relative w-full bg-surface rounded-t-2xl shadow-xl max-h-[85vh] overflow-y-auto animate-slide-up">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10 sticky top-0 bg-surface z-10">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-surface z-10">
           <h2 className="text-lg font-heading font-semibold text-text-primary">Filters</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
             aria-label="Close filters"
           >
             <X size={18} />
@@ -86,10 +86,10 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
                 <button
                   key={cat}
                   onClick={() => setDraft((d) => ({ ...d, category: cat, page: 1 }))}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97] ${
                     draft.category === cat
                       ? "bg-accent text-white"
-                      : "bg-gray-100 dark:bg-white/5 text-text-secondary"
+                      : "bg-surface-secondary text-text-secondary"
                   }`}
                 >
                   {cat}
@@ -106,7 +106,7 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
               value={draft.location}
               onChange={(e) => setDraft((d) => ({ ...d, location: e.target.value, page: 1 }))}
               placeholder="City, Country"
-              className="w-full px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-transparent text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
             <select
               value={draft.sort}
               onChange={(e) => setDraft((d) => ({ ...d, sort: e.target.value, page: 1 }))}
-              className="w-full px-3 py-2 border border-gray-200 dark:border-white/10 rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-transparent text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -136,16 +136,16 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-gray-100 dark:border-white/10 flex gap-3 sticky bottom-0 bg-surface">
+        <div className="px-5 py-4 border-t border-border flex gap-3 sticky bottom-0 bg-surface">
           <button
             onClick={handleClear}
-            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-300 dark:border-white/15 text-text-primary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-border text-text-primary hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
           >
             Clear Filters
           </button>
           <button
             onClick={handleApply}
-            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity"
+            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
           >
             Apply Filters
           </button>

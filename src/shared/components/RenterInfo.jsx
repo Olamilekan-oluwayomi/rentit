@@ -3,7 +3,7 @@ export default function RenterInfo({ renter }) {
 
   return (
     <div className="flex items-center gap-2 mt-1">
-      <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden shrink-0">
+      <div className="w-5 h-5 rounded-full bg-surface-secondary overflow-hidden shrink-0">
         {renter.avatar_url ? (
           <img src={renter.avatar_url} alt={renter.full_name} className="w-full h-full object-cover" />
         ) : (

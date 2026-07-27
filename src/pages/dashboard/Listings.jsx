@@ -5,6 +5,7 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { Button } from "../../design";
 import MyListingsTab from "../../components/dashboard/MyListingsTab";
+import FadeInSection from "../../shared/components/FadeInSection";
 
 export default function DashboardListings() {
   const { user } = useAuth();
@@ -32,14 +33,14 @@ export default function DashboardListings() {
           <div className="flex items-center border border-border rounded-lg overflow-hidden">
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 transition-colors ${viewMode === "list" ? "bg-accent/10 text-accent" : "text-text-muted hover:text-text-primary"}`}
+              className={`p-2 transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${viewMode === "list" ? "bg-accent/10 text-accent" : "text-text-muted hover:text-text-primary"}`}
               aria-label="List view"
             >
               <ListIcon size={16} />
             </button>
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 transition-colors ${viewMode === "grid" ? "bg-accent/10 text-accent" : "text-text-muted hover:text-text-primary"}`}
+              className={`p-2 transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${viewMode === "grid" ? "bg-accent/10 text-accent" : "text-text-muted hover:text-text-primary"}`}
               aria-label="Grid view"
             >
               <LayoutGrid size={16} />
@@ -90,20 +91,23 @@ function GridView() {
 
   if (listings.length === 0) {
     return (
+      <FadeInSection>
       <div className="bg-surface border border-border rounded-lg p-12 text-center">
         <p className="text-sm text-text-muted">No listings yet.</p>
-        <Link to="/listings/new" className="inline-block mt-2 text-sm font-medium text-accent hover:underline">
+        <Link to="/listings/new" className="inline-block mt-2 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
           Create your first listing
         </Link>
       </div>
+      </FadeInSection>
     );
   }
 
   return (
+    <FadeInSection>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {listings.map((listing) => (
         <div key={listing.id} className="bg-surface border border-border rounded-lg overflow-hidden hover:-translate-y-[2px] transition-all duration-normal">
-          <Link to={`/listings/${listing.id}`}>
+          <Link to={`/listings/${listing.id}`} className="block active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-t-lg">
             <div className="relative aspect-4/3 bg-surface-tertiary/40">
               {listing.images?.[0] ? (
                 <img
@@ -126,7 +130,7 @@ function GridView() {
             </div>
           </Link>
           <div className="p-3">
-            <Link to={`/listings/${listing.id}`}>
+            <Link to={`/listings/${listing.id}`} className="active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded inline-block">
               <h3 className="text-sm font-heading font-semibold text-text-primary truncate">{listing.title}</h3>
             </Link>
             <div className="flex items-baseline gap-1 mt-1">
@@ -142,5 +146,6 @@ function GridView() {
         </div>
       ))}
     </div>
+    </FadeInSection>
   );
 }

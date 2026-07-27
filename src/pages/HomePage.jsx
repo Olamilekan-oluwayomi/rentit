@@ -176,7 +176,7 @@ export default function HomePage() {
                 </div>
                 <div className="p-1.5 flex items-stretch">
                   <button
-                    className="w-full sm:w-auto bg-accent text-white rounded-xl px-7 py-3 text-sm font-medium hover:bg-accent-hover transition-colors flex items-center gap-2.5 justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                    className="w-full sm:w-auto bg-accent text-white rounded-xl px-7 py-3 text-sm font-medium hover:bg-accent-hover transition-colors flex items-center gap-2.5 justify-center active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                     aria-label="Search"
                   >
                     <Search size={17} />

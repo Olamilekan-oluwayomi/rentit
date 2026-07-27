@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
                 whileInView={prefersReduced ? {} : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: i * 0.05, ease: "easeOut" }}
-                className="bg-surface border border-border rounded-xl p-6 flex flex-col transition-all duration-normal hover:-translate-y-[2px] hover:shadow-md"
+                className="bg-surface border border-border rounded-xl p-6 flex flex-col transition-all duration-normal hover:-translate-y-[2px] hover:border-accent/30"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Avatar src={avatarSrc} name={reviewer?.full_name} size="sm" />

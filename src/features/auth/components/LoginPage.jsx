@@ -13,6 +13,7 @@ import { motion } from "motion/react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { AuthLayout } from "../../../layouts";
+import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -55,6 +56,7 @@ export default function LoginPage() {
 
   return (
     <AuthLayout>
+      <FadeInSection>
       <div className="w-full bg-surface rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-heading font-bold text-center mb-6 text-text-primary">Welcome Back</h1>
 
@@ -74,7 +76,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
             />
           </div>
 
@@ -87,7 +89,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
             />
           </div>
 
@@ -109,7 +111,7 @@ export default function LoginPage() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+            <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-surface px-2 text-text-secondary">or continue with</span>
@@ -118,7 +120,7 @@ export default function LoginPage() {
 
         <button
           onClick={() => handleOAuth("google")}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-surface-secondary transition-colors text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
         >
           Google
         </button>
@@ -130,6 +132,7 @@ export default function LoginPage() {
         </Link>
           </p>
         </div>
+      </FadeInSection>
     </AuthLayout>
   );
 }

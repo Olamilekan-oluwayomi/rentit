@@ -99,7 +99,7 @@ export default function ProfileCompletionOverlay() {
               maxLength={NAME_MAX}
               required
               autoFocus
-              className="w-full px-4 py-2.5 border border-gray-300 dark:border-white/15 rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+              className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
             />
             {nameError && (
               <p className="text-xs text-red-500 mt-1">{nameError}</p>
@@ -115,7 +115,7 @@ export default function ProfileCompletionOverlay() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2"
+            className="w-full bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             {(submitting || saving) && (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

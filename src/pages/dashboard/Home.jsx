@@ -75,7 +75,7 @@ export default function DashboardHome() {
             {allBookings.length === 0 ? (
               <div className="bg-surface border border-border rounded-lg p-8 text-center">
                 <p className="text-sm text-text-muted">No bookings yet.</p>
-                <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline">
+                <Link to="/" className="inline-block mt-2 text-sm font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
                   Browse listings to get started
                 </Link>
               </div>
@@ -89,7 +89,7 @@ export default function DashboardHome() {
                     <Link
                       key={booking.id}
                       to={`/booking/${booking.id}`}
-                      className="flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
+                      className="flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-text-primary truncate">
@@ -147,7 +147,7 @@ export default function DashboardHome() {
                   <Link
                     key={booking.id}
                     to={`/booking/${booking.id}`}
-                    className="flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors"
+                    className="flex items-center justify-between px-4 py-3 hover:bg-surface-secondary transition-colors active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-text-primary truncate">
