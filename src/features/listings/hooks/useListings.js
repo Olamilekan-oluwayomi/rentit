@@ -55,7 +55,7 @@ export function useListings(filters = {}) {
     // ── Data query ───────────────────────────────────────────
     let dataQuery = supabase
       .from("listings")
-      .select("*");
+      .select("*, owner:owner_id(id, full_name, avatar_url)");
 
     // ── Active-only filter (skip when fetching owner's own listings) ──
     if (!filters.includeInactive) {

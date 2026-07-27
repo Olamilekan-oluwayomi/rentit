@@ -71,14 +71,13 @@ function TextSkeleton({ lines = 3, className = "", ...props }) {
 
 function GridSkeleton({
   count = 8,
-  columns = { default: 1, sm: 2, lg: 3, xl: 4 },
   className = "",
   ...props
 }) {
   return (
     <div
       className={[
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5 lg:gap-6",
         className,
       ].join(" ")}
       aria-hidden="true"

@@ -1,23 +1,8 @@
-/**
- * ListingGrid.jsx
- * ----------------
- * Responsive grid container that renders ListingCard components with proper
- * loading (skeleton), empty, and error state handling. Acts as the single
- * entry point for displaying lists of listings across the application.
- */
 import ListingCard from "./ListingCard";
 import ListingSkeleton from "./ListingSkeleton";
-import { AnimatedListItem } from "../../../shared/components/AnimatedList";
-import { EmptyState } from "../../../design";
-import { Button } from "../../../design";
-import { AutoGrid } from "../../../layouts";
+import AnimatedList, { AnimatedListItem } from "../../../shared/components/AnimatedList";
+import { EmptyState, Button } from "../../../design";
 
-/**
- * Responsive listing grid with loading, empty, and error states.
- * Renders a 1-4 column responsive grid that adapts to screen width.
- * Handles all edge states so parent components just pass data.
- * @param {{ listings: object[], loading: boolean, error: string|null, emptyMessage: string, onClearFilters?: () => void }} props
- */
 export default function ListingGrid({
   listings,
   loading,
@@ -25,8 +10,7 @@ export default function ListingGrid({
   emptyMessage = "No listings found.",
   onClearFilters,
 }) {
-  // Show skeleton placeholders while data is being fetched.
-  if (loading) return <ListingSkeleton count={8} />;
+  if (loading) return <ListingSkeleton count={10} />;
 
   if (error) {
     return (
@@ -57,14 +41,13 @@ export default function ListingGrid({
     );
   }
 
-  // Default state — render the responsive grid of listing cards.
   return (
-    <AutoGrid minWidth="240px">
+    <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5 lg:gap-6">
       {listings.map((listing) => (
         <AnimatedListItem key={listing.id}>
           <ListingCard listing={listing} />
         </AnimatedListItem>
       ))}
-    </AutoGrid>
+    </AnimatedList>
   );
 }
