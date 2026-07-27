@@ -392,7 +392,7 @@ function RelatedListings({ category, excludeId }) {
 }
 
 function RelatedListingCard({ listing }) {
-  const imageUrl = getListingImageUrl(listing.images?.[0]);
+  const imageUrl = getListingImageUrl(listing.images?.[0], { width: 320, height: 320 });
 
   return (
     <Link

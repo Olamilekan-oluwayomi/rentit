@@ -100,7 +100,7 @@ export default function EditListingPage() {
 
         const { error: uploadError } = await supabase.storage
           .from("listing-images")
-          .upload(filePath, compressed);
+          .upload(filePath, compressed, { cacheControl: "31536000" });
 
         if (uploadError) {
           addToast(`Failed to upload ${file.name}: ${uploadError.message}`, "error");

@@ -21,7 +21,7 @@ export default function UserMenu() {
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
   const navigate = useNavigate();
-  const avatarSrc = getAvatarUrl(profile?.avatar_url);
+  const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 40, height: 40 });
 
   useEffect(() => {
     const handleClickOutside = (e) => {

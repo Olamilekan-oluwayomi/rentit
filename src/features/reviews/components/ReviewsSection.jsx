@@ -109,7 +109,7 @@ export default function ReviewsSection({ ownerId, ratingCount }) {
       <div className="space-y-5">
         {reviews.map((review) => {
           const reviewer = review.reviewer;
-          const avatarSrc = reviewer?.avatar_url ? getAvatarUrl(reviewer.avatar_url) : null;
+          const avatarSrc = reviewer?.avatar_url ? getAvatarUrl(reviewer.avatar_url, { width: 32, height: 32 }) : null;
 
           return (
             <div key={review.id} className="flex gap-3">

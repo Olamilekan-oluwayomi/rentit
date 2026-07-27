@@ -104,8 +104,8 @@ export default function DashboardMessages() {
                   }`}
                 >
                   <div className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
-                    {getAvatarUrl(conv.counterparty?.avatar_url) ? (
-                      <img src={getAvatarUrl(conv.counterparty.avatar_url)} alt="" className="w-full h-full object-cover" />
+                    {getAvatarUrl(conv.counterparty?.avatar_url, { width: 44, height: 44 }) ? (
+                      <img src={getAvatarUrl(conv.counterparty.avatar_url, { width: 44, height: 44 })} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-accent font-heading font-bold text-sm">
                         {(conv.counterparty?.full_name ?? "?")[0]?.toUpperCase() || "?"}

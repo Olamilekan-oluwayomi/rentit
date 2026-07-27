@@ -15,8 +15,8 @@ import { Badge, Avatar } from "../../../design";
 import { getListingImageUrl, getAvatarUrl } from "../../../utils/storage";
 
 export default function ListingCard({ listing }) {
-  const imageUrl = getListingImageUrl(listing.images?.[0]);
-  const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url) : null;
+  const imageUrl = getListingImageUrl(listing.images?.[0], { width: 480, height: 480 });
+  const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url, { width: 32, height: 32 }) : null;
   const ownerName = listing.owner?.full_name || "Owner";
 
   return (

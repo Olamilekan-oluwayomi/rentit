@@ -60,7 +60,7 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((t, i) => {
             const reviewer = t.reviewer;
-            const avatarSrc = reviewer?.avatar_url ? getAvatarUrl(reviewer.avatar_url) : null;
+            const avatarSrc = reviewer?.avatar_url ? getAvatarUrl(reviewer.avatar_url, { width: 40, height: 40 }) : null;
 
             return (
               <motion.div

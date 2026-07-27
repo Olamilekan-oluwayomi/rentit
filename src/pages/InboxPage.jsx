@@ -111,9 +111,9 @@ export default function InboxPage() {
                   }`}
                 >
                   <div className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
-                    {getAvatarUrl(conv.counterparty?.avatar_url) ? (
+                    {getAvatarUrl(conv.counterparty?.avatar_url, { width: 44, height: 44 }) ? (
                       <img
-                        src={getAvatarUrl(conv.counterparty.avatar_url)}
+                        src={getAvatarUrl(conv.counterparty.avatar_url, { width: 44, height: 44 })}
                         alt=""
                         className="w-full h-full object-cover"
                       />

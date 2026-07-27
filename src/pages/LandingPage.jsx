@@ -161,7 +161,7 @@ export default function LandingPage() {
                 <div className="relative aspect-[4/3] overflow-hidden bg-surface-tertiary/40">
                   {heroListing.images?.[0] ? (
                     <img
-                      src={getListingImageUrl(heroListing.images[0])}
+                      src={getListingImageUrl(heroListing.images[0], { width: 600, height: 450 })}
                       alt={heroListing.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -198,7 +198,7 @@ export default function LandingPage() {
                   {heroListing.owner && (
                     <div className="flex items-center gap-2 mt-3">
                       <Avatar
-                        src={heroListing.owner.avatar_url ? getAvatarUrl(heroListing.owner.avatar_url) : null}
+                        src={heroListing.owner.avatar_url ? getAvatarUrl(heroListing.owner.avatar_url, { width: 32, height: 32 }) : null}
                         name={heroListing.owner.full_name}
                         size="sm"
                       />
@@ -310,8 +310,8 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
                 {featuredListings.slice(0, 4).map((listing, i) => {
-                  const imageUrl = getListingImageUrl(listing.images?.[0]);
-                  const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url) : null;
+                  const imageUrl = getListingImageUrl(listing.images?.[0], { width: 400, height: 400 });
+                  const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url, { width: 24, height: 24 }) : null;
                   const ownerName = listing.owner?.full_name || "Owner";
 
                   return (

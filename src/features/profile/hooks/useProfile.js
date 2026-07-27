@@ -99,7 +99,7 @@ export function useProfile() {
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(filePath, compressed, { upsert: true });
+        .upload(filePath, compressed, { upsert: true, cacheControl: "31536000" });
 
       if (uploadError) {
         setError(uploadError.message);

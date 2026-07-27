@@ -28,7 +28,7 @@ export default function ProfileAvatar({
 
   const displayName = user?.user_metadata?.full_name || user?.email || "";
   const initials = getInitials(displayName);
-  const avatarSrc = getAvatarUrl(avatarUrl);
+  const avatarSrc = getAvatarUrl(avatarUrl, { width: 96, height: 96 });
 
   // ── Event Handlers ────────────────────────────────────────────────────
   const handleFileChange = async (e) => {

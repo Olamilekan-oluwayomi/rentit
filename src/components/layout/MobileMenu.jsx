@@ -40,7 +40,7 @@ export default function MobileMenu({ open, onClose }) {
   const { profile } = useProfileContext();
   const { count: unreadCount } = useUnreadCount();
   const navigate = useNavigate();
-  const avatarSrc = getAvatarUrl(profile?.avatar_url);
+  const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 40, height: 40 });
 
   useEffect(() => {
     if (open) {

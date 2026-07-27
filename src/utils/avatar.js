@@ -6,6 +6,19 @@
  * No side effects — all functions are stateless.
  */
 
+/**
+ * Maps Avatar component size props to pixel dimensions for image transforms.
+ * Ensures avatars are requested at the actual display size rather than
+ * downloading full-resolution originals.
+ */
+export const AVATAR_PIXEL_SIZES = {
+  sm: 32,
+  md: 40,
+  lg: 48,
+  xl: 64,
+  "2xl": 80,
+};
+
 /** MIME types accepted for avatar uploads */
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 /** 10 MB — files above this are rejected before compression */

@@ -20,8 +20,9 @@ export default function ImageGallery({ images = [] }) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const urls = images.map(getListingImageUrl).filter(Boolean);
+  const urls = images.map((p) => getListingImageUrl(p, { width: 960, height: 540 })).filter(Boolean);
   const hasImages = urls.length > 0;
+  const rawUrls = images.map((p) => getListingImageUrl(p)).filter(Boolean);
 
   // ── Navigation Callbacks ──────────────────────────────────────────
   const goNext = useCallback(() => {
@@ -132,7 +133,7 @@ export default function ImageGallery({ images = [] }) {
                 aria-label={`View image ${i + 1}`}
               >
                 <img
-                  src={url}
+                  src={getListingImageUrl(images[i], { width: 80, height: 80 })}
                   alt={`Thumbnail ${i + 1}`}
                   className="w-full h-full object-cover"
                   loading="lazy"

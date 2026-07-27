@@ -137,7 +137,7 @@ export default function ImageUpload({
               className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border border-border"
             >
               <img
-                src={getListingImageUrl(path)}
+                src={getListingImageUrl(path, { width: 96, height: 96 })}
                 alt={`Existing ${i + 1}`}
                 className="w-full h-full object-cover"
               />

@@ -113,7 +113,7 @@ export default function DashboardLayout() {
     location.pathname === path || (path !== "/dashboard" && location.pathname.startsWith(path))
   )?.[1] || "Dashboard";
 
-  const avatarSrc = getAvatarUrl(profile?.avatar_url);
+  const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 40, height: 40 });
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
   const initials = displayName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
 

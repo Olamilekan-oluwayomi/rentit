@@ -7,7 +7,6 @@
 |--------------------------------------------------------------------------
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
 /* ==========================================================================
@@ -54,8 +53,8 @@ body {
      Sage is a secondary accent for category tags and lower-emphasis
      highlights, so not everything on the page shares one color. */
 
-  --color-accent: #C4531D;
-  --color-accent-hover: #A8461A;
+  --color-accent: #B8481A;
+  --color-accent-hover: #9E3F16;
   --color-sage: #6B7A5E;
   --color-sage-hover: #56634C;
 
@@ -70,7 +69,7 @@ body {
 
   --color-text-primary: #1C1B19;
   --color-text-secondary: #6B6558;
-  --color-text-muted: #A39C8C;
+  --color-text-muted: #7C7568;
 
   --color-border: #E4DDCE;
 
@@ -139,9 +138,9 @@ body {
 
   --color-border: #3A342B;
 
-  --color-accent: #D9713A;
+  --color-accent: #B8481A;
 
-  --color-accent-hover: #E88A57;
+  --color-accent-hover: #9E3F16;
 
   --color-sage: #7C8C6D;
 

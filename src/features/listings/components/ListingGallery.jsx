@@ -17,7 +17,7 @@ import { getListingImageUrl } from "../../../utils/storage";
 
 export default function ListingGallery({ images = [] }) {
   // ── State ────────────────────────────────────────────────────────────
-  const urls = images.map(getListingImageUrl).filter(Boolean);
+  const urls = images.map((p) => getListingImageUrl(p, { width: 960, height: 540 })).filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 

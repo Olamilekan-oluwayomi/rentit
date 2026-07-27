@@ -33,7 +33,7 @@ export default function DashboardSettings() {
     await updateProfile({ full_name: fullName, location, bio });
   };
 
-  const avatarSrc = getAvatarUrl(profile?.avatar_url);
+  const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 96, height: 96 });
   const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
   const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 

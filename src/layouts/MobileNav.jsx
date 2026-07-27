@@ -38,7 +38,7 @@ export default function MobileNav({ open, onClose }) {
   const { profile } = useProfileContext();
   const { count: unreadCount } = useUnreadCount();
   const navigate = useNavigate();
-  const avatarSrc = getAvatarUrl(profile?.avatar_url);
+  const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 32, height: 32 });
 
   useEffect(() => {
     if (open) {

@@ -111,7 +111,7 @@ export default function BookingChatPage() {
     ? booking?.listings?.profiles
     : booking?.profiles;
   const counterpartyName = counterpartyProfile?.full_name ?? (isRenter ? "Owner" : "Renter");
-  const counterpartyAvatar = getAvatarUrl(counterpartyProfile?.avatar_url);
+  const counterpartyAvatar = getAvatarUrl(counterpartyProfile?.avatar_url, { width: 36, height: 36 });
 
   return (
     <div className="h-full flex flex-col bg-background">

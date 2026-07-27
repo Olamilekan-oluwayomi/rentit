@@ -40,7 +40,7 @@ export default function OwnerCard({ owner, loading, listingId }) {
 
   if (!owner) return null;
 
-  const avatarSrc = getAvatarUrl(owner.avatar_url);
+  const avatarSrc = getAvatarUrl(owner.avatar_url, { width: 64, height: 64 });
   const memberSince = new Date(owner.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
