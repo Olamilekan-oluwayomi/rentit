@@ -36,6 +36,7 @@ const companyLinks = [
   { label: "Terms", to: "/terms" },
 ];
 
+  const currentYear = new Date().getFullYear();
 /**
  * @returns {JSX.Element} The site-wide footer.
  */
@@ -96,7 +97,7 @@ export default function Footer() {
       <div className="border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <p className="text-sm text-text-secondary text-center">
-            &copy; 2026 RentIt. All rights reserved.
+            &copy; {currentYear} RentIt. All rights reserved.
           </p>
         </div>
       </div>
