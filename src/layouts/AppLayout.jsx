@@ -24,6 +24,7 @@ import { useProfileContext } from "../features/profile/context/ProfileContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ProfileCompletionOverlay from "../features/profile/components/ProfileCompletionOverlay";
+import TermsAcceptanceOverlay from "../features/profile/components/TermsAcceptanceOverlay";
 
 const NO_FOOTER_PATHS = ["/inbox"];
 
@@ -36,7 +37,7 @@ function hasNoFooter(pathname) {
 export default function AppLayout() {
   const location = useLocation();
   const noFooter = hasNoFooter(location.pathname);
-  const { completionVisible } = useProfileContext();
+  const { completionVisible, termsOverlayVisible } = useProfileContext();
 
   return (
     <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
@@ -46,6 +47,7 @@ export default function AppLayout() {
       </main>
       {!noFooter && <Footer />}
       {completionVisible && <ProfileCompletionOverlay />}
+      {termsOverlayVisible && <TermsAcceptanceOverlay />}
     </div>
   );
 }

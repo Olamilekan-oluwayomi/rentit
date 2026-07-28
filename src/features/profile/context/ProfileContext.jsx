@@ -36,6 +36,7 @@ export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [completionVisible, setCompletionVisible] = useState(false);
+  const [termsOverlayVisible, setTermsOverlayVisible] = useState(false);
   const completionResolveRef = useRef(null);
 
   /**
@@ -171,6 +172,20 @@ export function ProfileProvider({ children }) {
     });
   }, [isProfileComplete, showCompletion]);
 
+  const hideTermsAcceptance = useCallback(() => {
+    setTermsOverlayVisible(false);
+  }, []);
+
+  // ── Terms acceptance gate ──────────────────────────────────────────
+  // After profile loads, show the terms overlay if terms were never accepted.
+  // This catches OAuth users who skipped the RegisterPage checkbox. Existing
+  // email/password users who accepted during signup already have the field set.
+  useEffect(() => {
+    if (!loading && profile && !profile.terms_accepted_at) {
+      setTermsOverlayVisible(true);
+    }
+  }, [loading, profile]);
+
   return (
     <ProfileContext.Provider
       value={{
@@ -181,8 +196,10 @@ export function ProfileProvider({ children }) {
         isProfileLoading,
         isProfileComplete,
         completionVisible,
+        termsOverlayVisible,
         showCompletion,
         hideCompletion,
+        hideTermsAcceptance,
         waitForCompletion,
       }}
     >
@@ -196,7 +213,7 @@ export function ProfileProvider({ children }) {
  *
  * Must be used inside a <ProfileProvider>.
  *
- * @returns {{ profile, setProfile, refreshProfile, loading, isProfileLoading, isProfileComplete, completionVisible, showCompletion, hideCompletion, waitForCompletion }}
+ * @returns {{ profile, setProfile, refreshProfile, loading, isProfileLoading, isProfileComplete, completionVisible, termsOverlayVisible, showCompletion, hideCompletion, hideTermsAcceptance, waitForCompletion }}
  * @throws {Error} If used outside a ProfileProvider.
  */
 // eslint-disable-next-line react-refresh/only-export-components

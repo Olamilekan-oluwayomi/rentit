@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
     supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: redirectTo || `${window.location.origin}/confirm`,
+        redirectTo: redirectTo || `${window.location.origin}/`,
       },
     });
 
