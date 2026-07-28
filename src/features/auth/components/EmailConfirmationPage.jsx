@@ -20,11 +20,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
+import { useAuth } from "../context/AuthContext";
 import { AuthLayout } from "../../../layouts";
 import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function EmailConfirmationPage() {
   const [status, setStatus] = useState("loading");
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   /**
@@ -68,12 +70,12 @@ export default function EmailConfirmationPage() {
     confirmEmail();
   }, []);
 
-  /** Auto-redirect to login 2s after successful confirmation. */
+  /** Auto-redirect to home 2s after successful confirmation. */
   useEffect(() => {
     if (status !== "success") return;
 
     const timer = setTimeout(() => {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -119,14 +121,14 @@ export default function EmailConfirmationPage() {
 
             <p className="text-text-secondary mb-6">
               Your account has been verified successfully. Redirecting you to
-              the login page...
+              the home page...
             </p>
 
             <Link
-              to="/login"
+              to="/"
               className="inline-block bg-accent text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
             >
-              Go to Login Now
+              Go to Home Now
             </Link>
           </>
         )}

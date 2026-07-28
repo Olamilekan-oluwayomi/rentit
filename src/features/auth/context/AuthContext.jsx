@@ -72,8 +72,13 @@ export function AuthProvider({ children }) {
     supabase.auth.signInWithPassword({ email, password });
 
   /** Kick off an OAuth flow for the given provider (e.g. "google"). */
-  const signInWithOAuth = (provider) =>
-    supabase.auth.signInWithOAuth({ provider });
+  const signInWithOAuth = (provider, redirectTo) =>
+    supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: redirectTo || `${window.location.origin}/confirm`,
+      },
+    });
 
   const signOut = () => supabase.auth.signOut();
 

@@ -161,6 +161,9 @@ describe('signInWithOAuth', () => {
       await result.current.signInWithOAuth('google')
     })
 
-    expect(supabase.auth.signInWithOAuth).toHaveBeenCalledWith({ provider: 'google' })
+    expect(supabase.auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: { redirectTo: 'http://localhost:3000/confirm' },
+    })
   })
 })

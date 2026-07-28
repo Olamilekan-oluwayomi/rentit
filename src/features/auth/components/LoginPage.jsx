@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   const handleOAuth = async (provider) => {
     setError(null);
-    const { error } = await signInWithOAuth(provider);
+    const { error } = await signInWithOAuth(provider, redirectTo);
     if (error) setError(error.message);
   };
 
