@@ -42,6 +42,13 @@ export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 /** Number of listings displayed per page. */
 export const LISTINGS_PER_PAGE = 12;
 
+// ── Legal version strings ─────────────────────────────────────────
+// Bump these when Terms or Privacy Policy content changes materially.
+// The profile row records which version the user accepted at signup.
+
+export const TERMS_VERSION = "1.0";
+export const PRIVACY_VERSION = "1.0";
+
 // ── Default filter state ────────────────────────────────────────────
 // Centralised so the page and URL-sync logic stay in sync.
 

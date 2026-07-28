@@ -23,6 +23,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { AuthLayout } from "../../../layouts";
 import FadeInSection from "../../../shared/components/FadeInSection";
+import { TERMS_VERSION, PRIVACY_VERSION } from "../../../shared/lib/constants";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -31,6 +32,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -47,7 +49,12 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const { error } = await signUp(email, password, fullName);
+    const { error } = await signUp(email, password, fullName, {
+      terms_accepted_at: new Date().toISOString(),
+      terms_version: TERMS_VERSION,
+      privacy_accepted_at: new Date().toISOString(),
+      privacy_version: PRIVACY_VERSION,
+    });
     if (error) {
       setError(error.message);
       setLoading(false);
@@ -178,9 +185,32 @@ export default function RegisterPage() {
                 </div>
               </div>
 
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => {
+                    setAcceptedTerms(e.target.checked);
+                    if (error) setError(null);
+                  }}
+                  required
+                  className="mt-0.5 h-4 w-4 rounded border-border text-accent focus:ring-accent/40"
+                />
+                <span className="text-sm text-text-secondary leading-snug">
+                  I agree to the{" "}
+                  <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+
               <motion.button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !acceptedTerms}
                 whileTap={{ scale: 0.97 }}
                 className="w-full bg-accent text-white py-2 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
               >

@@ -73,16 +73,25 @@ export function ProfileProvider({ children }) {
       // Auto-populate avatar from OAuth if available
       const oauthAvatar = getOAuthAvatar();
 
+      const meta = user.user_metadata || {};
+      const profileData = {
+        id: user.id,
+        full_name: user.user_metadata?.full_name || "",
+        avatar_url: oauthAvatar || null,
+      };
+
+      if (meta.terms_accepted_at) {
+        profileData.terms_accepted_at = meta.terms_accepted_at;
+        profileData.terms_version = meta.terms_version || null;
+      }
+      if (meta.privacy_accepted_at) {
+        profileData.privacy_accepted_at = meta.privacy_accepted_at;
+        profileData.privacy_version = meta.privacy_version || null;
+      }
+
       const { data: created, error: createError } = await supabase
         .from("profiles")
-        .upsert(
-          {
-            id: user.id,
-            full_name: user.user_metadata?.full_name || "",
-            avatar_url: oauthAvatar || null,
-          },
-          { onConflict: "id" }
-        )
+        .upsert(profileData, { onConflict: "id" })
         .select()
         .single();
 

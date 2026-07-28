@@ -55,13 +55,14 @@ export function AuthProvider({ children }) {
    * Register a new user with email, password, and full name.
    * Sends a confirmation email that redirects to /confirm.
    */
-  const signUp = (email, password, fullName) =>
+  const signUp = (email, password, fullName, extraMetadata = {}) =>
     supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
+          ...extraMetadata,
         },
         emailRedirectTo: `${window.location.origin}/confirm`,
       },
