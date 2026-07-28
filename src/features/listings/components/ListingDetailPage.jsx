@@ -21,15 +21,16 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { MapPin, ChevronLeft } from "lucide-react";
+import { MapPin, ChevronLeft, Heart } from "lucide-react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { useListing } from "../hooks/useListing";
+import { useFavorites } from "../../favorites/hooks/useFavorites";
 import { useCreateBooking } from "../../bookings/hooks/useCreateBooking";
 import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { supabase } from "../../../shared/lib/supabase";
 import { getListingImageUrl } from "../../../utils/storage";
-import { Button, EmptyState, Badge, StarRatingInput } from "../../../design";
+import { Button, EmptyState, Badge, StarRatingInput, IconButton } from "../../../design";
 import ReviewsSection from "../../reviews/components/ReviewsSection";
 import ListingGallery from "./ListingGallery";
 import OwnerCard from "./OwnerCard";
@@ -44,6 +45,7 @@ export default function ListingDetailPage() {
   const { addToast } = useToast();
   const { listing, loading, error, softDeleteListing, hardDeleteListing } = useListing(id);
   const { createBooking, submitting: bookingSubmitting } = useCreateBooking();
+  const { isFavorited, toggleFavorite } = useFavorites();
 
   const [showSoftDelete, setShowSoftDelete] = useState(false);
   const [showHardDelete, setShowHardDelete] = useState(false);
@@ -180,10 +182,25 @@ export default function ListingDetailPage() {
         <div className="lg:col-span-2 space-y-8">
           <div>
             <Badge variant="sage" className="mb-3">{listing.category}</Badge>
-            <h1 className="text-3xl lg:text-4xl font-heading font-bold text-text-primary leading-tight mb-6">
-              {listing.title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-start gap-3">
+              <h1 className="text-3xl lg:text-4xl font-heading font-bold text-text-primary leading-tight flex-1">
+                {listing.title}
+              </h1>
+              {user && !isOwner && (
+                <button
+                  onClick={() => toggleFavorite(listing.id)}
+                  className={`shrink-0 mt-1 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-fast active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                    isFavorited(listing.id)
+                      ? "bg-danger/10 text-danger hover:bg-danger/20"
+                      : "bg-surface-secondary text-text-secondary hover:text-danger hover:bg-danger/5"
+                  }`}
+                  aria-label={isFavorited(listing.id) ? "Remove from saved" : "Save listing"}
+                >
+                  <Heart size={20} fill={isFavorited(listing.id) ? "currentColor" : "none"} />
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-3 mt-2">
               {listing.location && (
                 <span className="flex items-center gap-1.5 text-sm text-text-secondary">
                   <MapPin size={15} />

@@ -14,11 +14,14 @@ import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { Badge, Avatar } from "../../../design";
 import { getListingImageUrl, getAvatarUrl } from "../../../utils/storage";
+import { useFavorites } from "../../favorites/hooks/useFavorites";
 
 const ListingCard = memo(function ListingCard({ listing }) {
+  const { isFavorited, toggleFavorite } = useFavorites();
   const imageUrl = getListingImageUrl(listing.images?.[0], { width: 480, height: 480 });
   const ownerAvatar = listing.owner?.avatar_url ? getAvatarUrl(listing.owner.avatar_url, { width: 32, height: 32 }) : null;
   const ownerName = listing.owner?.full_name || "Owner";
+  const favorited = isFavorited(listing.id);
 
   return (
     <Link
@@ -44,11 +47,19 @@ const ListingCard = memo(function ListingCard({ listing }) {
         <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
 
         <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 text-text-secondary hover:text-accent hover:bg-white transition-all duration-fast active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-          aria-label="Add to wishlist"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFavorite(listing.id);
+          }}
+          className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full transition-all duration-fast active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+            favorited
+              ? "bg-danger/10 text-danger hover:bg-danger/20"
+              : "bg-white/90 text-text-secondary hover:text-accent hover:bg-white"
+          }`}
+          aria-label={favorited ? "Remove from saved" : "Save listing"}
         >
-          <Heart size={16} />
+          <Heart size={16} fill={favorited ? "currentColor" : "none"} />
         </button>
 
        <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">

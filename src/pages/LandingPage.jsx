@@ -27,9 +27,11 @@ import { useCategoryCounts } from "../features/landing/hooks/useCategoryCounts";
 // import { CATEGORIES } from "../shared/lib/constants";
 import { Button, Badge, Avatar } from "../design";
 import { getListingImageUrl, getAvatarUrl } from "../utils/storage";
+import { Suspense, lazy } from "react";
 import FadeInSection from "../shared/components/FadeInSection";
-import TestimonialsSection from "../features/landing/components/TestimonialsSection";
-import FAQSection from "../features/landing/components/FAQSection";
+
+const TestimonialsSection = lazy(() => import("../features/landing/components/TestimonialsSection"));
+const FAQSection = lazy(() => import("../features/landing/components/FAQSection"));
 
 const CATEGORY_ICONS = {
   Tools: Wrench,
@@ -552,9 +554,13 @@ export default function LandingPage() {
         </section>
       </FadeInSection>
 
-      <TestimonialsSection />
+      <Suspense fallback={null}>
+        <TestimonialsSection />
+      </Suspense>
 
-      <FAQSection />
+      <Suspense fallback={null}>
+        <FAQSection />
+      </Suspense>
 
       <FadeInSection>
         <section className="py-16 lg:py-20">

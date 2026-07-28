@@ -3,19 +3,22 @@
 | AppLayout.jsx
 |--------------------------------------------------------------------------
 |
-| Primary application layout wrapping most authenticated pages. Renders Navbar,
-| main content, and Footer. Suppresses Footer on /inbox and /booking/:id routes.
-| Passes through dashboard routes unwrapped (DashboardShell handles its own chrome).
-| Shows ProfileCompletionOverlay when triggered.
+| Primary application layout wrapping authenticated (non-dashboard) pages.
+| Renders Navbar, main content, and Footer. Shows ProfileCompletionOverlay
+| when triggered. Used as a React Router v6 layout route — renders child
+| routes via Outlet.
 |
-| Route: All pages except /login, /register, /dashboard/*
+| Route: /profile, /listings/new, /listings/:id/edit, /inbox, /booking/:id
 | Responsibilities: Provide global Navbar/Footer chrome; profile completion gate
-| Dependencies: React Router, ProfileContext, Navbar, Footer, ProfileCompletionOverlay
-| Notes: Dashboard routes short-circuit to render children directly.
+| Dependencies: React Router Outlet, ProfileContext, Navbar, Footer, ProfileCompletionOverlay
+| Notes: Dashboard routes are NOT wrapped by this layout — DashboardShell
+|        handles its own chrome. Public routes use PublicLayout instead,
+|        keeping profile-completion logic off the landing page.
 |
 |--------------------------------------------------------------------------
 */
 
+import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import Navbar from "./Navbar";
@@ -30,25 +33,16 @@ function hasNoFooter(pathname) {
   return false;
 }
 
-function isDashboardRoute(pathname) {
-  return pathname.startsWith("/dashboard");
-}
-
-export default function AppLayout({ children }) {
+export default function AppLayout() {
   const location = useLocation();
   const noFooter = hasNoFooter(location.pathname);
-  const dashboard = isDashboardRoute(location.pathname);
   const { completionVisible } = useProfileContext();
-
-  if (dashboard) {
-    return <>{children}</>;
-  }
 
   return (
     <div className={`${noFooter ? "h-screen" : "min-h-screen"} flex flex-col bg-background text-text-primary`}>
       <Navbar />
       <main className="flex-1 min-h-0" id="main-content">
-        {children}
+        <Outlet />
       </main>
       {!noFooter && <Footer />}
       {completionVisible && <ProfileCompletionOverlay />}

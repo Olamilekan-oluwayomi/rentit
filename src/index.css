@@ -145,21 +145,23 @@ body {
    Typography
 ========================================================================== */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  color: var(--color-text-primary);
-  /* margin: 0; */
-  letter-spacing: 0.01em;
-}
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text-primary);
+    /* margin: 0; */
+    letter-spacing: 0.01em;
+  }
 
-p {
-  color: var(--color-text-secondary);
-  line-height: 1.7;
+  p {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
 }
 
 /* ==========================================================================
