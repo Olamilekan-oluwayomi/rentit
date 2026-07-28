@@ -38,6 +38,11 @@ const ProfilePage = lazy(() => import('./features/profile/components/ProfilePage
 const BookingChatPage = lazy(() => import('./pages/BookingChatPage'))
 const InboxPage = lazy(() => import('./pages/InboxPage'))
 const FavoritesPage = lazy(() => import('./features/favorites/components/FavoritesPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'))
+const TermsPage = lazy(() => import('./pages/TermsPage'))
+const PricingPage = lazy(() => import('./pages/PricingPage'))
 
 const DashboardShell = lazy(() => import('./layouts/DashboardShell'))
 const DashboardHome = lazy(() => import('./pages/dashboard/Home'))
@@ -93,6 +98,11 @@ function App() {
             <Route path="/confirm" element={<EmailConfirmationPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/listings/:id" element={<ListingDetailPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
             <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
             <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
