@@ -4,9 +4,8 @@
  * Organized into three columns on desktop: branding, marketplace links,
  * and company links. Collapses to a stacked layout on mobile.
  *
- * Note: Marketplace and Company links point to routes that are planned
- * but not yet built (/how-it-works, /pricing, /about, /contact, /privacy,
- * /terms). They're intentionally kept as forward-looking placeholders
+ * Note: Marketplace and Company links point to routes that were planned
+ * but are now built. The only remaining placeholder is /pricing.
  * rather than removed, since these pages are on the roadmap. Once each
  * route exists, this file doesn't need to change, only the route itself
  * needs to be added in App.jsx.
@@ -25,7 +24,7 @@ import Logo from "./Logo";
 const marketplaceLinks = [
   { label: "Browse Listings", to: "/" },
   { label: "Categories", to: "/?category=All" },
-  { label: "How it Works", to: "/how-it-works" },
+  { label: "How it Works", to: "/about" },
   { label: "Pricing", to: "/pricing" },
 ];
 

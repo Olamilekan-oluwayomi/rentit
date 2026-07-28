@@ -7,7 +7,7 @@
 | Renders Navbar, content, and Footer in a full-height flex column.
 | Used as a React Router v6 layout route — renders child routes via Outlet.
 |
-| Route: / (LandingPage), /how-it-works, /pricing, etc.
+| Route: / (LandingPage), /about, /contact, /pricing, etc.
 | Responsibilities: Provide consistent chrome for public/marketing pages
 | Dependencies: Navbar, Footer, React Router Outlet
 | Notes: No profile completion overlay — safe for unauthenticated visitors.
