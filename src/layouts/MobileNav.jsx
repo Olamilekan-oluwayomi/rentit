@@ -18,7 +18,7 @@
 
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { X, Home, User, Plus, LayoutDashboard, Mail, LogOut } from "lucide-react";
+import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import { useUnreadCount } from "../features/messages/hooks/useUnreadCount";
@@ -150,6 +150,12 @@ export default function MobileNav({ open, onClose }) {
             <NavLink to="/inbox" className={navLinkClass} onClick={handleNavClick}>
               <Mail size={20} />
               Messages
+            </NavLink>
+          )}
+          {user && (
+            <NavLink to="/favorites" className={navLinkClass} onClick={handleNavClick}>
+              <Heart size={20} />
+              Saved
             </NavLink>
           )}
         </nav>
