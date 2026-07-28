@@ -74,10 +74,12 @@ export function ProfileProvider({ children }) {
       const oauthAvatar = getOAuthAvatar();
 
       const meta = user.user_metadata || {};
+      const provider = user.identities?.[0]?.provider || "email";
       const profileData = {
         id: user.id,
-        full_name: user.user_metadata?.full_name || "",
+        full_name: user.user_metadata?.full_name || meta.name || "",
         avatar_url: oauthAvatar || null,
+        provider,
       };
 
       if (meta.terms_accepted_at) {

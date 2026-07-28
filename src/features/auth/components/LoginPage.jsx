@@ -27,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const { signIn, signInWithOAuth } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -50,8 +51,12 @@ export default function LoginPage() {
 
   const handleOAuth = async (provider) => {
     setError(null);
+    setOauthLoading(true);
     const { error } = await signInWithOAuth(provider, redirectTo);
-    if (error) setError(error.message);
+    if (error) {
+      setError(error.message);
+      setOauthLoading(false);
+    }
   };
 
   return (
@@ -122,9 +127,10 @@ export default function LoginPage() {
 
         <button
           onClick={() => handleOAuth("google")}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-surface-secondary transition-colors text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
+          disabled={oauthLoading}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-surface-secondary transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
         >
-          Google
+          {oauthLoading ? "Connecting..." : "Google"}
         </button>
 
         <p className="text-center text-sm text-text-secondary mt-6">

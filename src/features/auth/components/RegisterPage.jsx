@@ -35,8 +35,9 @@ export default function RegisterPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { signUp } = useAuth();
+  const { signUp, signInWithOAuth } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,6 +62,16 @@ export default function RegisterPage() {
     } else {
       setLoading(false);
       setSubmitted(true);
+    }
+  };
+
+  const handleOAuth = async (provider) => {
+    setError(null);
+    setOauthLoading(true);
+    const { error } = await signInWithOAuth(provider);
+    if (error) {
+      setError(error.message);
+      setOauthLoading(false);
     }
   };
 
@@ -221,6 +232,23 @@ export default function RegisterPage() {
                 {loading ? "Creating account..." : "Sign Up"}
               </motion.button>
             </form>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-surface px-2 text-text-secondary">or continue with</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleOAuth("google")}
+              disabled={oauthLoading}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-surface-secondary transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
+            >
+              {oauthLoading ? "Connecting..." : "Google"}
+            </button>
 
             <p className="text-center text-sm text-text-secondary mt-6">
               Already have an account?{" "}
