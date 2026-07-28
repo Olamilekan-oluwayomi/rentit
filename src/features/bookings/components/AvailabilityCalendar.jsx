@@ -152,7 +152,7 @@ export default function AvailabilityCalendar({
 
   const nights = useMemo(() => {
     if (!selectedRange?.from || !selectedRange?.to) return 0;
-    return differenceInCalendarDays(selectedRange.to, selectedRange.from);
+    return Math.max(1, differenceInCalendarDays(selectedRange.to, selectedRange.from));
   }, [selectedRange]);
 
   const totalPrice = nights * dailyPrice;
@@ -228,6 +228,10 @@ export default function AvailabilityCalendar({
   /** Calls onRangeConfirmed with the selected range and calculated total price. */
   const handleRequestToBook = () => {
     if (!selectedRange?.from || !selectedRange?.to) return;
+    if (nights < 1) {
+      setRangeOverlapError("Please select at least 1 night.");
+      return;
+    }
     onRangeConfirmed?.(selectedRange.from, selectedRange.to, totalPrice);
   };
 

@@ -63,6 +63,12 @@ export function useCreateBooking() {
         return { error: "Not authenticated" };
       }
 
+      if (totalPrice <= 0) {
+        setSubmitting(false);
+        addToast("Please select at least 1 night.", "error");
+        return { error: "Invalid total price" };
+      }
+
       setSubmitting(true);
 
       // ── Race-condition re-validation ───────────────────────
