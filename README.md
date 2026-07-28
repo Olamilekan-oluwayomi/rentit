@@ -43,12 +43,22 @@ npm run dev
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
+| `npm test` | Run unit + integration tests (Vitest) |
+| `npm run test:e2e` | Run end-to-end tests (Playwright, headless) |
+| `npm run test:e2e:ui` | Run E2E tests with Playwright UI mode |
 
 ## Features
 
 ### Landing Page (Marketing)
 - Hero section, category grid with live counts, testimonials carousel, FAQ accordion
 - Smart redirect: logged-in users see the browse view; logged-out users see the marketing landing
+
+### Public Pages
+- **About** (`/about`) — platform overview, how it works, categories, why it matters
+- **Contact** (`/contact`) — form inserts into `contact_messages` table, pre-fills from auth if logged in
+- **Privacy** (`/privacy`) — full privacy policy, dated July 28, 2026
+- **Terms** (`/terms`) — terms of service, visually matches Privacy page
+- **Pricing** (`/pricing`) — honest placeholder ("coming soon"), no fake tiers
 
 ### Listings
 - Browse all available listings with search, category, price, and location filters
@@ -106,6 +116,54 @@ npm run dev
 - Guest routes (redirect logged-in users away from login/register)
 - Protected routes (redirect unauthenticated users to login)
 - Redirect-after-login via `?redirect=` search param
+- **ToS/Privacy acceptance at signup** — required checkbox, metadata passed through sign-up and stored in profile
+
+## Testing
+
+### Unit & Integration (Vitest + React Testing Library)
+
+All tests live in `src/test/` and run with Vitest 4, jsdom, and `@testing-library`:
+
+```bash
+npm test            # run all unit + integration tests
+npm test -- --ui    # Vitest UI mode
+```
+
+**Coverage areas:**
+
+| File | Type | Tests |
+|------|------|-------|
+| `RegisterPage.test.jsx` | Unit | 6 — rendering, ToS gate, password mismatch, submission, confirmation, failure |
+| `AuthContext.test.jsx` | Unit | 7 — loading state, signIn/signUp/signOut/OAuth, auth events |
+| `StatusBadge.test.jsx` | Unit | 2 — text per status, variant class |
+| `useAvailability.test.js` | Unit | 6 — blocked ranges, empty, error, loading, null listingId, params, refetch |
+| `useCreateBooking.test.js` | Unit | 5 — clear range, overlap rejection, avail fetch error, submitting state, insert fields |
+| `useBookings.test.js` | Unit | 4 — renter/owner view, empty listings guard, error |
+| `NewListingPage.test.jsx` | Unit | 5 — form render, validations, image upload + submission, error toast |
+| `AvailabilityCalendar.test.jsx` | Unit | 5 — renter/owner views, loading, error, blocked dates |
+| `RegisterFlow.test.jsx` | Integration | 4 — full register→confirmation→login flow, error stay |
+| `BookingFlow.test.jsx` | Integration | 4 — listing loading, data render, booking card, not-found |
+
+**Total: 57 tests across 10 files.**
+
+### End-to-End (Playwright)
+
+E2E tests require Playwright browsers installed first:
+
+```bash
+npx playwright install chromium
+npm run test:e2e          # headless
+npm run test:e2e:ui       # interactive UI mode
+```
+
+The Playwright config (`playwright.config.js`) starts the Vite dev server automatically and runs against Chromium. Tests cover:
+
+- **Auth flow** (3 tests) — register → confirmation screen, login → home redirect, password mismatch rejection
+- **Browse flow** (4 tests) — landing page, invalid listing 404, skeleton→error transition, all 5 public pages
+
+**Total: 7 E2E tests.**
+
+---
 
 ## Architecture
 
@@ -211,6 +269,10 @@ src/
 ├── pages/                  # Top-level routed pages
 │   └── dashboard/          # Dashboard sub-pages (lazy-loaded)
 ├── design/                 # Design system primitives
+├── test/                   # Tests
+│   ├── e2e/                # Playwright E2E tests
+│   ├── integration/        # Integration tests (Vitest + RTL)
+│   └── setup.js            # Vitest setup (jest-dom matchers, IntersectionObserver polyfill)
 ├── utils/                  # avatar, imageCompression, location, storage
 ├── hooks/                  # (co-located with features, not global)
 ├── App.jsx                 # Route definitions
