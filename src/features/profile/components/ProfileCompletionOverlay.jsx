@@ -1,40 +1,40 @@
 /**
  * ProfileCompletionOverlay — Non-dismissable overlay that forces the user
- * to upload an avatar and confirm their full name before they can perform
- * actions that require a trustworthy profile (booking, messaging, listing).
+ * to upload an avatar and set their location before using the app.
  *
- * Route: Any protected page — conditionally rendered by ProfileContext when profile is incomplete.
- * Responsibilities: Presents a modal with avatar upload and name fields.
- *   Validates name (2-60 chars) and requires an avatar before allowing submission.
- *   Calls updateProfile and hides the overlay on success.
+ * Route: Any protected page — conditionally rendered by ProfileContext when
+ *        the profile is missing avatar_url or location.
+ * Responsibilities: Presents a modal with avatar upload and a location field
+ *   (with geolocation auto-detect). Updates the profile and hides on success.
  * Dependencies: ProfileContext (profile, hideCompletion), useProfile (updateProfile, uploadAvatar),
- *   ProfileAvatar subcomponent.
+ *   ProfileAvatar subcomponent, useCurrentLocation hook.
  * Important notes: Cannot be dismissed by the user (no close button, no backdrop click).
- *   Reuses ProfileAvatar for upload/preview. The submit button shows a spinner during save.
+ *   Runs after the Terms acceptance gate is satisfied.
  */
 
 import { useState } from "react";
+import { MapPinned } from "lucide-react";
 import { useProfileContext } from "../context/ProfileContext";
 import { useProfile } from "../hooks/useProfile";
+import { useCurrentLocation } from "../../../shared/hooks/useCurrentLocation";
+import { useToast } from "../../../shared/contexts/ToastContext";
 import ProfileAvatar from "./ProfileAvatar";
-
-const NAME_MIN = 2;
-const NAME_MAX = 60;
 
 export default function ProfileCompletionOverlay() {
   // ── State ────────────────────────────────────────────────────────────
   const { profile, hideCompletion } = useProfileContext();
   const { updateProfile, uploadAvatar, uploading, saving } = useProfile();
+  const { getCurrentLocation, loading: locationLoading } = useCurrentLocation();
+  const { addToast } = useToast();
 
-  const [fullName, setFullName] = useState(profile?.full_name || "");
-  const [nameError, setNameError] = useState("");
+  const [location, setLocation] = useState(profile?.location || "");
   const [avatarError, setAvatarError] = useState("");
   const [hasAvatar, setHasAvatar] = useState(!!profile?.avatar_url);
   const [submitting, setSubmitting] = useState(false);
 
-  const trimmedName = fullName.trim();
-  const nameValid = trimmedName.length >= NAME_MIN && trimmedName.length <= NAME_MAX;
-  const canSubmit = nameValid && hasAvatar && !submitting;
+  const locationTrimmed = location.trim();
+  const locationValid = locationTrimmed.length > 0;
+  const canSubmit = locationValid && hasAvatar && !submitting;
 
   // ── Event Handlers ────────────────────────────────────────────────────
   const handleUpload = async (file, validationError) => {
@@ -49,20 +49,28 @@ export default function ProfileCompletionOverlay() {
     if (result.success) setHasAvatar(true);
   };
 
+  const handleDetectLocation = async () => {
+    const { location: detected, error } = await getCurrentLocation();
+    if (error) {
+      addToast(error, "error");
+      return;
+    }
+    setLocation(detected);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit) return;
 
     setSubmitting(true);
-    const result = await updateProfile({ full_name: trimmedName });
+    const result = await updateProfile({ location: locationTrimmed });
     setSubmitting(false);
 
     if (result.error) {
-      setNameError(result.error);
+      addToast(result.error, "error");
       return;
     }
 
-    // Profile is now complete — hide the overlay
     hideCompletion();
   };
 
@@ -74,7 +82,7 @@ export default function ProfileCompletionOverlay() {
           Complete your profile
         </h2>
         <p className="text-sm text-text-secondary text-center mb-6">
-          Upload a photo and confirm your name to continue.
+          Upload a photo and set your location to continue.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -89,34 +97,44 @@ export default function ProfileCompletionOverlay() {
             />
           </div>
 
-          {/* Full name */}
+          {/* Location */}
           <div>
             <label
-              htmlFor="completion-full-name"
+              htmlFor="completion-location"
               className="block text-sm font-medium text-text-secondary mb-1.5"
             >
-              Full Name
+              Location
             </label>
-            <input
-              id="completion-full-name"
-              type="text"
-              autoComplete="name"
-              value={fullName}
-              onChange={(e) => {
-                setFullName(e.target.value);
-                setNameError("");
-              }}
-              maxLength={NAME_MAX}
-              required
-              autoFocus
-              className="w-full px-4 py-2.5 border border-border rounded-lg bg-transparent text-text-primary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
-            />
-            {nameError && (
-              <p className="text-xs text-red-500 mt-1">{nameError}</p>
-            )}
-            {!nameError && trimmedName.length > 0 && trimmedName.length < NAME_MIN && (
+            <div className="relative">
+              <input
+                id="completion-location"
+                type="text"
+                autoComplete="address-level2"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                maxLength={80}
+                placeholder="City, Country"
+                autoFocus
+                className="w-full px-4 py-2.5 pr-11 border border-border rounded-lg bg-transparent text-text-primary placeholder:text-text-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+              />
+              <button
+                type="button"
+                onClick={handleDetectLocation}
+                disabled={locationLoading}
+                title="Use current location"
+                aria-label="Use current location"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-text-secondary hover:text-accent hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-40 disabled:pointer-events-none transition-all active:scale-[0.97]"
+              >
+                {locationLoading ? (
+                  <div className="w-[18px] h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <MapPinned size={18} strokeWidth={2} />
+                )}
+              </button>
+            </div>
+            {!locationValid && locationTrimmed.length > 0 && (
               <p className="text-xs text-red-500 mt-1">
-                Must be at least {NAME_MIN} characters.
+                Must be at least 1 character.
               </p>
             )}
           </div>
@@ -130,7 +148,7 @@ export default function ProfileCompletionOverlay() {
             {(submitting || saving) && (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             )}
-            {submitting || saving ? "Saving..." : "Continue"}
+            {submitting || saving ? "Saving..." : "Save and Continue"}
           </button>
         </form>
       </div>

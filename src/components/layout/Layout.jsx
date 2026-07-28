@@ -43,8 +43,8 @@ export default function Layout({ children }) {
       <Header />
       <main id="main-content" className="flex-1 min-h-0">{children}</main>
       {!noFooter && <Footer />}
-      {completionVisible && <ProfileCompletionOverlay />}
       {termsOverlayVisible && <TermsAcceptanceOverlay />}
+      {completionVisible && <ProfileCompletionOverlay />}
       {!noFooter && <BackToTop />}
     </div>
   );

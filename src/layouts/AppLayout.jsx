@@ -46,8 +46,8 @@ export default function AppLayout() {
         <Outlet />
       </main>
       {!noFooter && <Footer />}
-      {completionVisible && <ProfileCompletionOverlay />}
       {termsOverlayVisible && <TermsAcceptanceOverlay />}
+      {completionVisible && <ProfileCompletionOverlay />}
     </div>
   );
 }

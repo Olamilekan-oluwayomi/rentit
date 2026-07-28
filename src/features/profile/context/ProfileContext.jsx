@@ -143,7 +143,7 @@ export function ProfileProvider({ children }) {
   const isProfileComplete =
     !isProfileLoading &&
     !!profile?.avatar_url &&
-    (profile?.full_name?.trim().length ?? 0) >= 2;
+    !!profile?.location?.trim();
 
   // ── Overlay visibility (imperative API via context) ───────────
   const showCompletion = useCallback(() => {
@@ -185,6 +185,15 @@ export function ProfileProvider({ children }) {
       setTermsOverlayVisible(true);
     }
   }, [loading, profile]);
+
+  // ── Profile completion gate ────────────────────────────────────────
+  // After the Terms gate is satisfied (or was never needed), require
+  // avatar + location before letting the user into the app.
+  useEffect(() => {
+    if (!loading && profile && !isProfileComplete) {
+      setCompletionVisible(true);
+    }
+  }, [loading, profile, isProfileComplete]);
 
   return (
     <ProfileContext.Provider
