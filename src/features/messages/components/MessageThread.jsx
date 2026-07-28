@@ -119,7 +119,7 @@ export default function MessageThread({ messages, loading }) {
                 className={`max-w-[78%] sm:max-w-[65%] px-3.5 py-2 ${
                   isMine
                     ? `bg-accent ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-br-md"}`
-                    : `bg-surface text-text-primary ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-bl-md"}`
+                    : `bg-surface dark:bg-surface-tertiary text-text-primary ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-bl-md"}`
                 } ${isOptimistic ? "opacity-50" : ""}`}
               >
                 <p className={`text-[13.5px] leading-[1.45] whitespace-pre-wrap break-words ${isMine ? "text-white" : ""}`}>
