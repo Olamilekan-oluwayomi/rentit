@@ -108,10 +108,11 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
+                <label htmlFor="fullName" className="block text-sm font-medium text-text-secondary mb-1">
                   Full Name
                 </label>
                 <input
+                  id="fullName"
                   type="text"
                   autoComplete="name"
                   value={fullName}
@@ -122,10 +123,11 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-1">
                   Email
                 </label>
                 <input
+                  id="email"
                   type="email"
                   autoComplete="email"
                   value={email}
@@ -136,11 +138,12 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-text-secondary mb-1">
                   Password
                 </label>
                 <div className="relative">
                   <input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     value={password}
@@ -161,11 +164,12 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-secondary mb-1">
                   Confirm Password
                 </label>
                 <div className="relative">
                   <input
+                    id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     autoComplete="new-password"
                     value={confirmPassword}
