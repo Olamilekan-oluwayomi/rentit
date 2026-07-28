@@ -87,9 +87,11 @@ export default function ListingDetailPage() {
   const handleRangeConfirmed = async (startDate, endDate, totalPrice) => {
     const result = await createBooking(listing.id, startDate, endDate, totalPrice);
 
-    if (result.success) {
+    if (result?.success) {
       setBookingResult({ startDate, endDate, totalPrice, listingTitle: listing.title });
       setShowMobileBooking(false);
+    } else if (!result?.error) {
+      addToast("Your profile needs to be completed before booking.", "info");
     }
   };
 

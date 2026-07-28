@@ -29,6 +29,10 @@ vi.mock('../../profile/hooks/useRequireCompleteProfile', () => ({
   useRequireCompleteProfile: () => ({ requireProfile: mockRequireProfile }),
 }))
 
+vi.mock('../../profile/context/ProfileContext', () => ({
+  useProfileContext: () => ({ isProfileComplete: true }),
+}))
+
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }))

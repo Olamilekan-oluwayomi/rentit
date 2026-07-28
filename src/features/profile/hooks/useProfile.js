@@ -47,14 +47,15 @@ export function useProfile() {
       if (updates.location !== undefined) trimmed.location = updates.location.trim();
       if (updates.bio !== undefined) trimmed.bio = updates.bio.trim();
 
-      // Upsert ensures the profile row exists; onConflict targets the PK
+      const payload = { id: user.id, ...trimmed };
       const { data, error: updateError } = await supabase
         .from("profiles")
-        .upsert({ id: user.id, ...trimmed }, { onConflict: "id" })
+        .upsert(payload, { onConflict: "id" })
         .select()
-        .single();
+        .maybeSingle();
 
       if (updateError) {
+        console.error("useProfile updateProfile error:", updateError, "payload:", payload);
         setError(updateError.message);
         setSaving(false);
         return { error: updateError.message };
@@ -107,14 +108,15 @@ export function useProfile() {
         return { error: uploadError.message };
       }
 
-      // Link the uploaded file path into the profile row
+      const avatarPayload = { id: user.id, avatar_url: filePath };
       const { data, error: updateError } = await supabase
         .from("profiles")
-        .upsert({ id: user.id, avatar_url: filePath }, { onConflict: "id" })
+        .upsert(avatarPayload, { onConflict: "id" })
         .select()
-        .single();
+        .maybeSingle();
 
       if (updateError) {
+        console.error("useProfile uploadAvatar error:", updateError, "payload:", avatarPayload);
         setError(updateError.message);
         setUploading(false);
         return { error: updateError.message };
@@ -144,14 +146,15 @@ export function useProfile() {
       await supabase.storage.from("avatars").remove([profile.avatar_url]);
     }
 
-    // Clear the avatar_url column so the UI falls back to initials
+    const delPayload = { id: user.id, avatar_url: null };
     const { data, error: updateError } = await supabase
       .from("profiles")
-      .upsert({ id: user.id, avatar_url: null }, { onConflict: "id" })
+      .upsert(delPayload, { onConflict: "id" })
       .select()
-      .single();
+      .maybeSingle();
 
     if (updateError) {
+      console.error("useProfile deleteAvatar error:", updateError, "payload:", delPayload);
       setError(updateError.message);
       setSaving(false);
       return { error: updateError.message };

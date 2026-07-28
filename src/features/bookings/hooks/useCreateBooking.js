@@ -30,6 +30,7 @@ import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useToast } from "../../../shared/contexts/ToastContext";
 import { useRequireCompleteProfile } from "../../profile/hooks/useRequireCompleteProfile";
+import { useProfileContext } from "../../profile/context/ProfileContext";
 
 /**
  * @returns {{
@@ -41,6 +42,7 @@ export function useCreateBooking() {
   const { user } = useAuth();
   const { addToast } = useToast();
   const { requireProfile } = useRequireCompleteProfile();
+  const { isProfileComplete } = useProfileContext();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
@@ -133,13 +135,21 @@ export function useCreateBooking() {
         navigate(`/login?redirect=/listings/${listingId}`);
         return Promise.resolve({ error: "Not authenticated" });
       }
+      if (!isProfileComplete) {
+        addToast(
+          "Please complete your profile (photo and location) before booking.",
+          "info",
+        );
+      }
       return new Promise((resolve) => {
         requireProfile(() => {
-          createBooking(listingId, startDate, endDate, totalPrice).then(resolve);
+          createBooking(listingId, startDate, endDate, totalPrice)
+            .then(resolve)
+            .catch(() => resolve({ error: "Booking failed unexpectedly." }));
         });
       });
     },
-    [user, requireProfile, createBooking, navigate]
+    [user, requireProfile, createBooking, navigate, isProfileComplete, addToast],
   );
 
   return { createBooking: createBookingGated, submitting };

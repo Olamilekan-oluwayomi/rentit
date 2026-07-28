@@ -28,22 +28,22 @@ export default function TermsAcceptanceOverlay() {
     setError(null);
 
     const now = new Date().toISOString();
+    const termsPayload = {
+      id: profile.id,
+      terms_accepted_at: now,
+      terms_version: TERMS_VERSION,
+      privacy_accepted_at: now,
+      privacy_version: PRIVACY_VERSION,
+    };
+    console.log("TermsAcceptanceOverlay payload:", termsPayload);
     const { error: updateError } = await supabase
       .from("profiles")
-      .upsert(
-        {
-          id: profile.id,
-          terms_accepted_at: now,
-          terms_version: TERMS_VERSION,
-          privacy_accepted_at: now,
-          privacy_version: PRIVACY_VERSION,
-        },
-        { onConflict: "id" },
-      );
+      .upsert(termsPayload, { onConflict: "id" });
 
     setSubmitting(false);
 
     if (updateError) {
+      console.error("TermsAcceptanceOverlay upsert error:", updateError, "payload:", termsPayload);
       setError(updateError.message);
       return;
     }

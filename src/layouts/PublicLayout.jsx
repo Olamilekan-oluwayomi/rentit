@@ -16,10 +16,15 @@
 */
 
 import { Outlet } from "react-router-dom";
+import { useProfileContext } from "../features/profile/context/ProfileContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import ProfileCompletionOverlay from "../features/profile/components/ProfileCompletionOverlay";
+import TermsAcceptanceOverlay from "../features/profile/components/TermsAcceptanceOverlay";
 
 export default function PublicLayout() {
+  const { completionVisible, termsOverlayVisible } = useProfileContext();
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-text-primary">
       <Navbar />
@@ -27,6 +32,8 @@ export default function PublicLayout() {
         <Outlet />
       </main>
       <Footer />
+      {completionVisible && <ProfileCompletionOverlay />}
+      {termsOverlayVisible && <TermsAcceptanceOverlay />}
     </div>
   );
 }

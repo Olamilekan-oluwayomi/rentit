@@ -11,7 +11,10 @@
 -- Run this in the Supabase SQL Editor after deploying the code changes.
 
 -- ─────────────────────────────────────────────────────────────────────
--- 1. Drop the old trigger & function so we can replace them
+-- 1. Add provider column if not already present
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS provider text;
+
+-- 2. Drop the old trigger & function so we can replace them
 -- ─────────────────────────────────────────────────────────────────────
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS public.handle_new_user();

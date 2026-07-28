@@ -52,7 +52,7 @@ export function ProfileProvider({ children }) {
 
   /**
    * Fetch the profile for the currently authenticated user.
-   * If no profile row exists (PGRST116), creates one via upsert.
+   * If no profile row exists, creates one via upsert.
    * For brand-new users the row may not exist yet (async trigger),
    * so we retry once after a short delay before concluding incomplete.
    */
@@ -67,39 +67,32 @@ export function ProfileProvider({ children }) {
       .from("profiles")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
-    // PGRST116 = "Row not found" — first-time user with no profile row yet
-    if (fetchError && fetchError.code === "PGRST116") {
-      // Auto-populate avatar from OAuth if available
+    if (fetchError) {
+      console.error("ProfileContext: fetch profile error", fetchError);
+      setLoading(false);
+      return;
+    }
+
+    if (!data) {
+      // No profile row yet — first-time user
       const oauthAvatar = getOAuthAvatar();
-
-      const meta = user.user_metadata || {};
-      const provider = user.identities?.[0]?.provider || "email";
       const profileData = {
         id: user.id,
-        full_name: user.user_metadata?.full_name || meta.name || "",
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || "",
         avatar_url: oauthAvatar || null,
-        provider,
       };
-
-      if (meta.terms_accepted_at) {
-        profileData.terms_accepted_at = meta.terms_accepted_at;
-        profileData.terms_version = meta.terms_version || null;
-      }
-      if (meta.privacy_accepted_at) {
-        profileData.privacy_accepted_at = meta.privacy_accepted_at;
-        profileData.privacy_version = meta.privacy_version || null;
-      }
+      console.log("ProfileContext fetchProfile upsert payload:", profileData);
 
       const { data: created, error: createError } = await supabase
         .from("profiles")
         .upsert(profileData, { onConflict: "id" })
         .select()
-        .single();
+        .maybeSingle();
 
       if (createError) {
-        // Retry once if the row might be created by a DB trigger
+        console.error("ProfileContext: create profile error", createError);
         if (!isRetry) {
           await new Promise((r) => setTimeout(r, RETRY_DELAY));
           return fetchProfile(true);
@@ -108,21 +101,21 @@ export function ProfileProvider({ children }) {
         return;
       }
       data = created;
-    } else if (fetchError) {
-      setLoading(false);
-      return;
     }
 
     // If profile exists but has no avatar, and we haven't retried yet,
     // the row might have been created by a trigger after our first fetch
-    // returned PGRST116. Retry once to catch this race.
+    // returned nothing. Retry once to catch this race.
     if (!isRetry && data && !data.avatar_url && getOAuthAvatar()) {
       const oauthAvatar = getOAuthAvatar();
-      const { data: updated } = await supabase
+      const { data: updated, error: updateError } = await supabase
         .from("profiles")
         .upsert({ id: user.id, avatar_url: oauthAvatar }, { onConflict: "id" })
         .select()
-        .single();
+        .maybeSingle();
+      if (updateError) {
+        console.error("ProfileContext: update avatar error", updateError);
+      }
       if (updated) data = updated;
     }
 
