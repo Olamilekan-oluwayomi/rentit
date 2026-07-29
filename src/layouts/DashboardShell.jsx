@@ -19,10 +19,11 @@
 
 import { useState, Suspense, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Home, BarChart3, List, CalendarDays, MessageSquare, Bell, Settings, Menu, X, LogOut, ArrowLeft } from "lucide-react";
+import { Home, BarChart3, List, CalendarDays, MessageSquare, Bell, Settings, Menu, X, LogOut, ArrowLeft, Sun, Moon } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import { useUnreadCount } from "../features/messages/hooks/useUnreadCount";
+import { useTheme } from "../shared/contexts/ThemeContext";
 import { getAvatarUrl } from "../utils/storage";
 import { IconButton } from "../design";
 import Logo from "../components/layout/Logo";
@@ -88,6 +89,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -151,7 +153,14 @@ export default function DashboardLayout() {
                 <NavLinkItem key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
               ))}
             </nav>
-            <div className="p-4 border-t border-border">
+            <div className="p-4 border-t border-border space-y-2">
+              <button
+                onClick={() => { toggleTheme(); setSidebarOpen(false); }}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-text-primary hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
+              >
+                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              </button>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden shrink-0">
                   {avatarSrc ? <img src={avatarSrc} alt="" className="w-full h-full object-cover" /> : initials}
@@ -180,7 +189,14 @@ export default function DashboardLayout() {
               <NavLinkItem key={item.to} item={item} />
             ))}
           </nav>
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-border space-y-2">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-text-primary hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:scale-[0.97]"
+            >
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </button>
             <div className="flex items-center gap-3">
               <NavLink to="/dashboard/settings" className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden shrink-0">

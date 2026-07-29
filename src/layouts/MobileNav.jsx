@@ -18,10 +18,11 @@
 
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut } from "lucide-react";
+import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import { useUnreadCount } from "../features/messages/hooks/useUnreadCount";
+import { useTheme } from "../shared/contexts/ThemeContext";
 import { getAvatarUrl } from "../utils/storage";
 import { Button, IconButton } from "../design";
 import Logo from "../components/layout/Logo";
@@ -37,6 +38,7 @@ export default function MobileNav({ open, onClose }) {
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
   const { count: unreadCount } = useUnreadCount();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 32, height: 32 });
 
@@ -159,6 +161,16 @@ export default function MobileNav({ open, onClose }) {
             </NavLink>
           )}
         </nav>
+
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => { toggleTheme(); onClose(); }}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full text-text-primary hover:bg-surface-secondary"
+          >
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
+        </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           {user ? (
