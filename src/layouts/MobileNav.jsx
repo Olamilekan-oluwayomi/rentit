@@ -183,11 +183,11 @@ export default function MobileNav({ open, onClose }) {
               Log Out
             </Button>
           ) : (
-            <div className="space-y-3">
-              <NavLink to="/login" onClick={handleNavClick}>
+            <div className="flex gap-3">
+              <NavLink to="/login" onClick={handleNavClick} className="flex-1">
                 <Button variant="outline" fullWidth>Log In</Button>
               </NavLink>
-              <NavLink to="/register" onClick={handleNavClick}>
+              <NavLink to="/register" onClick={handleNavClick} className="flex-1">
                 <Button fullWidth>Sign Up</Button>
               </NavLink>
             </div>
