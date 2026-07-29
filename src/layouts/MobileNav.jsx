@@ -119,6 +119,16 @@ export default function MobileNav({ open, onClose }) {
           </div>
         )}
 
+        <div className="px-4 pt-2 pb-1">
+          <button
+            onClick={() => { toggleTheme(); onClose(); }}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full text-text-primary hover:bg-surface-secondary"
+          >
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
+        </div>
+
         <nav className="p-4 space-y-1">
           <NavLink to="/" end className={navLinkClass} onClick={handleNavClick}>
             <Home size={20} />
@@ -162,16 +172,6 @@ export default function MobileNav({ open, onClose }) {
           )}
         </nav>
 
-        <div className="px-4 pb-2">
-          <button
-            onClick={() => { toggleTheme(); onClose(); }}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full text-text-primary hover:bg-surface-secondary"
-          >
-            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
-          </button>
-        </div>
-
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           {user ? (
             <Button
@@ -183,7 +183,7 @@ export default function MobileNav({ open, onClose }) {
               Log Out
             </Button>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <NavLink to="/login" onClick={handleNavClick}>
                 <Button variant="outline" fullWidth>Log In</Button>
               </NavLink>
