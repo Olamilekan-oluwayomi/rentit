@@ -32,9 +32,9 @@ export default function DashboardHome() {
     page: 1,
     limit: 1,
   });
-  const { data: rentalBookings } = useBookings("rentals");
-  const { data: requestBookings } = useBookings("requests");
-  const { data: rentedOutBookings } = useBookings("rented-out");
+  const { data: rentalBookings, loading: rentalLoading, error: rentalError } = useBookings("rentals");
+  const { data: requestBookings, loading: requestLoading, error: requestError } = useBookings("requests");
+  const { data: rentedOutBookings, loading: rentedOutLoading, error: rentedOutError } = useBookings("rented-out");
 
   const activeBookings =
     (rentalBookings ?? []).filter((b) => b.status === "approved").length +
@@ -50,6 +50,9 @@ export default function DashboardHome() {
   const upcomingRentals = (rentalBookings ?? [])
     .filter((b) => b.status === "approved" && new Date(b.start_date) > new Date())
     .slice(0, 3);
+
+  const bookingsLoading = rentalLoading || rentedOutLoading || requestLoading;
+  const bookingsError = rentalError || rentedOutError || requestError;
 
   const displayName = user?.user_metadata?.full_name || "there";
 
@@ -89,7 +92,20 @@ export default function DashboardHome() {
             <h3 className="text-base font-heading font-semibold text-text-primary mb-3">
               Recent Bookings
             </h3>
-            {allBookings.length === 0 ? (
+            {bookingsLoading ? (
+              <div className="bg-surface border border-border rounded-lg divide-y divide-border">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="p-4 animate-pulse">
+                    <div className="h-4 bg-surface-tertiary/60 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-surface-tertiary/40 rounded w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : bookingsError ? (
+              <div className="bg-surface border border-border rounded-lg p-8 text-center">
+                <p className="text-sm text-text-secondary">Could not load bookings. Please try again later.</p>
+              </div>
+            ) : allBookings.length === 0 ? (
               <div className="bg-surface border border-border rounded-lg p-8 text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-secondary flex items-center justify-center">
                   <CalendarDays size={20} className="text-text-muted" />
@@ -157,7 +173,16 @@ export default function DashboardHome() {
             <h3 className="text-base font-heading font-semibold text-text-primary mb-3">
               Upcoming Rentals
             </h3>
-            {upcomingRentals.length === 0 ? (
+            {bookingsLoading ? (
+              <div className="bg-surface border border-border rounded-lg p-4 animate-pulse">
+                <div className="h-4 bg-surface-tertiary/60 rounded w-3/4 mb-2" />
+                <div className="h-3 bg-surface-tertiary/40 rounded w-1/2" />
+              </div>
+            ) : bookingsError ? (
+              <div className="bg-surface border border-border rounded-lg p-6 text-center">
+                <p className="text-xs text-text-muted">Could not load upcoming rentals.</p>
+              </div>
+            ) : upcomingRentals.length === 0 ? (
               <div className="bg-surface border border-border rounded-lg p-6 text-center">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-surface-secondary flex items-center justify-center">
                   <Clock size={16} className="text-text-muted" />

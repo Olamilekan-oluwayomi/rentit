@@ -549,7 +549,7 @@ function BookingConfirmationModal({ bookingResult, onClose }) {
           <Button variant="outline" onClick={onClose}>
             Book More Dates
           </Button>
-          <Link to="/my-bookings">
+          <Link to="/dashboard">
             <Button>View My Bookings</Button>
           </Link>
         </div>

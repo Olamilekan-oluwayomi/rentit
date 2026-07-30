@@ -15,7 +15,7 @@
  */
 
 import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './features/auth/context/AuthContext'
 import { FavoritesProvider } from './features/favorites/hooks/useFavorites'
 import PublicLayout from './layouts/PublicLayout'
@@ -116,6 +116,7 @@ function App() {
             <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
             <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
             <Route path="/booking/:id" element={<ProtectedRoute><BookingChatPage /></ProtectedRoute>} />
+            <Route path="/my-bookings" element={<ProtectedRoute><Navigate to="/dashboard" replace /></ProtectedRoute>} />
           </Route>
 
           {/* ── Dashboard — lazy-loaded shell with its own chrome ─ */}
