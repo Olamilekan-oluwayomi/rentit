@@ -82,6 +82,8 @@ npm run dev
 - Unread count badge on inbox
 - "Contact Owner" button on listing detail pages initiates a conversation thread
 - Mark messages as read on open
+- Delete conversations per-user (hidden from your inbox only; reappears if the other person sends a new message)
+- Click counterparty avatar/name to view their public profile
 
 ### Reviews
 - Leave reviews after completed bookings
@@ -107,6 +109,7 @@ npm run dev
 - Avatar upload with client-side compression (1200×1200, 0.8 quality)
 - Initials fallback when no avatar
 - OAuth avatar auto-population (Google, Apple, generic)
+- Public profile page at `/users/:userId` — read-only view with avatar, bio, rating/reviews, and active listings
 
 ### Auth
 - Email/password registration and login
@@ -355,6 +358,14 @@ src/
 | is_read | boolean | Read status |
 | created_at | timestamptz | Auto-set |
 
+### `conversation_hidden`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | Primary key |
+| booking_id | uuid | References `bookings.id` |
+| user_id | uuid | References `auth.users.id` |
+| deleted_at | timestamptz | When the user hid the conversation |
+
 ## RLS Policies
 
 - **listings**: Public read, owner-only write
@@ -363,6 +374,7 @@ src/
 - **availability**: Owner-only management (insert/update/delete)
 - **reviews**: Public read, reviewer insert with own ID
 - **messages**: Read if user is participant, insert as self, update `is_read` if recipient
+- **conversation_hidden**: Users can view, insert, and delete only their own rows
 
 ## Documentation Conventions
 
