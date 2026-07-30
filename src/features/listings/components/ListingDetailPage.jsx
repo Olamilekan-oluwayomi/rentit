@@ -545,7 +545,7 @@ function BookingConfirmationModal({ bookingResult, onClose }) {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col sm:flex-row gap-3 justify-end">
           <Button variant="outline" onClick={onClose}>
             Book More Dates
           </Button>
