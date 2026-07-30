@@ -18,7 +18,10 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 import { useConversations } from "../../features/messages/hooks/useConversations";
+import { useDeleteConversation } from "../../features/messages/hooks/useDeleteConversation";
+import ConfirmDialog from "../../shared/components/ConfirmDialog";
 import { getAvatarUrl } from "../../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../../shared/components/AnimatedList";
 import FadeInSection from "../../shared/components/FadeInSection";
@@ -41,7 +44,18 @@ function formatRelativeTime(isoString) {
 
 export default function DashboardMessages() {
   const navigate = useNavigate();
-  const { conversations, loading, error } = useConversations();
+  const { conversations, loading, error, refetch } = useConversations();
+  const { deleteConversation, deleting } = useDeleteConversation();
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    const { error: delErr } = await deleteConversation(deleteTarget);
+    if (!delErr) {
+      setDeleteTarget(null);
+      refetch();
+    }
+  };
 
   return (
     <FadeInSection>
@@ -146,11 +160,24 @@ export default function DashboardMessages() {
                       {conv.lastMessage}
                     </p>
                   </div>
-                  {conv.unreadCount > 0 && (
-                    <span className="shrink-0 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
-                      {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
-                    </span>
-                  )}
+                  <div className="shrink-0 flex items-center gap-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setDeleteTarget(conv.bookingId);
+                      }}
+                      className="w-8 h-8 flex items-center justify-center rounded-full text-text-muted hover:text-danger hover:bg-danger/5 transition-colors"
+                      aria-label="Delete conversation"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                    {conv.unreadCount > 0 && (
+                      <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-white text-[10px] font-bold">
+                        {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
+                      </span>
+                    )}
+                  </div>
                 </Link>
               </AnimatedListItem>
             ))}
@@ -158,6 +185,17 @@ export default function DashboardMessages() {
         )}
       </div>
     </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete conversation?"
+        message="This will hide the conversation from your inbox. It will reappear if the other person sends a new message."
+        confirmLabel="Delete"
+        danger
+        loading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </FadeInSection>
   );
 }

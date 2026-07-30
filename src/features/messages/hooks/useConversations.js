@@ -111,6 +111,16 @@ export function useConversations() {
       }
     }
 
+    // Step 2.5: Fetch hidden conversations for the current user
+    const { data: hiddenRows } = await supabase
+      .from("conversation_hidden")
+      .select("booking_id, deleted_at")
+      .eq("user_id", user.id);
+
+    const hiddenMap = new Map(
+      (hiddenRows ?? []).map((r) => [r.booking_id, r.deleted_at])
+    );
+
     // Step 3: Fetch unread counts
     const { data: unreadRows } = await supabase
       .from("messages")
@@ -164,6 +174,13 @@ export function useConversations() {
     // Step 5: Build conversation list
     const result = bookingIds
       .filter((id) => latestByBooking.has(id))
+      .filter((id) => {
+        const hiddenAt = hiddenMap.get(id);
+        if (!hiddenAt) return true;
+        // Reappear if a new message arrived after the user hid it
+        const latestAt = latestByBooking.get(id).created_at;
+        return new Date(latestAt) > new Date(hiddenAt);
+      })
       .map((id) => {
         const booking = bookingMap.get(id);
         const listing = listingsMap.get(booking.listing_id);
