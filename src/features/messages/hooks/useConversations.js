@@ -168,9 +168,10 @@ export function useConversations() {
         const booking = bookingMap.get(id);
         const listing = listingsMap.get(booking.listing_id);
         const latestMsg = latestByBooking.get(id);
-        const isRenter = booking.renter_id === user.id;
+        const listingOwnerId = ownerMap.get(booking.listing_id);
+        const isRenter = booking.renter_id === user.id && listingOwnerId !== user.id;
         const counterpartyId = isRenter
-          ? ownerMap.get(booking.listing_id)
+          ? listingOwnerId
           : booking.renter_id;
         const counterparty = profilesMap.get(counterpartyId);
 

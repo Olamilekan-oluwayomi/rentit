@@ -104,7 +104,11 @@ export default function BookingChatPage() {
   );
 
   const listingTitle = booking?.listings?.title ?? "Booking";
-  const isRenter = booking?.renter_id === user?.id;
+  const userId = user?.id;
+  const listingOwnerId = booking?.listings?.owner_id;
+  const bookingRenterId = booking?.renter_id;
+  const isOwner = listingOwnerId === userId;
+  const isRenter = isOwner ? false : bookingRenterId === userId;
 
   // Pick the counterparty profile: owner if I'm the renter, renter if I'm the owner
   const counterpartyProfile = isRenter

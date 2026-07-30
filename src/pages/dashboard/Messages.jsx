@@ -123,7 +123,7 @@ export default function DashboardMessages() {
                     </div>
                     <p className="text-xs text-text-secondary truncate leading-tight mt-0.5">
                       {conv.counterparty?.full_name ?? "User"}
-                      {conv.isRenter ? " (owner)" : " (renter)"}
+                      {conv.isRenter ? " · Owner" : " · Renter"}
                     </p>
                     <p className={`text-[13px] truncate mt-1 leading-tight ${conv.unreadCount > 0 ? "text-text-primary font-medium" : "text-text-secondary/80"}`}>
                       {conv.lastSenderIsMe ? "You: " : ""}
