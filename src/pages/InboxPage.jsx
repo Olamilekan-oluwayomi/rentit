@@ -16,7 +16,7 @@
 |--------------------------------------------------------------------------
 */
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useConversations } from "../features/messages/hooks/useConversations";
 import { getAvatarUrl } from "../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../shared/components/AnimatedList";
@@ -39,6 +39,7 @@ function formatRelativeTime(isoString) {
 }
 
 export default function InboxPage() {
+  const navigate = useNavigate();
   const { conversations, loading, error } = useConversations();
 
   return (
@@ -110,7 +111,15 @@ export default function InboxPage() {
                       : "hover:bg-surface-secondary"
                   }`}
                 >
-                  <div className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      navigate(`/users/${conv.counterparty?.id}`);
+                    }}
+                    className="shrink-0 w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-accent/40 transition-all cursor-pointer"
+                    aria-label={`View ${conv.counterparty?.full_name ?? "user"}'s profile`}
+                  >
                     {getAvatarUrl(conv.counterparty?.avatar_url, { width: 44, height: 44 }) ? (
                       <img
                         src={getAvatarUrl(conv.counterparty.avatar_url, { width: 44, height: 44 })}
@@ -122,7 +131,7 @@ export default function InboxPage() {
                         {(conv.counterparty?.full_name ?? "?")[0]?.toUpperCase() || "?"}
                       </span>
                     )}
-                  </div>
+                  </button>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
@@ -139,10 +148,17 @@ export default function InboxPage() {
                         {formatRelativeTime(conv.lastMessageAt)}
                       </span>
                     </div>
-                    <p className="text-xs text-text-secondary truncate leading-tight mt-0.5">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        navigate(`/users/${conv.counterparty?.id}`);
+                      }}
+                      className="text-xs text-text-secondary truncate leading-tight mt-0.5 hover:text-accent transition-colors text-left cursor-pointer w-full"
+                    >
                       {conv.counterparty?.full_name ?? "User"}
                       {conv.isRenter ? " · Owner" : " · Renter"}
-                    </p>
+                    </button>
                     <p
                       className={`text-[13px] truncate mt-1 leading-tight ${
                         conv.unreadCount > 0

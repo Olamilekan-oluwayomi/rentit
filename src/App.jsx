@@ -35,6 +35,7 @@ const NewListingPage = lazy(() => import('./features/listings/components/NewList
 const ListingDetailPage = lazy(() => import('./features/listings/components/ListingDetailPage'))
 const EditListingPage = lazy(() => import('./features/listings/components/EditListingPage'))
 const ProfilePage = lazy(() => import('./features/profile/components/ProfilePage'))
+const PublicProfilePage = lazy(() => import('./features/profile/components/PublicProfilePage'))
 const BookingChatPage = lazy(() => import('./pages/BookingChatPage'))
 const InboxPage = lazy(() => import('./pages/InboxPage'))
 const FavoritesPage = lazy(() => import('./features/favorites/components/FavoritesPage'))
@@ -103,6 +104,7 @@ function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/users/:userId" element={<PublicProfilePage />} />
             <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
             <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
             <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />

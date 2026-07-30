@@ -55,8 +55,8 @@ export default function BookingChatPage() {
         .from("bookings")
         .select(`
           id, listing_id, renter_id, status,
-          listings ( title, owner_id, profiles:owner_id ( full_name, avatar_url ) ),
-          profiles:renter_id ( full_name, avatar_url )
+          listings ( title, owner_id, profiles:owner_id ( id, full_name, avatar_url ) ),
+          profiles:renter_id ( id, full_name, avatar_url )
         `)
         .eq("id", bookingId)
         .single();
@@ -116,6 +116,7 @@ export default function BookingChatPage() {
     : booking?.profiles;
   const counterpartyName = counterpartyProfile?.full_name ?? (isRenter ? "Owner" : "Renter");
   const counterpartyAvatar = getAvatarUrl(counterpartyProfile?.avatar_url, { width: 36, height: 36 });
+  const counterpartyId = isRenter ? listingOwnerId : bookingRenterId;
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -132,7 +133,10 @@ export default function BookingChatPage() {
         </Link>
 
         {/* Avatar */}
-        <div className="shrink-0 w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden">
+        <Link
+          to={`/users/${counterpartyId}`}
+          className="shrink-0 w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-accent/40 transition-all"
+        >
           {counterpartyAvatar ? (
             <img
               src={counterpartyAvatar}
@@ -144,15 +148,18 @@ export default function BookingChatPage() {
               {counterpartyName[0]?.toUpperCase() || "?"}
             </span>
           )}
-        </div>
+        </Link>
 
         <div className="min-w-0 flex-1">
           <h1 className="text-sm font-semibold text-text-primary truncate leading-tight">
             {listingTitle}
           </h1>
-          <p className="text-xs text-text-secondary truncate leading-tight">
+          <Link
+            to={`/users/${counterpartyId}`}
+            className="text-xs text-text-secondary truncate leading-tight hover:text-accent transition-colors"
+          >
             {counterpartyName}
-          </p>
+          </Link>
         </div>
       </div>
 
