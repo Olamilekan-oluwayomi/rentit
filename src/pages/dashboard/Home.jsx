@@ -39,9 +39,9 @@ export default function DashboardHome() {
   const activeBookings =
     (rentalBookings ?? []).filter((b) => b.status === "approved").length +
     (rentedOutBookings ?? []).filter((b) => b.status === "approved").length;
-  const pendingRequests = (requestBookings ?? []).filter(
-    (b) => b.status === "pending"
-  ).length;
+  const pendingRequests =
+    (rentalBookings ?? []).filter((b) => b.status === "pending").length +
+    (requestBookings ?? []).filter((b) => b.status === "pending").length;
 
   const allBookings = [...(rentedOutBookings ?? []), ...(rentalBookings ?? [])]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))

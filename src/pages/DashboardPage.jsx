@@ -56,9 +56,9 @@ export default function DashboardPage() {
   const activeBookings =
     (rentalBookings ?? []).filter((b) => b.status === "approved").length +
     (rentedOutBookings ?? []).filter((b) => b.status === "approved").length;
-  const pendingRequests = (requestBookings ?? []).filter(
-    (b) => b.status === "pending"
-  ).length;
+  const pendingRequests =
+    (rentalBookings ?? []).filter((b) => b.status === "pending").length +
+    (requestBookings ?? []).filter((b) => b.status === "pending").length;
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
