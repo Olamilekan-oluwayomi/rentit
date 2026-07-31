@@ -42,8 +42,34 @@ export default function MyListingsTab() {
 
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [togglingId, setTogglingId] = useState(null);
 
   // ── Handlers ──
+
+  /**
+   * Flips a listing's is_active flag to hide it from (or restore it to)
+   * the public browse/search view. Reversible, so no confirmation needed.
+   */
+  const handleToggleActive = async (listing) => {
+    setTogglingId(listing.id);
+    const { error: toggleError } = await supabase
+      .from("listings")
+      .update({ is_active: !listing.is_active })
+      .eq("id", listing.id);
+
+    setTogglingId(null);
+
+    if (toggleError) {
+      addToast(toggleError.message, "error");
+    } else {
+      addToast(
+        listing.is_active
+          ? "Listing removed from browse."
+          : "Listing restored to browse."
+      );
+      refreshListings();
+    }
+  };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -119,6 +145,14 @@ export default function MyListingsTab() {
               <Link to={`/listings/${listing.id}/edit`}>
                 <Button variant="outline" size="sm">Edit</Button>
               </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                loading={togglingId === listing.id}
+                onClick={() => handleToggleActive(listing)}
+              >
+                {listing.is_active ? "Remove from Browse" : "Restore to Browse"}
+              </Button>
               <Button
                 variant="danger"
                 size="sm"

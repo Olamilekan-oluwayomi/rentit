@@ -20,6 +20,8 @@ import { Link } from "react-router-dom";
 import { Plus, LayoutGrid, List as ListIcon } from "lucide-react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
+import { useToast } from "../../shared/contexts/ToastContext";
+import { supabase } from "../../shared/lib/supabase";
 import { Button } from "../../design";
 import MyListingsTab from "../../components/dashboard/MyListingsTab";
 import FadeInSection from "../../shared/components/FadeInSection";
@@ -82,13 +84,44 @@ export default function DashboardListings() {
 
 function GridView() {
   const { user } = useAuth();
-  const { listings, loading } = useListings({
+  const { addToast } = useToast();
+  const {
+    listings,
+    loading,
+    refreshListings,
+  } = useListings({
     owner_id: user?.id,
     includeInactive: true,
     sort: "newest",
     page: 1,
     limit: 50,
   });
+  const [togglingId, setTogglingId] = useState(null);
+
+  /**
+   * Flips a listing's is_active flag to hide it from (or restore it to)
+   * the public browse/search view. Reversible, so no confirmation needed.
+   */
+  const handleToggleActive = async (listing) => {
+    setTogglingId(listing.id);
+    const { error: toggleError } = await supabase
+      .from("listings")
+      .update({ is_active: !listing.is_active })
+      .eq("id", listing.id);
+
+    setTogglingId(null);
+
+    if (toggleError) {
+      addToast(toggleError.message, "error");
+    } else {
+      addToast(
+        listing.is_active
+          ? "Listing removed from browse."
+          : "Listing restored to browse."
+      );
+      refreshListings();
+    }
+  };
 
   if (loading) {
     return (
@@ -158,6 +191,14 @@ function GridView() {
               <Link to={`/listings/${listing.id}/edit`}>
                 <Button variant="outline" size="sm">Edit</Button>
               </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                loading={togglingId === listing.id}
+                onClick={() => handleToggleActive(listing)}
+              >
+                {listing.is_active ? "Remove from Browse" : "Restore to Browse"}
+              </Button>
             </div>
           </div>
         </div>

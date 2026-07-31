@@ -43,7 +43,7 @@ export default function ListingDetailPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { listing, loading, error, softDeleteListing, hardDeleteListing } = useListing(id);
+  const { listing, loading, error, softDeleteListing, restoreListing, hardDeleteListing } = useListing(id);
   const { createBooking } = useCreateBooking();
   const { isFavorited, toggleFavorite } = useFavorites();
 
@@ -106,6 +106,18 @@ export default function ListingDetailPage() {
     } else {
       addToast("Listing removed from browsing.");
       navigate("/");
+    }
+  };
+
+  const handleRestore = async () => {
+    setActionLoading(true);
+    const result = await restoreListing();
+    setActionLoading(false);
+
+    if (result.error) {
+      addToast(result.error, "error");
+    } else {
+      addToast("Listing restored to browse.");
     }
   };
 
@@ -255,9 +267,19 @@ export default function ListingDetailPage() {
               <Link to={`/listings/${listing.id}/edit`}>
                 <Button>Edit Listing</Button>
               </Link>
-              <Button variant="outline" onClick={() => setShowSoftDelete(true)}>
-                Remove from Browse
-              </Button>
+              {listing.is_active ? (
+                <Button variant="outline" onClick={() => setShowSoftDelete(true)}>
+                  Remove from Browse
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  loading={actionLoading}
+                  onClick={handleRestore}
+                >
+                  Restore to Browse
+                </Button>
+              )}
               <Button variant="danger" onClick={() => setShowHardDelete(true)}>
                 Delete Permanently
               </Button>
