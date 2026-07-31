@@ -63,72 +63,76 @@ export function ProfileProvider({ children }) {
       return;
     }
 
-    let { data, error: fetchError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (fetchError) {
-      console.error("ProfileContext: fetch profile error", fetchError);
-      setLoading(false);
-      return;
-    }
-
-    if (!data) {
-      // No profile row yet — first-time user
-      const oauthAvatar = getOAuthAvatar();
-      const profileData = {
-        id: user.id,
-        full_name: user.user_metadata?.full_name || user.user_metadata?.name || "",
-        avatar_url: oauthAvatar || null,
-      };
-      console.log("ProfileContext fetchProfile upsert payload:", profileData);
-
-      const { data: created, error: createError } = await supabase
+    async function run(retry) {
+      let { data, error: fetchError } = await supabase
         .from("profiles")
-        .upsert(profileData, { onConflict: "id" })
-        .select()
+        .select("*")
+        .eq("id", user.id)
         .maybeSingle();
 
-      if (createError) {
-        console.error("ProfileContext: create profile error", createError);
-        if (!isRetry) {
-          await new Promise((r) => setTimeout(r, RETRY_DELAY));
-          return fetchProfile(true);
-        }
+      if (fetchError) {
+        console.error("ProfileContext: fetch profile error", fetchError);
         setLoading(false);
         return;
       }
-      data = created;
-    }
 
-    // If profile exists but has no avatar, and we haven't retried yet,
-    // the row might have been created by a trigger after our first fetch
-    // returned nothing. Retry once to catch this race.
-    if (!isRetry && data && !data.avatar_url && getOAuthAvatar()) {
-      const oauthAvatar = getOAuthAvatar();
-      const { data: updated, error: updateError } = await supabase
-        .from("profiles")
-        .upsert({ id: user.id, avatar_url: oauthAvatar }, { onConflict: "id" })
-        .select()
-        .maybeSingle();
-      if (updateError) {
-        console.error("ProfileContext: update avatar error", updateError);
+      if (!data) {
+        // No profile row yet — first-time user
+        const oauthAvatar = getOAuthAvatar();
+        const profileData = {
+          id: user.id,
+          full_name: user.user_metadata?.full_name || user.user_metadata?.name || "",
+          avatar_url: oauthAvatar || null,
+        };
+        console.log("ProfileContext fetchProfile upsert payload:", profileData);
+
+        const { data: created, error: createError } = await supabase
+          .from("profiles")
+          .upsert(profileData, { onConflict: "id" })
+          .select()
+          .maybeSingle();
+
+        if (createError) {
+          console.error("ProfileContext: create profile error", createError);
+          if (!retry) {
+            await new Promise((r) => setTimeout(r, RETRY_DELAY));
+            return run(true);
+          }
+          setLoading(false);
+          return;
+        }
+        data = created;
       }
-      if (updated) data = updated;
+
+      // If profile exists but has no avatar, and we haven't retried yet,
+      // the row might have been created by a trigger after our first fetch
+      // returned nothing. Retry once to catch this race.
+      if (!retry && data && !data.avatar_url && getOAuthAvatar()) {
+        const oauthAvatar = getOAuthAvatar();
+        const { data: updated, error: updateError } = await supabase
+          .from("profiles")
+          .upsert({ id: user.id, avatar_url: oauthAvatar }, { onConflict: "id" })
+          .select()
+          .maybeSingle();
+        if (updateError) {
+          console.error("ProfileContext: update avatar error", updateError);
+        }
+        if (updated) data = updated;
+      }
+
+      setProfile(data);
+      setLoading(false);
     }
 
-    setProfile(data);
-    setLoading(false);
+    return run(isRetry);
   }, [user, getOAuthAvatar]);
 
   // Re-fetch profile whenever the auth user changes
   useEffect(() => {
-    setLoading(true);
-    (async () => {
-      await fetchProfile();
-    })();
+    Promise.resolve().then(() => {
+      setLoading(true);
+      return fetchProfile();
+    });
   }, [fetchProfile]);
 
   // ── Derived completion state ──────────────────────────────────
@@ -175,7 +179,7 @@ export function ProfileProvider({ children }) {
   // email/password users who accepted during signup already have the field set.
   useEffect(() => {
     if (!loading && profile && !profile.terms_accepted_at) {
-      setTermsOverlayVisible(true);
+      Promise.resolve().then(() => setTermsOverlayVisible(true));
     }
   }, [loading, profile]);
 
@@ -184,7 +188,7 @@ export function ProfileProvider({ children }) {
   // avatar + location before letting the user into the app.
   useEffect(() => {
     if (!loading && profile && !isProfileComplete) {
-      setCompletionVisible(true);
+      Promise.resolve().then(() => setCompletionVisible(true));
     }
   }, [loading, profile, isProfileComplete]);
 

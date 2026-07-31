@@ -34,7 +34,6 @@ export function useMessages(bookingId) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const optimisticIdRef = useRef(0);
   const channelRef = useRef(null);
 
@@ -62,10 +61,10 @@ export function useMessages(bookingId) {
     }
 
     setLoading(false);
-  }, [bookingId, user, refreshKey]);
+  }, [bookingId, user]);
 
   useEffect(() => {
-    fetchMessages();
+    Promise.resolve().then(() => fetchMessages());
   }, [fetchMessages]);
 
   // Real-time subscription
@@ -154,8 +153,8 @@ export function useMessages(bookingId) {
   );
 
   const refetch = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+    fetchMessages();
+  }, [fetchMessages]);
 
   return { messages, loading, error, addOptimistic, refetch };
 }

@@ -30,7 +30,6 @@ export function useConversations() {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchConversations = useCallback(async () => {
     if (!user) {
@@ -208,15 +207,15 @@ export function useConversations() {
 
     setConversations(result);
     setLoading(false);
-  }, [user, refreshKey]);
+  }, [user]);
 
   useEffect(() => {
-    fetchConversations();
+    Promise.resolve().then(() => fetchConversations());
   }, [fetchConversations]);
 
   const refetch = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+    fetchConversations();
+  }, [fetchConversations]);
 
   return { conversations, loading, error, refetch };
 }

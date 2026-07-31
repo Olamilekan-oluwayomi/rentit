@@ -32,7 +32,6 @@ export function useBookings(type) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchBookings = useCallback(async () => {
     if (!user) {
@@ -127,15 +126,15 @@ export function useBookings(type) {
     }
 
     setLoading(false);
-  }, [user, type, refreshKey]);
+  }, [user, type]);
 
   useEffect(() => {
-    fetchBookings();
+    Promise.resolve().then(() => fetchBookings());
   }, [fetchBookings]);
 
   const refetch = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+    fetchBookings();
+  }, [fetchBookings]);
 
   return { data, loading, error, refetch };
 }

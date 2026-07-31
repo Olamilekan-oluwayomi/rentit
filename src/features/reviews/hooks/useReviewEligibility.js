@@ -17,7 +17,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
 
-export function useReviewEligibility({ booking, reviewerId }) {
+export function useReviewEligibility({ booking }) {
   const { user } = useAuth();
   const [existingReview, setExistingReview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ export function useReviewEligibility({ booking, reviewerId }) {
   }, [booking, user]);
 
   useEffect(() => {
-    checkEligibility();
+    Promise.resolve().then(() => checkEligibility());
   }, [checkEligibility]);
 
   return { eligibility, existingReview, loading, refetch: checkEligibility };

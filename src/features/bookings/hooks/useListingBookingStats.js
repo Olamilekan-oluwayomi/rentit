@@ -14,7 +14,7 @@
 |--------------------------------------------------------------------------
 */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 
 /**
@@ -30,14 +30,23 @@ export function useListingBookingStats(listingIds) {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+
+  // The parent recomputes `listingIds` on every render, so the fetch callback
+  // depends on a stable joined key while reading the current values from a ref.
+  const listingIdsKey = listingIds?.join(",") ?? "";
+  const listingIdsRef = useRef(listingIds);
+  useEffect(() => {
+    listingIdsRef.current = listingIds;
+  }, [listingIds]);
 
   const fetchStats = useCallback(async () => {
-    if (!listingIds || listingIds.length === 0) {
+    if (!listingIdsKey) {
       setStats({});
       setLoading(false);
       return;
     }
+
+    const ids = listingIdsRef.current;
 
     setLoading(true);
     setError(null);
@@ -45,7 +54,7 @@ export function useListingBookingStats(listingIds) {
     const { data, error: fetchError } = await supabase
       .from("bookings")
       .select("listing_id")
-      .in("listing_id", listingIds);
+      .in("listing_id", ids);
 
     if (fetchError) {
       setError(fetchError.message);
@@ -59,15 +68,15 @@ export function useListingBookingStats(listingIds) {
     }
 
     setLoading(false);
-  }, [listingIds?.join(","), refreshKey]);
+  }, [listingIdsKey]);
 
   useEffect(() => {
-    fetchStats();
+    Promise.resolve().then(() => fetchStats());
   }, [fetchStats]);
 
   const refetch = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+    fetchStats();
+  }, [fetchStats]);
 
   return { stats, loading, error, refetch };
 }

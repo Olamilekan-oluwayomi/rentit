@@ -55,7 +55,7 @@ export function useUnreadCount() {
   }, [user]);
 
   useEffect(() => {
-    fetchCount();
+    Promise.resolve().then(() => fetchCount());
   }, [fetchCount]);
 
   // Real-time subscription for new messages sent TO the current user

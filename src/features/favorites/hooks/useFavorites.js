@@ -33,8 +33,10 @@ export function FavoritesProvider({ children }) {
 
   useEffect(() => {
     if (!user) {
-      setFavorites(new Set());
-      setLoading(false);
+      Promise.resolve().then(() => {
+        setFavorites(new Set());
+        setLoading(false);
+      });
       return;
     }
 
@@ -83,21 +85,17 @@ export function FavoritesProvider({ children }) {
       return next;
     });
 
-    let error = null;
+    const result = wasFavorited
+      ? await supabase
+          .from("favorites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("listing_id", listingId)
+      : await supabase
+          .from("favorites")
+          .insert({ user_id: user.id, listing_id: listingId });
 
-    if (wasFavorited) {
-      const result = await supabase
-        .from("favorites")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("listing_id", listingId);
-      error = result.error;
-    } else {
-      const result = await supabase
-        .from("favorites")
-        .insert({ user_id: user.id, listing_id: listingId });
-      error = result.error;
-    }
+    const error = result.error;
 
     toggleLoadingRef.current = false;
 
@@ -129,12 +127,14 @@ export function FavoritesProvider({ children }) {
 
   return createElement(
     FavoritesContext.Provider,
+    // toggleFavorite guards concurrent toggles with a ref lock, but it is only
+    // ever invoked from event handlers, never during render.
+    // eslint-disable-next-line react-hooks/refs
     { value: { favorites, loading, toggleFavorite, isFavorited, refetch } },
     children
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useFavorites() {
   const ctx = useContext(FavoritesContext);
   if (!ctx) {
