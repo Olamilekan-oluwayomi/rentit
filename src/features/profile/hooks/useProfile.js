@@ -72,10 +72,12 @@ export function useProfile() {
   /**
    * Uploads a new avatar image and links it to the user's profile.
    * The file is compressed to 512×512 JPEG before uploading to keep
-   * storage sizes small and load times fast. The file is stored at
-   * `<user-id>/avatar.jpg` with upsert so each user always has exactly
-   * one avatar. After the storage upload succeeds, the profile row is
-   * updated to point to the new path.
+   * storage sizes small and load times fast. Each upload uses a unique
+   * filename (`<user-id>/avatar-<timestamp>.jpg`) so the resulting public
+   * URL changes every time — this avoids the browser/CDN serving a cached
+   * copy of a previous avatar that was stored at the same path. After the
+   * storage upload succeeds, the profile row is updated to point to the
+   * new path, and the previous avatar file is removed so it doesn't orphan.
    *
    * @param {File} file - Image file selected by the user
    * @returns {Promise<{success?: boolean, error?: string}>}
@@ -95,8 +97,9 @@ export function useProfile() {
         return { error: err.message };
       }
 
-      // Deterministic path per user — upsert replaces any previous avatar
-      const filePath = `${user.id}/avatar.jpg`;
+      // Unique path per upload — the public URL changes every time, so
+      // caches keyed on the old URL can never serve a stale avatar.
+      const filePath = `${user.id}/avatar-${Date.now()}.jpg`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
@@ -124,9 +127,17 @@ export function useProfile() {
 
       setProfile(data);
       setUploading(false);
+
+      // Best-effort cleanup of the previous avatar file once the profile
+      // points at the new one. Not awaited so an orphaned file can never
+      // fail the upload.
+      if (profile?.avatar_url && profile.avatar_url !== filePath) {
+        supabase.storage.from("avatars").remove([profile.avatar_url]);
+      }
+
       return { success: true };
     },
-    [user, setProfile]
+    [user, setProfile, profile]
   );
 
   /**
@@ -141,9 +152,16 @@ export function useProfile() {
     setSaving(true);
     setError(null);
 
-    // Only attempt storage removal if an avatar currently exists
+    // Only attempt storage removal if an avatar currently exists.
+    // A storage failure is logged but does not block the profile update —
+    // the avatar_url is the source of truth for what gets displayed.
     if (profile?.avatar_url) {
-      await supabase.storage.from("avatars").remove([profile.avatar_url]);
+      const { error: removeError } = await supabase.storage
+        .from("avatars")
+        .remove([profile.avatar_url]);
+      if (removeError) {
+        console.error("useProfile deleteAvatar storage remove error:", removeError);
+      }
     }
 
     const delPayload = { id: user.id, avatar_url: null };
