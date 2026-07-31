@@ -118,9 +118,18 @@ export default function InboxPage() {
           <AnimatedList>
             {conversations.map((conv) => (
               <AnimatedListItem key={conv.bookingId}>
-                <Link
-                  to={`/booking/${conv.bookingId}`}
-                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-border active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                <div
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => navigate(`/booking/${conv.bookingId}`)}
+                  onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget) return;
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate(`/booking/${conv.bookingId}`);
+                    }
+                  }}
+                  className={`flex items-center gap-3 px-5 py-3.5 transition-colors border-b border-border cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                     conv.unreadCount > 0
                       ? "bg-accent/[0.03]"
                       : "hover:bg-surface-secondary"
@@ -169,7 +178,7 @@ export default function InboxPage() {
                         e.preventDefault();
                         navigate(`/users/${conv.counterparty?.id}`);
                       }}
-                      className="text-xs text-text-secondary truncate leading-tight mt-0.5 hover:text-accent transition-colors text-left cursor-pointer w-full"
+                      className="inline-block max-w-full text-xs text-text-secondary truncate leading-tight mt-0.5 hover:text-accent transition-colors text-left cursor-pointer"
                     >
                       {conv.counterparty?.full_name ?? "User"}
                       {conv.isRenter ? " · Owner" : " · Renter"}
@@ -204,7 +213,7 @@ export default function InboxPage() {
                       </span>
                     )}
                   </div>
-                </Link>
+                </div>
               </AnimatedListItem>
             ))}
           </AnimatedList>
