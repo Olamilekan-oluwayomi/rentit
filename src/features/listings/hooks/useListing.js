@@ -59,7 +59,11 @@ export function useListing(id) {
 
   // ── Update listing fields ─────────────────────────────────
   /**
-   * Merges arbitrary field updates into the listing row via upsert.
+   * Merges arbitrary field updates into the listing row.
+   * Uses a plain UPDATE (not upsert) so the row is only ever modified via
+   * the UPDATE RLS policy. An upsert payload would omit owner_id and fail
+   * the INSERT policy's WITH CHECK (owner_id = auth.uid()) even for
+   * existing rows.
    *
    * @param {object} updates - Partial listing object (e.g. title, daily_price)
    * @returns {Promise<{success?: boolean, error?: string}>}
@@ -71,7 +75,8 @@ export function useListing(id) {
 
       const { data, error: updateError } = await supabase
         .from("listings")
-        .upsert({ id, ...updates }, { onConflict: "id" })
+        .update(updates)
+        .eq("id", id)
         .select()
         .single();
 
@@ -96,7 +101,8 @@ export function useListing(id) {
 
     const { data, error: updateError } = await supabase
       .from("listings")
-      .upsert({ id, is_active: false }, { onConflict: "id" })
+      .update({ is_active: false })
+      .eq("id", id)
       .select()
       .single();
 
@@ -119,7 +125,8 @@ export function useListing(id) {
 
     const { data, error: updateError } = await supabase
       .from("listings")
-      .upsert({ id, is_active: true }, { onConflict: "id" })
+      .update({ is_active: true })
+      .eq("id", id)
       .select()
       .single();
 
