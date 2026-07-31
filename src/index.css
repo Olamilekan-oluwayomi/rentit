@@ -66,6 +66,12 @@ body {
   --color-surface-secondary: #efeae0;
   --color-surface-tertiary: #e4ddce;
 
+  /* Incoming chat bubble. Stays white in light mode; overridden to a
+     warm tan in dark mode so received bubbles read clearly against
+     the dark chat background. */
+
+  --color-bubble: #ffffff;
+
   --color-text-primary: #1c1b19;
   --color-text-secondary: #6b6558;
   --color-text-muted: #7c7568;
@@ -123,6 +129,11 @@ body {
   --color-surface-secondary: #2c2822;
 
   --color-surface-tertiary: #3a342b;
+
+  /* Incoming chat bubble — warm tan, clearly lighter than the dark
+     page/thread backgrounds so received messages stand out. */
+
+  --color-bubble: #73634f;
 
   --color-text-primary: #ede8de;
 

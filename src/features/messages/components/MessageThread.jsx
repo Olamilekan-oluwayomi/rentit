@@ -62,7 +62,7 @@ export default function MessageThread({ messages, loading }) {
         <div className="max-w-2xl mx-auto space-y-4 animate-pulse">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
-              <div className={`${i % 2 === 0 ? "bg-accent/20" : "bg-surface"} rounded-2xl ${i % 2 === 0 ? "rounded-br-md" : "rounded-bl-md"} ${i % 2 === 0 ? "max-w-[55%]" : "max-w-[65%]"}`}>
+              <div className={`${i % 2 === 0 ? "bg-accent/20" : "bg-bubble"} rounded-2xl ${i % 2 === 0 ? "rounded-br-md" : "rounded-bl-md"} ${i % 2 === 0 ? "max-w-[55%]" : "max-w-[65%]"}`}>
                 <div className="px-3.5 py-3 space-y-2">
                   <div className={`h-3 rounded ${i % 2 === 0 ? "bg-white/20" : "bg-surface-tertiary/40"} ${i % 2 === 0 ? "w-32" : "w-24"}`} />
                   <div className={`h-3 rounded ${i % 2 === 0 ? "bg-white/20" : "bg-surface-tertiary/40"} ${i % 2 === 0 ? "w-20" : "w-36"}`} />
@@ -119,7 +119,7 @@ export default function MessageThread({ messages, loading }) {
                 className={`max-w-[78%] sm:max-w-[65%] px-3.5 py-2 ${
                   isMine
                     ? `bg-accent ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-br-md"}`
-                    : `bg-surface dark:bg-surface-tertiary text-text-primary ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-bl-md"}`
+                    : `bg-bubble text-text-primary ${sameSenderAsNext ? "rounded-2xl" : "rounded-2xl rounded-bl-md"}`
                 } ${isOptimistic ? "opacity-50" : ""}`}
               >
                 <p className={`text-[13.5px] leading-[1.45] whitespace-pre-wrap break-words ${isMine ? "text-white" : ""}`}>
@@ -128,7 +128,7 @@ export default function MessageThread({ messages, loading }) {
                 {!sameSenderAsNext && (
                   <p
                     className={`text-[10px] mt-1 ${
-                      isMine ? "text-white/60" : "text-text-secondary/70"
+                      isMine ? "text-white/60" : "text-text-secondary/70 dark:text-text-secondary"
                     }`}
                   >
                     {formatTime(msg.created_at)}
