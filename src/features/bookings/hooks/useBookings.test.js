@@ -100,11 +100,6 @@ describe('useBookings — owner view (requests / rented-out)', () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(result.current.data).toEqual([])
-    // Should NOT have queried bookings
-    const bookingCalls = supabase.from.mock.calls.filter(([t]) => t === 'bookings')
-    // There might be 0 if the early return for no listings works,
-    // but the mock always creates chains even if the real code returns early.
-    // We just verify data is empty and no error is set.
     expect(result.current.error).toBeNull()
   })
 

@@ -5,8 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen } from '@testing-library/react'
 
 // Mutable mock so tests can configure blocked ranges per test
 const mockUseAvailability = vi.hoisted(() => ({

@@ -54,7 +54,6 @@ describe('AuthProvider', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     // Simulate onAuthStateChange firing with a session
-    const subscription = vi.mocked(supabase.auth.onAuthStateChange).mock.results[0]?.value
     // The callback was stored, retrieve it
     const onAuthCallback = vi.mocked(supabase.auth.onAuthStateChange).mock.calls[0]?.[0]
 
