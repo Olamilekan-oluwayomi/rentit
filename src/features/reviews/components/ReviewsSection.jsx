@@ -75,9 +75,11 @@ export default function ReviewsSection({ ownerId, ratingCount }) {
   // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (ownerId) {
-      setPage(0);
-      setReviews([]);
-      fetchReviews(0);
+      Promise.resolve().then(() => {
+        setPage(0);
+        setReviews([]);
+        fetchReviews(0);
+      });
     }
   }, [ownerId, fetchReviews]);
 

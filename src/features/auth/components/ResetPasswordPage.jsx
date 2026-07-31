@@ -20,7 +20,6 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { supabase } from "../../../shared/lib/supabase";
 import { AuthLayout } from "../../../layouts";
 import { useToast } from "../../../shared/contexts/ToastContext";
@@ -38,27 +37,25 @@ export default function ResetPasswordPage() {
 // Parse access_token and refresh_token from the URL hash to establish an authenticated session.
   useEffect(() => {
     const hash = window.location.hash;
+    const params =
+      hash && hash.includes("access_token")
+        ? new URLSearchParams(hash.substring(1))
+        : null;
+    const access_token = params?.get("access_token");
+    const refresh_token = params?.get("refresh_token");
 
-    if (hash && hash.includes("access_token")) {
-      const params = new URLSearchParams(hash.substring(1));
-      const access_token = params.get("access_token");
-      const refresh_token = params.get("refresh_token");
+    const sessionPromise =
+      access_token && refresh_token
+        ? supabase.auth
+            .setSession({ access_token, refresh_token })
+            .then(({ error }) => error)
+        : Promise.resolve("missing-token");
 
-      if (access_token && refresh_token) {
-        supabase.auth
-          .setSession({ access_token, refresh_token })
-          .then(({ error }) => {
-            setValidSession(!error);
-            setChecking(false);
-          });
-      } else {
-        setChecking(false);
-      }
-    } else {
+    sessionPromise.then((sessionError) => {
+      setValidSession(!sessionError);
       setChecking(false);
-    }
+    });
   }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async (e) => {
     e.preventDefault();

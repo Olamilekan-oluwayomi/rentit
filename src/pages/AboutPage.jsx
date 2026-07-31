@@ -85,10 +85,8 @@ export default function AboutPage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {STEPS.map((step, i) => {
-                const Icon = step.icon;
-                return (
-                  <div key={step.title} className="text-center">
+              {STEPS.map((step, i) => (
+                <div key={step.title} className="text-center">
                     <div className="w-12 h-12 rounded-full bg-accent/5 border-2 border-accent/20 flex items-center justify-center mx-auto mb-5">
                       <span className="text-lg font-heading font-bold text-accent leading-none">{i + 1}</span>
                     </div>
@@ -99,8 +97,7 @@ export default function AboutPage() {
                       {step.description}
                     </p>
                   </div>
-                );
-              })}
+              ))}
             </div>
           </Container>
         </section>

@@ -22,7 +22,6 @@ export default function ImageGallery({ images = [] }) {
 
   const urls = images.map((p) => getListingImageUrl(p, { width: 960, height: 540 })).filter(Boolean);
   const hasImages = urls.length > 0;
-  const rawUrls = images.map((p) => getListingImageUrl(p)).filter(Boolean);
 
   // ── Navigation Callbacks ──────────────────────────────────────────
   const goNext = useCallback(() => {

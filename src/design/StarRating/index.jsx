@@ -38,29 +38,6 @@ function StarIcon({ fill, className = "" }) {
   );
 }
 
-function HalfStarIcon({ className = "" }) {
-  return (
-    <svg className={["w-5 h-5 shrink-0", className].join(" ")} viewBox="0 0 24 24" aria-hidden="true">
-      <defs>
-        <clipPath id="half-star-clip">
-          <rect x="0" y="0" width="12" height="24" />
-        </clipPath>
-      </defs>
-      <path
-        d={STAR_PATH}
-        fill="none"
-        stroke="var(--color-border)"
-        strokeWidth={1.5}
-      />
-      <path
-        d={STAR_PATH}
-        fill="var(--color-accent)"
-        clipPath="url(#half-star-clip)"
-      />
-    </svg>
-  );
-}
-
 export function StarRatingInput({
   value = 0,
   onChange,

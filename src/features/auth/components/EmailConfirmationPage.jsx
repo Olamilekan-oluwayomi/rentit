@@ -20,13 +20,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../../shared/lib/supabase";
-import { useAuth } from "../context/AuthContext";
 import { AuthLayout } from "../../../layouts";
 import FadeInSection from "../../../shared/components/FadeInSection";
 
 export default function EmailConfirmationPage() {
   const [status, setStatus] = useState("loading");
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   /**

@@ -21,7 +21,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
-import { useUnreadCount } from "../features/messages/hooks/useUnreadCount";
 import { useTheme } from "../shared/contexts/ThemeContext";
 import { getAvatarUrl } from "../utils/storage";
 import { Button, IconButton } from "../design";
@@ -37,7 +36,6 @@ const navLinkClass = ({ isActive }) =>
 export default function MobileNav({ open, onClose }) {
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
-  const { count: unreadCount } = useUnreadCount();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 32, height: 32 });

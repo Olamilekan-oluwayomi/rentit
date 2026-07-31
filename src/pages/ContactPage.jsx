@@ -39,8 +39,10 @@ export default function ContactPage() {
   // Pre-fill from auth profile if logged in
   useEffect(() => {
     if (user) {
-      setName(user.user_metadata?.full_name || "");
-      setEmail(user.email || "");
+      Promise.resolve().then(() => {
+        setName(user.user_metadata?.full_name || "");
+        setEmail(user.email || "");
+      });
     }
   }, [user]);
 

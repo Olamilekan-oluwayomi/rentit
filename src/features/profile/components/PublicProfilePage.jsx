@@ -51,43 +51,51 @@ export default function PublicProfilePage() {
 
   useEffect(() => {
     if (!userId) return;
-    setProfileLoading(true);
-    setProfileError(null);
 
-    supabase
-      .from("profiles")
-      .select("id, full_name, avatar_url, bio, location")
-      .eq("id", userId)
-      .single()
-      .then(({ data, error }) => {
-        if (error) {
-          setProfileError(error.message);
-        } else if (data) {
-          setProfile(data);
-        }
-        setProfileLoading(false);
-      });
+    const loadProfile = async () => {
+      setProfileLoading(true);
+      setProfileError(null);
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, bio, location")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        setProfileError(error.message);
+      } else if (data) {
+        setProfile(data);
+      }
+      setProfileLoading(false);
+    };
+
+    Promise.resolve().then(loadProfile);
   }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
-    setReviewStatsLoading(true);
 
-    supabase
-      .from("reviews")
-      .select("rating")
-      .eq("reviewee_id", userId)
-      .then(({ data, error }) => {
-        if (!error && data) {
-          const count = data.length;
-          const avg =
-            count > 0
-              ? (data.reduce((sum, r) => sum + r.rating, 0) / count).toFixed(1)
-              : 0;
-          setReviewStats({ avg: Number(avg), count });
-        }
-        setReviewStatsLoading(false);
-      });
+    const loadReviewStats = async () => {
+      setReviewStatsLoading(true);
+
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("rating")
+        .eq("reviewee_id", userId);
+
+      if (!error && data) {
+        const count = data.length;
+        const avg =
+          count > 0
+            ? (data.reduce((sum, r) => sum + r.rating, 0) / count).toFixed(1)
+            : 0;
+        setReviewStats({ avg: Number(avg), count });
+      }
+      setReviewStatsLoading(false);
+    };
+
+    Promise.resolve().then(loadReviewStats);
   }, [userId]);
 
   const avatarUrl = profile?.avatar_url

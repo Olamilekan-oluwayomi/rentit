@@ -20,7 +20,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays } from "lucide-react";
-import { useAuth } from "../../features/auth/context/AuthContext";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import FadeInSection from "../../shared/components/FadeInSection";
 
@@ -33,7 +32,6 @@ const STATUS_TABS = [
 ];
 
 export default function DashboardBookings() {
-  const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState("all");
 
   const { data: rentedOutBookings, loading, error } = useBookings("rented-out");

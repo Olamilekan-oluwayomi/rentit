@@ -18,7 +18,7 @@
 |--------------------------------------------------------------------------
 */
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
 import { MapPin, ChevronLeft, Heart } from "lucide-react";
@@ -30,7 +30,7 @@ import { useCreateBooking } from "../../bookings/hooks/useCreateBooking";
 import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { supabase } from "../../../shared/lib/supabase";
 import { getListingImageUrl } from "../../../utils/storage";
-import { Button, EmptyState, Badge, StarRatingInput, IconButton } from "../../../design";
+import { Button, EmptyState, Badge, StarRatingInput } from "../../../design";
 import ReviewsSection from "../../reviews/components/ReviewsSection";
 import ListingGallery from "./ListingGallery";
 import OwnerCard from "./OwnerCard";
@@ -44,7 +44,7 @@ export default function ListingDetailPage() {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { listing, loading, error, softDeleteListing, hardDeleteListing } = useListing(id);
-  const { createBooking, submitting: bookingSubmitting } = useCreateBooking();
+  const { createBooking } = useCreateBooking();
   const { isFavorited, toggleFavorite } = useFavorites();
 
   const [showSoftDelete, setShowSoftDelete] = useState(false);

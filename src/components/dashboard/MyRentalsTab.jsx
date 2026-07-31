@@ -5,7 +5,7 @@
  * details, date range, status badge, and cancel action for pending/approved bookings.
  */
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import { useToast } from "../../shared/contexts/ToastContext";
@@ -23,12 +23,6 @@ export default function MyRentalsTab() {
   const { data: bookings, loading, error, refetch } = useBookings("rentals");
   const { addToast } = useToast();
   const [cancellingId, setCancellingId] = useState(null);
-
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleReviewUpdate = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
 
   // ── Handlers ──
 
@@ -111,7 +105,7 @@ export default function MyRentalsTab() {
               <ReviewPrompt
                 booking={booking}
                 revieweeId={listing?.owner_id}
-                onReviewUpdate={handleReviewUpdate}
+                onReviewUpdate={refetch}
               />
             </div>
           </AnimatedListItem>

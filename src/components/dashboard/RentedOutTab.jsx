@@ -5,7 +5,6 @@
  * booking status is 'approved' or 'completed'. Read-only view with no actions.
  */
 
-import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../../features/bookings/hooks/useBookings";
 import StatusBadge from "../../features/bookings/components/StatusBadge";
@@ -18,13 +17,7 @@ import AnimatedList, { AnimatedListItem } from "../../shared/components/Animated
 import ReviewPrompt from "../../features/reviews/components/ReviewPrompt";
 
 export default function RentedOutTab() {
-  const { data: bookings, loading, error } = useBookings("rented-out");
-
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleReviewUpdate = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+  const { data: bookings, loading, error, refetch } = useBookings("rented-out");
 
   // ── Render ──
 
@@ -67,7 +60,7 @@ export default function RentedOutTab() {
               <ReviewPrompt
                 booking={booking}
                 revieweeId={booking.renter_id}
-                onReviewUpdate={handleReviewUpdate}
+                onReviewUpdate={refetch}
               />
             </div>
           </AnimatedListItem>

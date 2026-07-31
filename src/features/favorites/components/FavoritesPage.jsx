@@ -33,8 +33,10 @@ export default function FavoritesPage() {
     if (favoritesLoading || !user) return;
 
     if (favorites.size === 0) {
-      setListings([]);
-      setLoading(false);
+      Promise.resolve().then(() => {
+        setListings([]);
+        setLoading(false);
+      });
       return;
     }
 

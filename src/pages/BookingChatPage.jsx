@@ -83,13 +83,16 @@ export default function BookingChatPage() {
     }
   }, [messages, bookingId, user]);
 
-  const doSend = async (content) => {
-    addOptimistic(content);
-    const { error: sendError } = await sendMessage(bookingId, content);
-    if (sendError) {
-      console.error("Failed to send message:", sendError);
-    }
-  };
+  const doSend = useCallback(
+    async (content) => {
+      addOptimistic(content);
+      const { error: sendError } = await sendMessage(bookingId, content);
+      if (sendError) {
+        console.error("Failed to send message:", sendError);
+      }
+    },
+    [addOptimistic, bookingId, sendMessage]
+  );
 
   // Gate the first message behind profile completion; subsequent sends pass through.
   const handleSend = useCallback(
@@ -100,7 +103,7 @@ export default function BookingChatPage() {
         doSend(content);
       }
     },
-    [messages.length, requireProfile]
+    [messages.length, requireProfile, doSend]
   );
 
   const listingTitle = booking?.listings?.title ?? "Booking";
