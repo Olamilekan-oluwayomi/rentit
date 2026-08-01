@@ -26,7 +26,11 @@ Create a `.env` file in the project root:
 ```
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+VITE_VAPID_PUBLIC_KEY=your_vapid_public_key
 ```
+
+`VITE_VAPID_PUBLIC_KEY` is only needed for web push notifications (see the
+[`send-notification` Edge Function](./supabase/functions/send-notification)).
 
 ### Install & Run
 
