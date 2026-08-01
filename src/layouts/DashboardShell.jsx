@@ -27,6 +27,7 @@ import { useTheme } from "../shared/contexts/ThemeContext";
 import { getAvatarUrl } from "../utils/storage";
 import { IconButton } from "../design";
 import Logo from "../components/layout/Logo";
+import PushOptInBanner from "../features/notifications/components/PushOptInBanner";
 
 const NAV_ITEMS = [
   { to: "/dashboard", icon: Home, label: "Home" },
@@ -228,6 +229,7 @@ export default function DashboardLayout() {
 
           <main className="flex-1 overflow-y-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
+              <PushOptInBanner />
               <Suspense fallback={<DashboardFallback />}>
                 <Outlet />
               </Suspense>

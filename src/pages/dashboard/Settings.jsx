@@ -18,6 +18,8 @@
 import { useState } from "react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";
+import { usePushNotifications } from "../../features/notifications/hooks/usePushNotifications";
+import { useToast } from "../../shared/contexts/ToastContext";
 import { getAvatarUrl } from "../../utils/storage";
 import { Button } from "../../design";
 import FadeInSection from "../../shared/components/FadeInSection";
@@ -25,12 +27,27 @@ import FadeInSection from "../../shared/components/FadeInSection";
 export default function DashboardSettings() {
   const { user } = useAuth();
   const { profile, updateProfile, saving } = useProfileContext();
+  const { supported, permission, enabled, loading, enable, disable } =
+    usePushNotifications();
+  const { addToast } = useToast();
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [location, setLocation] = useState(profile?.location || "");
   const [bio, setBio] = useState(profile?.bio || "");
 
   const handleSave = async () => {
     await updateProfile({ full_name: fullName, location, bio });
+  };
+
+  const handleToggleNotifications = async () => {
+    const { error } = enabled ? await disable() : await enable();
+    if (error) {
+      addToast(error.message, "error");
+    } else {
+      addToast(
+        enabled ? "Notifications turned off." : "Notifications enabled.",
+        "success"
+      );
+    }
   };
 
   const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 96, height: 96 });
@@ -146,7 +163,42 @@ export default function DashboardSettings() {
             <h3 className="text-sm font-heading font-semibold text-text-primary">Notification Preferences</h3>
           </div>
           <div className="p-5 space-y-4">
-            <p className="text-xs text-text-muted">Email and push notification settings — coming soon.</p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Push notifications</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  Get notified about booking requests, approvals, and new messages.
+                </p>
+              </div>
+              <button
+                role="switch"
+                aria-checked={enabled}
+                aria-label="Toggle push notifications"
+                disabled={!supported || loading || permission === "denied"}
+                onClick={handleToggleNotifications}
+                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-40 disabled:pointer-events-none ${
+                  enabled ? "bg-accent" : "bg-surface-tertiary"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-fast ${
+                    enabled ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+
+            {!supported && (
+              <p className="text-xs text-text-muted">
+                Push notifications are not supported in this browser.
+              </p>
+            )}
+            {permission === "denied" && (
+              <p className="text-xs text-danger">
+                Notifications are blocked by your browser. Allow them in your
+                browser settings, then refresh this page.
+              </p>
+            )}
           </div>
         </div>
       </FadeInSection>

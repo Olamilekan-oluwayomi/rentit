@@ -17,6 +17,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
+import { clearDevicePushSubscription } from "../../notifications/lib/pushSubscriptions";
+import { setPushKey } from "../../notifications/lib/pushStore";
 
 const AuthContext = createContext(null);
 
@@ -51,6 +53,19 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Keep a fresh access token in the shared push store so the service
+  // worker can upsert on pushsubscriptionchange (it has no localStorage).
+  // Cleared when the user signs out.
+  useEffect(() => {
+    if (!user) {
+      setPushKey("access_token", null);
+      return;
+    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setPushKey("access_token", session?.access_token ?? null);
+    });
+  }, [user]);
+
   /**
    * Register a new user with email, password, and full name.
    * Sends a confirmation email that redirects to /confirm.
@@ -80,7 +95,12 @@ export function AuthProvider({ children }) {
       },
     });
 
-  const signOut = () => supabase.auth.signOut();
+  const signOut = async () => {
+    // Unsubscribe this device and remove its DB row before signOut
+    // invalidates the JWT that RLS would otherwise need.
+    await clearDevicePushSubscription();
+    await supabase.auth.signOut();
+  };
 
   return (
     <AuthContext.Provider

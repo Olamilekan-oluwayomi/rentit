@@ -1,4 +1,23 @@
 /**
+ * Converts a base64url-encoded string (e.g. a VAPID public key) into a
+ * Uint8Array, which is the format PushManager.subscribe() expects for
+ * `applicationServerKey`.
+ *
+ * @param {string} base64String - base64url string, no padding required.
+ * @returns {Uint8Array}
+ */
+export function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; i += 1) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+/**
  * Supabase client singleton.
  *
  * Initialises the Supabase JS client using environment variables and

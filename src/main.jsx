@@ -22,6 +22,17 @@ import { ThemeProvider } from './shared/contexts/ThemeContext.jsx'
 import App from './App.jsx'
 import './index.css'
 
+// Register the push-notification service worker. Guarded so browsers
+// without the Push API skip registration entirely (the rest of the app
+// works fine without it).
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((error) => {
+      console.error('Service worker registration failed:', error)
+    })
+  })
+}
+
 // Provider nesting order matters: ThemeProvider must wrap early so that
 // theme-dependent styles apply before child providers render.
 createRoot(document.getElementById('root')).render(
