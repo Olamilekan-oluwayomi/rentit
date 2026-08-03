@@ -17,6 +17,7 @@
 */
 
 import { useEffect } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../features/auth/context/AuthContext";
@@ -38,6 +39,7 @@ export default function MobileNav({ open, onClose }) {
   const { profile } = useProfileContext();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const prefersReduced = useReducedMotion();
   const avatarSrc = getAvatarUrl(profile?.avatar_url, { width: 32, height: 32 });
 
   useEffect(() => {
@@ -75,23 +77,54 @@ export default function MobileNav({ open, onClose }) {
     .slice(0, 2);
 
   return (
-    <>
-      <div
-        className={`fixed inset-0 bg-black/40 z-50 transition-opacity duration-normal lg:hidden ${
-          open ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={onClose}
-        aria-hidden="true"
-      />
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* Semi-transparent backdrop — fades in/out, only visible on screens < lg */}
+          <motion.div
+            key="backdrop"
+            className="fixed inset-0 bg-black/40 z-50 lg:hidden"
+            onClick={onClose}
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReduced ? 0.15 : 0.3 }}
+          />
 
-      <div
-        className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-surface z-50 shadow-xl transform transition-transform duration-normal ease lg:hidden ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-      >
+          {/* Slide-out panel with 3D curtain flip — opens like a door from the right edge */}
+          <motion.div
+            key="panel"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] z-50 lg:hidden"
+            style={{ perspective: 1200 }}
+          >
+            <motion.div
+              className="h-full w-full bg-surface shadow-xl overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              style={{ transformOrigin: "right center" }}
+              initial={
+                prefersReduced
+                  ? { opacity: 0 }
+                  : { opacity: 0, x: "100%", rotateY: -45, scale: 0.96 }
+              }
+              animate={
+                prefersReduced
+                  ? { opacity: 1 }
+                  : { opacity: 1, x: "0%", rotateY: 0, scale: 1 }
+              }
+              exit={
+                prefersReduced
+                  ? { opacity: 0 }
+                  : { opacity: 0, x: "100%", rotateY: -45, scale: 0.96 }
+              }
+              transition={
+                prefersReduced
+                  ? { duration: 0.15 }
+                  : { duration: 0.45, ease: [0.22, 1, 0.36, 1] }
+              }
+            >
         <div className="flex items-center justify-between p-4 border-b border-border">
           <Logo />
           <IconButton icon={X} label="Close menu" onClick={onClose} />
@@ -190,8 +223,11 @@ export default function MobileNav({ open, onClose }) {
               </NavLink>
             </div>
           )}
-        </div>
-      </div>
-    </>
+          </div>
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
