@@ -73,6 +73,11 @@ npm run dev
 - Categories: Tools, Cameras & Photography, Sports & Outdoors, Electronics, Musical Instruments, Party & Events, Vehicles, Gaming, Other
 - Soft delete (hide from browse) and hard delete with storage cleanup
 
+### Favorites
+- Heart icon on listing cards to save/unsave listings (`useFavorites` context, optimistic toggle with rollback + toast on error)
+- `/favorites` page (protected) showing all saved listings with remove capability
+- Guests get an info toast prompting sign-in when trying to save
+
 ### Booking System
 - Date range picker with blocked-date awareness (react-day-picker)
 - Race-condition defense: re-validates availability at submission time
@@ -89,6 +94,13 @@ npm run dev
 - Delete conversations per-user (hidden from your inbox only; reappears if the other person sends a new message)
 - Click counterparty avatar/name to view their public profile
 
+### Web Push Notifications
+- Opt-in banner on the dashboard plus a toggle in Settings (powered by `usePushNotifications`)
+- Service worker (`public/sw.js`) registers a VAPID subscription; a shared IndexedDB store lets it re-subscribe and upsert on `pushsubscriptionchange`
+- Backend delivery: `push_subscriptions` table, pg_net triggers, and the `send-notification` Edge Function (`supabase/functions/send-notification`)
+- Notifies on new booking requests, booking status changes (approved/declined), and new messages; stale push endpoints are pruned automatically
+- Requires `VITE_VAPID_PUBLIC_KEY` and a secure context (HTTPS or localhost)
+
 ### Reviews
 - Leave reviews after completed bookings
 - Star rating (1–5) with text review
@@ -104,8 +116,8 @@ npm run dev
 - **Rented Out** — view approved and completed rentals with earnings stats
 - **Messages** — inbox-style message list across all booking threads
 - **Analytics** — booking and earnings charts
-- **Notifications** — recent booking activity
-- **Settings** — profile editing
+- **Notifications** — recent booking activity, plus the web push opt-in banner
+- **Settings** — profile editing and web push notification toggle
 
 ### Profile
 - Edit name, bio, and location
@@ -129,7 +141,7 @@ npm run dev
 
 ### Unit & Integration (Vitest + React Testing Library)
 
-All tests live in `src/test/` and run with Vitest 4, jsdom, and `@testing-library`:
+Unit and integration tests run with Vitest 4, jsdom, and `@testing-library`. Unit tests are co-located next to the code they test (`*.test.js/jsx` in the feature/hook folders); integration tests live in `src/test/integration/`:
 
 ```bash
 npm test            # run all unit + integration tests
@@ -140,18 +152,19 @@ npm test -- --ui    # Vitest UI mode
 
 | File | Type | Tests |
 |------|------|-------|
-| `RegisterPage.test.jsx` | Unit | 6 — rendering, ToS gate, password mismatch, submission, confirmation, failure |
-| `AuthContext.test.jsx` | Unit | 7 — loading state, signIn/signUp/signOut/OAuth, auth events |
-| `StatusBadge.test.jsx` | Unit | 2 — text per status, variant class |
-| `useAvailability.test.js` | Unit | 6 — blocked ranges, empty, error, loading, null listingId, params, refetch |
-| `useCreateBooking.test.js` | Unit | 5 — clear range, overlap rejection, avail fetch error, submitting state, insert fields |
-| `useBookings.test.js` | Unit | 4 — renter/owner view, empty listings guard, error |
-| `NewListingPage.test.jsx` | Unit | 5 — form render, validations, image upload + submission, error toast |
-| `AvailabilityCalendar.test.jsx` | Unit | 5 — renter/owner views, loading, error, blocked dates |
-| `RegisterFlow.test.jsx` | Integration | 4 — full register→confirmation→login flow, error stay |
-| `BookingFlow.test.jsx` | Integration | 4 — listing loading, data render, booking card, not-found |
+| `features/auth/components/RegisterPage.test.jsx` | Unit | 7 — rendering, ToS gate, password mismatch, signUp args, confirmation, failure, ToS/Privacy links |
+| `features/auth/context/AuthContext.test.jsx` | Unit | 9 — loading state, session resolution, user set, sign out, signUp/signIn/OAuth calls + errors |
+| `features/bookings/components/StatusBadge.test.jsx` | Unit | 2 — text per status, variant class |
+| `features/bookings/hooks/useAvailability.test.js` | Unit | 7 — blocked ranges, empty, error, loading, null listingId, params, refetch |
+| `features/bookings/hooks/useCreateBooking.test.js` | Unit | 5 — clear range, overlap rejection, avail fetch error, submitting state, insert fields |
+| `features/bookings/hooks/useBookings.test.js` | Unit | 7 — renter view, requests view, rented-out view, no-listings guard, fetch errors |
+| `features/listings/components/NewListingPage.test.jsx` | Unit | 6 — form render, validations, submission, categories, insert failure toast |
+| `features/bookings/components/AvailabilityCalendar.test.jsx` | Unit | 6 — renter/owner views, availability info, blocked notice/error/dates |
+| `test/integration/RegisterFlow.test.jsx` | Integration | 4 — full register→confirmation→login flow, error stay |
+| `test/integration/BookingFlow.test.jsx` | Integration | 4 — listing loading, data render, booking card, not-found |
+| `test/integration/InboxRowNavigation.test.jsx` | Integration | 6 — keyboard row nav, avatar/name profile links, title/preview/whitespace clicks |
 
-**Total: 57 tests across 10 files.**
+**Total: 63 tests across 11 files.**
 
 ### End-to-End (Playwright)
 
@@ -165,8 +178,8 @@ npm run test:e2e:ui       # interactive UI mode
 
 The Playwright config (`playwright.config.js`) starts the Vite dev server automatically and runs against Chromium. Tests cover:
 
-- **Auth flow** (3 tests) — register → confirmation screen, login → home redirect, password mismatch rejection
-- **Browse flow** (4 tests) — landing page, invalid listing 404, skeleton→error transition, all 5 public pages
+- **Auth flow** (`auth-flow.spec.js`, 3 tests) — register → confirmation screen, login → home redirect, password mismatch rejection
+- **Browse flow** (`browse-book-flow.spec.js`, 4 tests) — landing page, invalid listing 404, skeleton→error transition, all 5 public pages
 
 **Total: 7 E2E tests.**
 
@@ -184,7 +197,9 @@ src/features/
 ├── bookings/   # Availability calendar, booking hooks, status badge
 ├── landing/    # Marketing page sections (hero, FAQ, testimonials)
 ├── listings/   # Listing CRUD, image gallery, filters, search
+├── favorites/  # Save/unsave listings, favorites page
 ├── messages/   # Real-time chat, inbox, unread counts, contact owner
+├── notifications/ # Web push opt-in, subscription management
 ├── profile/    # ProfileContext, avatar, completion overlay, profile form
 └── reviews/    # Review form, prompts, paginated reviews section
 ```
@@ -223,7 +238,7 @@ Layouts wrap pages and compose the app shell:
 ### Data Flow
 
 1. **Supabase** is the single source of truth (auth, database, storage)
-2. **React Context** providers (AuthContext, ProfileContext, ThemeContext, ToastContext) are composed in `main.jsx` and provide global state
+2. **React Context** providers — AuthContext, ProfileContext, ThemeContext, ToastContext are composed in `main.jsx`; FavoritesProvider wraps the routes in `App.jsx` — and provide global state
 3. **Custom hooks** co-located with features handle API calls, caching, and side effects
 4. **Optimistic updates** in messaging provide instant UI feedback
 5. **Real-time subscriptions** (via Supabase channels) keep messages in sync across sessions
@@ -254,8 +269,15 @@ src/
 │   ├── listings/           # Listing CRUD, gallery, filters
 │   │   ├── hooks/
 │   │   └── components/
+│   ├── favorites/          # Favorites context, /favorites page
+│   │   ├── hooks/
+│   │   └── components/
 │   ├── messages/           # Real-time chat, inbox, contact owner
 │   │   ├── hooks/
+│   │   └── components/
+│   ├── notifications/      # Web push hook, opt-in banner
+│   │   ├── hooks/
+│   │   ├── lib/
 │   │   └── components/
 │   ├── profile/            # ProfileContext, form, avatar, completion overlay
 │   │   ├── context/
@@ -370,6 +392,27 @@ src/
 | user_id | uuid | References `auth.users.id` |
 | deleted_at | timestamptz | When the user hid the conversation |
 
+### `favorites`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | Primary key |
+| user_id | uuid | References `auth.users.id` |
+| listing_id | uuid | References `listings.id` |
+| created_at | timestamptz | Auto-set |
+
+`UNIQUE(user_id, listing_id)` prevents duplicate saves.
+
+### `push_subscriptions`
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | Primary key |
+| user_id | uuid | References `auth.users.id` |
+| endpoint | text | Push service endpoint; unique per browser/device |
+| p256dh | text | Subscription ECDH public key (base64url) |
+| auth | text | Subscription auth secret (base64url) |
+| user_agent | text | Optional device/browser label |
+| created_at | timestamptz | Auto-set |
+
 ## RLS Policies
 
 - **listings**: Public read, owner-only write
@@ -379,6 +422,8 @@ src/
 - **reviews**: Public read, reviewer insert with own ID
 - **messages**: Read if user is participant, insert as self, update `is_read` if recipient
 - **conversation_hidden**: Users can view, insert, and delete only their own rows
+- **favorites**: Read, insert, and delete only your own rows
+- **push_subscriptions**: View, insert, and delete your own rows (no UPDATE — key rotation is delete + reinsert); the `send-notification` Edge Function reads with the service_role key, bypassing RLS
 
 ## Documentation Conventions
 
