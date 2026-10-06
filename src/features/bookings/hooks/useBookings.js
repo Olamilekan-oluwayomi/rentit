@@ -5,9 +5,10 @@
 |
 | Fetches bookings for the current user in either direction.
 |
-| Purpose: Returns bookings for 'rentals' (renter view), 'requests' (pending owner),
-|          or 'rented-out' (approved/completed owner).
-| Inputs: type ("rentals" | "requests" | "rented-out")
+| Purpose: Returns bookings for 'rentals' (renter view, all statuses),
+|          'requests' (pending owner), 'rented-out' (approved/completed owner),
+|          or 'owner' (every status for bookings on the user's listings).
+| Inputs: type ("rentals" | "requests" | "rented-out" | "owner")
 | Outputs: { data, loading, error, refetch }
 | Side effects: Supabase queries; two-step fetch for owner views
 |
@@ -19,7 +20,7 @@ import { supabase } from "../../../shared/lib/supabase";
 import { useAuth } from "../../auth/context/AuthContext";
 
 /**
- * @param {"rentals" | "requests" | "rented-out"} type
+ * @param {"rentals" | "requests" | "rented-out" | "owner"} type
  * @returns {{
  *   data: Array<object>,
  *   loading: boolean,
@@ -90,9 +91,14 @@ export function useBookings(type) {
         return;
       }
 
-      // Determine which statuses to fetch based on type.
+      // Determine which statuses to fetch based on type. "owner" means every
+      // status, so the status filter is omitted entirely.
       const statusFilter =
-        type === "requests" ? ["pending"] : ["approved", "completed"];
+        type === "requests"
+          ? ["pending"]
+          : type === "rented-out"
+            ? ["approved", "completed"]
+            : null;
 
       // Step 2: fetch bookings where listing_id is in the user's listings.
       query = supabase
@@ -111,9 +117,13 @@ export function useBookings(type) {
           listings ( id, title, images, owner_id ),
           profiles:renter_id ( full_name, avatar_url )
         `)
-        .in("listing_id", listingIds)
-        .in("status", statusFilter)
-        .order("created_at", { ascending: false });
+        .in("listing_id", listingIds);
+
+      if (statusFilter) {
+        query = query.in("status", statusFilter);
+      }
+
+      query = query.order("created_at", { ascending: false });
     }
 
     const { data: bookings, error: fetchError } = await query;

@@ -71,12 +71,12 @@ describe('useBookings — owner view (requests / rented-out)', () => {
     // Should have queried listings first
     expect(supabase.from).toHaveBeenCalledWith('listings')
 
-    // Should filter by pending status
+    // Should filter by pending status. Assert the chain exists first: an
+    // `if (chains.length > 0)` guard would let this pass without ever querying.
     const bookingChains = supabase.from.mock.results
       .filter((r) => r.value && r.value.__table === 'bookings')
-    if (bookingChains.length > 0) {
-      expect(bookingChains[0].value.in).toHaveBeenCalledWith('status', ['pending'])
-    }
+    expect(bookingChains.length).toBeGreaterThan(0)
+    expect(bookingChains[0].value.in).toHaveBeenCalledWith('status', ['pending'])
   })
 
   it('fetches approved/completed bookings for rented-out view', async () => {
@@ -87,10 +87,29 @@ describe('useBookings — owner view (requests / rented-out)', () => {
     await vi.waitFor(() => {
       const bookingChains = supabase.from.mock.results
         .filter((r) => r.value && r.value.__table === 'bookings')
-      if (bookingChains.length > 0) {
-        expect(bookingChains[0].value.in).toHaveBeenCalledWith('status', ['approved', 'completed'])
-      }
+      expect(bookingChains.length).toBeGreaterThan(0)
+      expect(bookingChains[0].value.in).toHaveBeenCalledWith('status', ['approved', 'completed'])
     })
+  })
+
+  it('fetches every status for the owner view (no status filter)', async () => {
+    supabase.__setMockData('bookings', { data: [], error: null })
+
+    renderHook(() => useBookings('owner'))
+
+    await vi.waitFor(() => {
+      const bookingChains = supabase.from.mock.results
+        .filter((r) => r.value && r.value.__table === 'bookings')
+      expect(bookingChains.length).toBeGreaterThan(0)
+    })
+
+    const chain = supabase.from.mock.results
+      .map((r) => r.value)
+      .find((r) => r && r.__table === 'bookings')
+
+    // "owner" spans every status, so .in("status", ...) must not be applied.
+    expect(chain.in).toHaveBeenCalledWith('listing_id', ['l1', 'l2'])
+    expect(chain.in).not.toHaveBeenCalledWith('status', expect.anything())
   })
 
   it('returns empty data when the user has no listings', async () => {
