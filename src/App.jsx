@@ -1,17 +1,27 @@
 /**
  * App — Root component that defines all client-side routes.
  *
- * Routes are split into two layout groups:
- *   - PublicLayout: unauthenticated pages (landing, login, register, etc.)
+ * Routes are split into three groups:
+ *   - PublicLayout: public pages with Navbar + Footer (landing, marketing,
+ *     listing detail, public profiles, and the catch-all 404).
  *     Does NOT load profile-completion logic.
+ *   - Auth routes: declared at the top level, outside PublicLayout, because
+ *     each page renders AuthLayout itself — which is a complete chrome-free
+ *     page including its own theme toggle. Nesting them under PublicLayout
+ *     produced a duplicate Navbar, Footer, and logo.
  *   - AppLayout: authenticated pages (profile, listings, inbox, etc.)
  *     Loads ProfileCompletionOverlay.
  *   - Dashboard: lazy-loaded DashboardShell with its own chrome.
  *
  * Auth-sensitive routes use ProtectedRoute or GuestRoute guards:
  *   - GuestRoute: /login, /register, /forgot-password (redirects logged-in users home).
- *   - ProtectedRoute: /profile, /listings/new, /listings/:id/edit, /dashboard (redirects guests to /login).
+ *   - ProtectedRoute: /profile, /listings/new, /listings/:id/edit, /inbox,
+ *     /favorites, /booking/:id, /dashboard (redirects guests to /login).
  *   - Public: /, /listings/:id, /confirm, /reset-password (accessible to everyone).
+ *   - path="*" is a catch-all NotFoundPage. It is declared inside the
+ *     PublicLayout group but is not the last route in the file; React Router
+ *     ranks "*" lowest regardless of declaration order, so later groups never
+ *     shadow it.
  */
 
 import { lazy, Suspense } from 'react'
@@ -44,6 +54,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'))
 const TermsPage = lazy(() => import('./pages/TermsPage'))
 const PricingPage = lazy(() => import('./pages/PricingPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 const DashboardShell = lazy(() => import('./layouts/DashboardShell'))
 const DashboardHome = lazy(() => import('./pages/dashboard/Home'))
@@ -96,8 +107,6 @@ function App() {
           {/* ── Public routes — no profile logic loaded ─────────── */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<RootRoute />} />
-            <Route path="/confirm" element={<EmailConfirmationPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/listings/:id" element={<ListingDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
@@ -105,10 +114,23 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/users/:userId" element={<PublicProfilePage />} />
-            <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-            <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
-            <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+
+            {/* ── Catch-all: React Router ranks "*" lowest, so declaration
+                order does not matter and later groups never shadow it ── */}
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
+
+          {/* ── Auth routes — no site chrome ─────────────────────────
+              Intentionally outside the PublicLayout group. Each of these pages
+              renders AuthLayout itself, which is a complete page: putting them
+              under PublicLayout as well produced a second Navbar and Footer
+              around it, plus a duplicate logo and a min-h-screen block nested
+              inside another one. AuthLayout carries its own theme toggle. */}
+          <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+          <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+          <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/confirm" element={<EmailConfirmationPage />} />
 
           {/* ── Authenticated routes — with profile overlay ─────── */}
           <Route element={<AppLayout />}>

@@ -16,12 +16,17 @@ vi.mock('../../auth/context/AuthContext', () => ({
 }))
 
 // Motion's animation primitives can be rendered in test — no mock needed.
-// AuthLayout and FadeInSection render real DOM, which is fine.
+// AuthLayout and FadeInSection render real DOM, which is fine. AuthLayout needs
+// ThemeProvider (it owns a theme toggle), which main.jsx supplies in the real app.
+
+import { ThemeProvider } from '../../../shared/contexts/ThemeContext'
 
 function renderPage() {
   return render(
     <MemoryRouter>
-      <RegisterPage />
+      <ThemeProvider>
+        <RegisterPage />
+      </ThemeProvider>
     </MemoryRouter>,
   )
 }

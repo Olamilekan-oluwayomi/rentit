@@ -6,11 +6,12 @@
 | Simple content wrapper for dashboard sub-pages. Adds max-width container
 | with responsive padding.
 |
-| Route: /dashboard (used inside DashboardShell via Outlet)
-| Responsibilities: Contain dashboard page content within a constrained width
+| Route: not a /dashboard sub-page — consumed by features/profile/ProfilePage,
+|        which needs the same constrained width for /profile.
+| Responsibilities: Contain page content within a constrained width
 | Dependencies: None
-| Notes: This is NOT the sidebar shell — that is DashboardShell.jsx. This is
-|        the inner content area wrapper used within dashboard routes.
+| Notes: This is NOT the dashboard shell — that is DashboardShell.jsx, which
+|        renders /dashboard routes directly and does not use this wrapper.
 |
 |--------------------------------------------------------------------------
 */

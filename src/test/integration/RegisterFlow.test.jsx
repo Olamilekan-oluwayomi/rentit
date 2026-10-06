@@ -29,6 +29,7 @@ vi.mock('../../shared/contexts/ToastContext', () => ({
 
 import LoginPage from '../../features/auth/components/LoginPage'
 import RegisterPage from '../../features/auth/components/RegisterPage'
+import { ThemeProvider } from '../../shared/contexts/ThemeContext'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -37,11 +38,14 @@ beforeEach(() => {
 
 function renderApp() {
   return render(
+    // ThemeProvider mirrors main.jsx; AuthLayout requires it for its toggle.
     <MemoryRouter initialEntries={['/register']}>
-      <Routes>
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
+      <ThemeProvider>
+        <Routes>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </ThemeProvider>
     </MemoryRouter>,
   )
 }

@@ -7,11 +7,12 @@
 | password reset link. Shows a "check your email" confirmation after
 | submission with a back-to-login link.
 |
-| Route: /forgot-password (wrapped in GuestRoute → AuthLayout)
+| Route: /forgot-password (no site chrome — the page renders AuthLayout itself)
 | Responsibilities: Send password reset email via Supabase Auth
 | Dependencies: supabase client, AuthLayout, FadeInSection
 | Notes: Redirect URL for reset is `${origin}/reset-password`.
-|        On success the submitted state renders outside AuthLayout.
+|        The submitted (success) state also renders inside AuthLayout, so the
+|        page keeps its logo and theme toggle in both states.
 |
 |--------------------------------------------------------------------------
 */
@@ -47,9 +48,9 @@ export default function ForgotPasswordPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <AuthLayout>
         <FadeInSection>
-        <div className="w-full max-w-md bg-surface rounded-2xl shadow-lg p-8 text-center">
+        <div className="w-full bg-surface rounded-2xl shadow-lg p-8 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -64,7 +65,7 @@ export default function ForgotPasswordPage() {
           </Link>
         </div>
         </FadeInSection>
-      </div>
+      </AuthLayout>
     );
   }
 
