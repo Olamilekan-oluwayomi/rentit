@@ -410,3 +410,27 @@ button:focus {
 .animate-spin-in {
   animation: spin-in 0.3s ease forwards;
 }
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+/*
+  The Motion-powered components (AnimatedList, FadeInSection, MobileNav) gate
+  themselves on useReducedMotion(). These CSS keyframe utilities cannot, so
+  they are neutralised here. Disabling the animation drops each element at its
+  natural end state (opacity 1, no transform) rather than freezing it
+  part-way, so nothing is left invisible.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-scale-in,
+  .animate-spin-in {
+    animation: none;
+  }
+}

@@ -45,7 +45,7 @@ export default function ConfirmDialog({
         onClick={onCancel}
       />
 
-      <div className="relative bg-surface rounded-2xl shadow-xl max-w-md w-full p-6 animate-slide-in">
+      <div className="relative bg-surface rounded-2xl shadow-xl max-w-md w-full p-6 animate-scale-in">
         <h3 className="text-lg font-heading font-semibold text-text-primary mb-2">
           {title}
         </h3>

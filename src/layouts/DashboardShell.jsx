@@ -24,7 +24,7 @@ import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import { useUnreadCount } from "../features/messages/hooks/useUnreadCount";
 import { useTheme } from "../shared/contexts/ThemeContext";
-import { getAvatarUrl } from "../utils/storage";
+import { getAvatarUrl, handleImageError } from "../utils/storage";
 import { IconButton } from "../design";
 import Logo from "../components/layout/Logo";
 import PushOptInBanner from "../features/notifications/components/PushOptInBanner";
@@ -57,8 +57,7 @@ const MOBILE_NAV = [
   { to: "/dashboard/settings", icon: Settings, label: "More" },
 ];
 
-function NavLinkItem({ item, onClick }) {
-  const { count: unreadCount } = useUnreadCount();
+function NavLinkItem({ item, onClick, unreadCount = 0 }) {
   const showBadge = item.to === "/dashboard/messages" && unreadCount > 0;
 
   return (
@@ -86,11 +85,16 @@ function NavLinkItem({ item, onClick }) {
   );
 }
 
-export default function DashboardLayout() {
+export default function DashboardShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { profile } = useProfileContext();
   const { theme, toggleTheme } = useTheme();
+  // Subscribed to once here and threaded down to the nav items. Calling
+  // useUnreadCount() inside NavLinkItem would open one Supabase realtime
+  // channel per nav item (7x on desktop, 14x with the drawer open) and run
+  // 7 identical count queries.
+  const { count: unreadCount } = useUnreadCount();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -127,6 +131,12 @@ export default function DashboardLayout() {
 
   return (
     <div className="h-screen flex flex-col bg-background text-text-primary">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        Skip to main content
+      </a>
       <header className="shrink-0 flex items-center justify-between h-16 px-4 border-b border-border bg-surface lg:hidden">
         <Logo />
         <IconButton icon={sidebarOpen ? X : Menu} label={sidebarOpen ? "Close menu" : "Open menu"} onClick={() => setSidebarOpen(!sidebarOpen)} />
@@ -151,7 +161,7 @@ export default function DashboardLayout() {
               </Link>
               <div className="border-t border-border my-2" />
               {NAV_ITEMS.map((item) => (
-                <NavLinkItem key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
+                <NavLinkItem key={item.to} item={item} onClick={() => setSidebarOpen(false)} unreadCount={unreadCount} />
               ))}
             </nav>
             <div className="p-4 border-t border-border space-y-2">
@@ -164,7 +174,7 @@ export default function DashboardLayout() {
               </button>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden shrink-0">
-                  {avatarSrc ? <img src={avatarSrc} alt="" className="w-full h-full object-cover" /> : initials}
+                  {avatarSrc ? <img src={avatarSrc} alt="" onError={handleImageError} className="w-full h-full object-cover" /> : initials}
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-text-primary truncate">{displayName}</p>
@@ -187,7 +197,7 @@ export default function DashboardLayout() {
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-1">
             {NAV_ITEMS.map((item) => (
-              <NavLinkItem key={item.to} item={item} />
+              <NavLinkItem key={item.to} item={item} unreadCount={unreadCount} />
             ))}
           </nav>
           <div className="p-4 border-t border-border space-y-2">
@@ -201,7 +211,7 @@ export default function DashboardLayout() {
             <div className="flex items-center gap-3">
               <NavLink to="/dashboard/settings" className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden shrink-0">
-                  {avatarSrc ? <img src={avatarSrc} alt="" className="w-full h-full object-cover" /> : initials}
+                  {avatarSrc ? <img src={avatarSrc} alt="" onError={handleImageError} className="w-full h-full object-cover" /> : initials}
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-text-primary truncate">{displayName}</p>
@@ -227,7 +237,7 @@ export default function DashboardLayout() {
             </div>
           </header>
 
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto" id="main-content">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
               <PushOptInBanner />
               <Suspense fallback={<DashboardFallback />}>

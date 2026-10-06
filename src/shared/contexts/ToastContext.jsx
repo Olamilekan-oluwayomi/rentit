@@ -14,7 +14,7 @@
 */
 
 import { createContext, useCallback, useContext, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const ToastContext = createContext(null);
 
@@ -22,13 +22,16 @@ const ToastContext = createContext(null);
  * ToastProvider — React context provider that renders toast notifications.
  *
  * Also renders the toast container overlay (fixed top-right) so consumers
- * only need to wrap once.
+ * only need to wrap once. Toasts are announced to assistive technology via a
+ * polite live region, and their slide-in is skipped when the user prefers
+ * reduced motion.
  *
  * @param {{ children: React.ReactNode }} props
  * @returns {JSX.Element}
  */
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+  const prefersReduced = useReducedMotion();
 
   /**
    * Push a new toast onto the stack.
@@ -56,16 +59,22 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ addToast }}>
       {children}
 
-      {/* Toast container — fixed position, above all other UI */}
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+      {/* Toast container — fixed position, above all other UI.
+          aria-live so toasts are announced without stealing focus. */}
+      <div
+        className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"
+        role="status"
+        aria-live="polite"
+        aria-atomic="false"
+      >
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, x: 24, scale: 0.95 }}
+              initial={prefersReduced ? false : { opacity: 0, x: 24, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 24, scale: 0.95 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: prefersReduced ? 0 : 0.2, ease: "easeOut" }}
               className={`pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 ${
                 toast.type === "success"
                   ? "bg-green-600 text-white"
@@ -87,6 +96,7 @@ export function ToastProvider({ children }) {
             <span>{toast.message}</span>
             <button
               onClick={() => removeToast(toast.id)}
+              aria-label="Dismiss notification"
               className="ml-2 shrink-0 opacity-70 hover:opacity-100"
             >
               &times;
