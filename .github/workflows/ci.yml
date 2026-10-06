@@ -19,9 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node >= 22.19 is required: jsdom 30 pulls undici 8, which calls
+      # webidl.util.markAsUncloneable and crashes every vitest worker on
+      # Node 20. 24 matches the version tests are verified against locally.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies

@@ -16,7 +16,7 @@ A peer-to-peer rental marketplace where users can list items for rent and browse
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22.19+ (24 LTS recommended — jsdom 30's undici dependency requires it)
 - A [Supabase](https://supabase.com) project
 
 ### Environment Variables
