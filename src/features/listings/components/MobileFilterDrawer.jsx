@@ -7,12 +7,16 @@
  *   so filters are only committed when "Apply" is tapped, avoiding constant re-fetching.
  * Dependencies: useState/useEffect, lucide-react/X, SORT_OPTIONS/CATEGORIES constants,
  *   PriceFilter subcomponent.
- * Important notes: The component unmounts when closed, so draft state re-initializes from
- *   current filters each time it opens. Body scroll is locked while open.
- *   Sets page to 1 whenever any filter changes to reset pagination.
+ * Important notes: The draft is re-seeded from the current `filters` prop every
+ *   time the drawer opens, so a stale draft from a previous session can never be
+ *   written back over newer filters. This is done with a ref rather than a
+ *   `filters` dependency, because re-seeding on every filter identity change
+ *   would wipe the user's in-progress edits on each keystroke.
+ *   Body scroll is locked while open. Sets page to 1 whenever any filter
+ *   changes to reset pagination.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { CATEGORIES, SORT_OPTIONS } from "../../../shared/lib/constants";
 import PriceFilter from "./PriceFilter";
@@ -22,9 +26,18 @@ export default function MobileFilterDrawer({ open, onClose, onApply, filters }) 
   // Local draft prevents filters from being applied until "Apply" is tapped.
   const [draft, setDraft] = useState(filters);
 
+  // Tracks the latest committed filters without making `filters` an effect
+  // dependency — see the note above.
+  const filtersRef = useRef(filters);
+  useEffect(() => {
+    filtersRef.current = filters;
+  });
+
   // ── Effects ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (open) {
+      // Re-seed the draft on open so it always reflects the committed filters.
+      setDraft(filtersRef.current);
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
