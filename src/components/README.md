@@ -6,29 +6,32 @@ Shared UI components used across multiple features/pages. Feature-specific compo
 
 ```
 components/
-├── layout/       # Site-wide chrome (Header, Footer, navigation)
+├── layout/       # Brand + account chrome shared by several layouts
 └── dashboard/    # Dashboard tab content panels
 ```
 
+> The site chrome (Navbar, Footer, MobileNav) lives in `src/layouts/`, not here.
+> `src/layouts/AppLayout.jsx`, `PublicLayout.jsx`, and `DashboardShell.jsx` each
+> own their own `<main>` and skip-to-content link.
+
 ## layout/
 
-| Component      | Purpose |
-|----------------|---------|
-| `Layout`       | Top-level shell: renders `Header` + `<main>` + `Footer`. Omits footer on messaging routes (`/inbox`, `/booking/:id`). Injects skip-to-content link and `ProfileCompletionOverlay`. |
-| `Header`       | Sticky site header with logo, search bar, theme toggle, auth-dependent actions (Log In/Sign Up vs New Listing + notifications + UserMenu), and hamburger menu on mobile. |
-| `Footer`       | Site footer with marketplace links, company links, social links, and copyright. |
-| `MobileMenu`   | Slide-out navigation panel for mobile users, rendered by `Header`. |
-| `UserMenu`     | Dropdown menu for logged-in users (profile link, dashboard, sign out). |
-| `Logo`         | Brand logo component used by Header, AuthLayout, and DashboardShell. |
+| Component  | Purpose | Consumed by |
+|------------|---------|-------------|
+| `Logo`     | Brand wordmark. Links to `/`. | `layouts/Navbar`, `layouts/Footer`, `layouts/MobileNav`, `layouts/DashboardShell`, `layouts/AuthLayout` |
+| `UserMenu` | Account dropdown (profile link, dashboard, sign out) for logged-in users. | `layouts/Navbar` |
 
 ## dashboard/
 
-| Component       | Purpose |
-|-----------------|---------|
-| `MyListingsTab` | Lists the current user's listings with edit/delete actions. |
-| `MyRentalsTab`  | Shows items the user is currently renting. |
-| `RequestsTab`   | Shows booking requests from other users on the user's listings. |
-| `RentedOutTab`  | Shows items the user has lent out to others. |
+| Component       | Purpose | Consumed by |
+|-----------------|---------|-------------|
+| `MyListingsTab` | Lists the current user's listings with edit/delete actions. Used as the list view of `pages/dashboard/Listings.jsx`. | `pages/dashboard/Listings.jsx` |
+
+The `MyRentalsTab` / `RequestsTab` / `RentedOutTab` components were removed. Their
+behaviour now lives in a single role-aware page at `pages/dashboard/Bookings.jsx`
+(Lending / Renting). That page renders its own `BookingRow` / `BookingCard`
+internally and reuses only `ConfirmDialog`, `FadeInSection`, `StatusBadge`, and
+`ReviewPrompt`.
 
 ## Best Practices
 

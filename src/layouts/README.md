@@ -8,12 +8,11 @@ All layouts are re-exported from `src/layouts/index.js`.
 
 | Layout | Purpose | Route Usage |
 |--------|---------|-------------|
-| `AppLayout` | Top-level layout with Navbar, Footer, and profile completion overlay. Detects dashboard routes and skips its own chrome so `DashboardShell` can take over. | Wraps all public pages via the root router. |
-| `PublicLayout` | Simplified layout with Navbar + Footer. Used for non-app pages. | Public marketing/info pages. |
-| `AuthLayout` | Centered card layout with logo in the top-left corner. No Navbar or Footer. | Login, Register, Forgot/Reset Password, Email Confirmation. |
-| `DashboardLayout` | Simple max-width constrained wrapper (`max-w-5xl`). Used inside `DashboardShell`. | Dashboard child routes. |
-| `DashboardShell` | Full dashboard shell with sidebar navigation (desktop), bottom nav (mobile), top bar with page title, user menu, and `<Outlet />`. Handles tab-param redirects. | `/dashboard/*` |
-| `ListingLayout` | Max-width constrained wrapper (`max-w-7xl`) for listing detail pages. | Listing detail routes. |
+| `AppLayout` | Top-level layout with Navbar, Footer, and profile completion overlay. Detects dashboard routes and skips its own chrome so `DashboardShell` can take over. | `/profile`, `/listings/new`, `/listings/:id/edit`, `/inbox`, `/favorites`, `/booking/:id` |
+| `PublicLayout` | Simplified layout with Navbar + Footer. Used for non-app pages. | `/`, `/listings/:id`, `/users/:userId`, `/about`, `/contact`, `/privacy`, `/terms`, `/pricing`, and the catch-all 404 |
+| `AuthLayout` | Complete chrome-free page: logo top-left, theme toggle top-right, centered card. Renders no Navbar or Footer. | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/confirm` — declared outside `PublicLayout`, so it is the whole page |
+| `DashboardLayout` | Simple max-width constrained wrapper (`max-w-5xl`). Not part of the dashboard — `DashboardShell` renders `/dashboard/*` directly. | `features/profile/ProfilePage` only |
+| `DashboardShell` | Full dashboard shell with sidebar navigation (desktop), bottom nav (mobile), top bar with page title, user menu, and `<Outlet />`. Handles tab-param redirects. Lazy-loaded. | `/dashboard/*` |
 | `Navbar` | Site-wide sticky navigation bar with logo, search, theme toggle, and auth-dependent actions. Used by `AppLayout` and `PublicLayout`. | — |
 | `Footer` | Site footer with links and social icons. Used by `AppLayout` and `PublicLayout`. | — |
 | `MobileNav` | Slide-out mobile navigation panel. Used by `Navbar`. | — |
@@ -24,17 +23,24 @@ All layouts are re-exported from `src/layouts/index.js`.
 ## Layout Composition
 
 ```
-Root Router
-├── AppLayout (Navbar + Footer)
-│   ├── Public pages (/, /listings, /inbox, etc.)
-│   ├── AuthLayout (centered, no chrome)
-│   │   └── Login, Register, ForgotPassword, etc.
-│   └── DashboardShell (sidebar + bottom nav)
-│       └── DashboardLayout (max-w-5xl)
-│           └── Dashboard tabs (Analytics, Listings, Bookings, etc.)
-└── ListingLayout (max-w-7xl)
-    └── ListingDetailPage
+Root Router (src/App.jsx)
+├── PublicLayout (Navbar + Footer)
+│   ├── Landing / About / Contact / Privacy / Terms / Pricing
+│   ├── ListingDetailPage, PublicProfilePage
+│   └── NotFoundPage (catch-all *)
+├── AuthLayout (no site chrome; owns its own theme toggle)
+│   └── Login, Register, Forgot/Reset Password, Email Confirmation
+├── AppLayout (Navbar + Footer + profile completion overlay)
+│   └── Profile, NewListing, EditListing, Inbox, Favorites, BookingChat
+└── DashboardShell (sidebar + bottom nav, lazy)
+    └── Dashboard tabs (Home, Analytics, Listings, Bookings, Messages,
+                        Notifications, Settings)
 ```
+
+`AppLayout` is skipped entirely for `/dashboard/*`; `DashboardShell` is a sibling
+route group rather than a child of `AppLayout`. The auth routes are likewise a
+sibling group — placing them under `PublicLayout` would wrap a chrome-free page
+in a second Navbar and Footer.
 
 ## Best Practices
 

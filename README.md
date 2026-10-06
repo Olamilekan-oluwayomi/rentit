@@ -27,10 +27,23 @@ Create a `.env` file in the project root:
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 VITE_VAPID_PUBLIC_KEY=your_vapid_public_key
+VITE_IMAGE_TRANSFORMS=off
 ```
 
 `VITE_VAPID_PUBLIC_KEY` is only needed for web push notifications (see the
 [`send-notification` Edge Function](./supabase/functions/send-notification)).
+
+`VITE_IMAGE_TRANSFORMS` controls whether listing and avatar images are served
+through Supabase's on-the-fly `/render/image/` endpoint, which resizes and
+converts to WebP. **That endpoint requires a paid Supabase plan** — on the free
+tier the requests fail and every image breaks, so the default is `off`. Set it
+to `on` once the project is on Pro. Images are resized client-side before upload
+regardless (see `src/utils/imageCompression.js`), so originals stay bounded.
+
+This cannot be auto-detected: the endpoint errors on a missing object regardless
+of plan, so a probe cannot tell "unsupported" from "not found". If you set the
+flag to `on` on a free tier, each image falls back to its raw URL on error, so
+images still load — just with an extra failed request apiece.
 
 ### Install & Run
 
@@ -47,9 +60,26 @@ npm run dev
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
-| `npm test` | Run unit + integration tests (Vitest) |
+| `npm test` | Run unit + integration tests (Vitest, watch mode) |
+| `npx vitest run` | Run the test suite once and exit — what CI uses |
 | `npm run test:e2e` | Run end-to-end tests (Playwright, headless) |
 | `npm run test:e2e:ui` | Run E2E tests with Playwright UI mode |
+
+### Continuous Integration
+
+`.github/workflows/ci.yml` runs on every push and pull request to `main`, and
+publishes the `dist` build as an artifact (7-day retention). It runs exactly what
+is verified locally:
+
+```
+npm run lint
+npx vitest run
+npm run build
+```
+
+E2E specs (`npm run test:e2e`) are deliberately **not** in CI — they need a
+deployed Supabase project and real credentials, so they are a manual pre-release
+check rather than a per-commit gate.
 
 ## Features
 
@@ -101,6 +131,27 @@ npm run dev
 - Notifies on new booking requests, booking status changes (approved/declined), and new messages; stale push endpoints are pruned automatically
 - Requires `VITE_VAPID_PUBLIC_KEY` and a secure context (HTTPS or localhost)
 
+Two server-side secrets are required, both held in Supabase Vault (encrypted at
+rest) rather than in source control or environment files:
+
+| Vault secret name | Purpose |
+|-------------------|---------|
+| `push_webhook_secret` | Must match the `WEBHOOK_SECRET` env var on the Edge Function |
+| `push_function_url` | The Edge Function base URL — kept in Vault so the Supabase project ref is never committed |
+
+```sql
+SELECT vault.create_secret('<WEBHOOK_SECRET>', 'push_webhook_secret');
+SELECT vault.create_secret(
+  'https://<project-ref>.supabase.co/functions/v1/send-notification',
+  'push_function_url'
+);
+```
+
+Deploy the function with `--no-verify-jwt`; it authenticates callers with the
+`x-rentit-webhook-secret` header instead of a JWT. See
+[`20260804000000_webpush_pg_net_triggers.sql`](./supabase/migrations/20260804000000_webpush_pg_net_triggers.sql)
+for the rationale and the non-Vault fallback.
+
 ### Reviews
 - Leave reviews after completed bookings
 - Star rating (1–5) with text review
@@ -109,15 +160,27 @@ npm run dev
 - Owner rating aggregation (average_rating + rating_count)
 
 ### Dashboard
-- **Home** — overview stats (bookings, listings, messages)
-- **My Listings** — view your listed items with pending request counts
-- **My Rentals** — track all your outgoing booking requests
-- **Requests** — manage incoming booking requests (approve/decline)
-- **Rented Out** — view approved and completed rentals with earnings stats
-- **Messages** — inbox-style message list across all booking threads
-- **Analytics** — booking and earnings charts
-- **Notifications** — recent booking activity, plus the web push opt-in banner
-- **Settings** — profile editing and web push notification toggle
+
+Six routes under `/dashboard`, all lazy-loaded behind `DashboardShell`:
+
+- **Home** (`/dashboard`) — overview stat cards for active rentals, pending
+  requests, listings, and unread messages. "Total Earnings" is a stub.
+- **My Listings** (`/dashboard/listings`) — your listings with pending-request
+  counts; grid and list views, edit/delete, and a hide-from-browse / restore toggle
+- **Bookings** (`/dashboard/bookings`) — role-aware page for both sides of a
+  booking:
+  - *Lending* — every booking on your listings, with **approve** and **decline**
+    on pending requests. Approving also writes a blocked range to the listing's
+    calendar so the dates cannot be double-booked.
+  - *Renting* — bookings you made, with **cancel** while pending or approved.
+  - Both sides show a **review prompt** once the rental period has ended.
+  - Destructive actions go through a confirmation dialog, and the status filter
+    covers all five statuses including `declined`.
+- **Messages** (`/dashboard/messages`) — inbox-style list across booking threads
+- **Notifications** (`/dashboard/notifications`) — placeholder empty state (see
+  [Not Yet Built](#not-yet-built))
+- **Settings** (`/dashboard/settings`) — profile editing and the web push toggle;
+  2FA and payouts are placeholders
 
 ### Profile
 - Edit name, bio, and location
@@ -157,14 +220,17 @@ npm test -- --ui    # Vitest UI mode
 | `features/bookings/components/StatusBadge.test.jsx` | Unit | 2 — text per status, variant class |
 | `features/bookings/hooks/useAvailability.test.js` | Unit | 7 — blocked ranges, empty, error, loading, null listingId, params, refetch |
 | `features/bookings/hooks/useCreateBooking.test.js` | Unit | 5 — clear range, overlap rejection, avail fetch error, submitting state, insert fields |
-| `features/bookings/hooks/useBookings.test.js` | Unit | 7 — renter view, requests view, rented-out view, no-listings guard, fetch errors |
+| `features/bookings/hooks/useBookings.test.js` | Unit | 8 — renter view, requests view, rented-out view, owner view (no status filter), no-listings guard, fetch errors |
 | `features/listings/components/NewListingPage.test.jsx` | Unit | 6 — form render, validations, submission, categories, insert failure toast |
 | `features/bookings/components/AvailabilityCalendar.test.jsx` | Unit | 6 — renter/owner views, availability info, blocked notice/error/dates |
+| `features/reviews/hooks/useReviewEligibility.test.js` | Unit | 7 — approved+ended rules, pending/cancelled denial, existing review flips to edit |
+| `pages/dashboard/Bookings.test.jsx` | Integration | 18 — confirm-before-write, approve + availability block, partial failure, decline, cancel, status filter, empty states, renter/owner role split, loading skeleton, fetch error, refetch after write, cancelled write makes no refetch |
+| `utils/storage.test.js` | Unit | 12 — raw-URL fallback, transform opt-in, `handleImageError` retry incl. reused-`src` regression |
 | `test/integration/RegisterFlow.test.jsx` | Integration | 4 — full register→confirmation→login flow, error stay |
 | `test/integration/BookingFlow.test.jsx` | Integration | 4 — listing loading, data render, booking card, not-found |
 | `test/integration/InboxRowNavigation.test.jsx` | Integration | 6 — keyboard row nav, avatar/name profile links, title/preview/whitespace clicks |
 
-**Total: 63 tests across 11 files.**
+**Total: 101 tests across 14 files.**
 
 ### End-to-End (Playwright)
 
@@ -225,15 +291,35 @@ Design tokens are defined in `src/index.css` using Tailwind v4 `@theme` directiv
 
 ### Layout System
 
-Layouts wrap pages and compose the app shell:
+Layouts wrap pages and compose the app shell. Three of them are React Router
+layout routes (they render an `<Outlet>`), two take `children` directly:
 
-- **AppLayout** — global header + footer, used by all standard pages
-- **PublicLayout** — minimal layout for auth pages (login, register)
-- **AuthLayout** — centered card layout for auth forms
-- **DashboardLayout** — sidebar + main area for dashboard pages
-- **DashboardShell** — lazy-loading route shell for dashboard tabs
-- **ListingLayout** — listing detail page layout
-- **MobileNav** — bottom navigation bar for mobile dashboard
+| Layout | Renders | Used by |
+|--------|---------|---------|
+| `PublicLayout` | Navbar + `<main>` + Footer | Landing, `/listings/:id`, `/users/:userId`, `/about`, `/contact`, `/privacy`, `/terms`, `/pricing`, and the catch-all 404 |
+| `AppLayout` | Navbar + `<main>` + Footer (footer suppressed on `/inbox` and `/booking/:id`) | `/profile`, `/listings/new`, `/listings/:id/edit`, `/favorites`, `/inbox`, `/booking/:id` |
+| `DashboardShell` | Sidebar (desktop) or drawer + bottom nav (mobile) + `<Outlet />`. Lazy-loaded. | All `/dashboard/*` routes |
+| `AuthLayout` | Whole chrome-free page: logo, theme toggle, centered card | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/confirm` — declared as a top-level route group, **not** nested in `PublicLayout`, so it has no Navbar or Footer |
+| `DashboardLayout` | Max-width (`max-w-5xl`) content wrapper | `features/profile/ProfilePage` only — not part of the dashboard |
+
+`PublicLayout`, `AppLayout`, and `DashboardShell` each render their own
+`<main id="main-content">` plus a skip-to-content link. `AuthLayout` renders a
+plain `<main>` because it is the entire page; it supplies its own theme toggle
+since the `Navbar` toggle is absent on these routes.
+
+### Not Yet Built
+
+These are stubbed rather than implemented, so they are listed here instead of
+being described as features:
+
+| Area | Current state |
+|------|---------------|
+| **Analytics** (`/dashboard/analytics`) | Only the summary stat cards are wired up. Revenue and booking charts are placeholder blocks with no data behind them. |
+| **Earnings / payouts** | `Total Earnings` on the dashboard is hardcoded to `$0.00`; the Settings payout section says "coming soon". There is no payment integration. |
+| **Notifications feed** (`/dashboard/notifications`) | Static empty state. Push notifications work independently of this page. |
+| **Pricing** (`/pricing`) | Honest placeholder page. No tiers, no fees. |
+| **Two-factor auth** | Placeholder row in Settings. |
+| **Booking completion** | No automatic transition to `completed` and no owner-side "mark returned" action. A booking must reach `completed` some other way for reviews to unlock. |
 
 ### Data Flow
 
@@ -287,14 +373,14 @@ src/
 │       ├── hooks/
 │       └── components/
 ├── shared/                 # Cross-feature code
-│   ├── components/         # AnimatedList, ConfirmDialog, BackToTop, EmptyState, etc.
+│   ├── components/         # AnimatedList, ConfirmDialog, BackToTop, EmptyState, BookingMeta, etc.
 │   ├── contexts/           # ThemeContext, ToastContext
 │   ├── hooks/              # useCurrentLocation
 │   └── lib/                # Supabase client, constants, Zod validations
-├── components/             # App-level components
-│   ├── dashboard/          # Dashboard tab components
-│   └── layout/             # Header, Footer, Layout shell, menus
-├── layouts/                # Page layout components
+├── components/             # Shared across layouts
+│   ├── dashboard/          # MyListingsTab (list view for /dashboard/listings)
+│   └── layout/             # Logo, UserMenu
+├── layouts/                # Page layout components + a README
 ├── pages/                  # Top-level routed pages
 │   └── dashboard/          # Dashboard sub-pages (lazy-loaded)
 ├── design/                 # Design system primitives
@@ -303,13 +389,23 @@ src/
 │   ├── integration/        # Integration tests (Vitest + RTL)
 │   └── setup.js            # Vitest setup (jest-dom matchers, IntersectionObserver polyfill)
 ├── utils/                  # avatar, imageCompression, location, storage
-├── hooks/                  # (co-located with features, not global)
+├── hooks/                  # Documentation only — hooks are co-located with features
 ├── App.jsx                 # Route definitions
 ├── main.jsx                # Entry point — provider composition
 └── index.css               # Tailwind v4 theme + design tokens
 ```
 
+Architecture decisions are recorded in [`docs/decisions/`](./docs/decisions), with
+the reasoning linked back to the commits that introduced it.
+
 ## Database Schema
+
+> **Versioning caveat.** Only the tables in `supabase/migrations/` are
+> reproducible from this repository. The base tables (`profiles`, `listings`,
+> `bookings`, `availability`, `reviews`, `contact_messages`) were created
+> directly in the Supabase dashboard and are documented here for reference
+> only — the SQL is not in the repo. The migrations under
+> `supabase/migrations/` are the ones to re-run against a fresh project.
 
 ### `profiles`
 | Column | Type | Notes |
@@ -368,11 +464,16 @@ src/
 |--------|------|-------|
 | id | uuid | Primary key |
 | booking_id | uuid | References `bookings.id` |
-| reviewer_id | uuid | References `profiles.id` |
-| owner_id | uuid | References `profiles.id` (owner of listing) |
+| reviewer_id | uuid | References `profiles.id` (author of the review) |
+| reviewee_id | uuid | References `profiles.id` (the user being reviewed) |
 | rating | smallint | 1–5 |
-| content | text | Review text |
+| comment | text | Review text (nullable) |
 | created_at | timestamptz | Auto-set |
+
+> **Not versioned in this repo.** The `reviews` table and its three constraints
+> (`booking must be approved`, `booking has not ended`, one review per booking)
+> were created directly in the Supabase dashboard. The client maps those
+> constraint names to friendly copy in `src/features/reviews/components/ReviewForm.jsx`.
 
 ### `messages`
 | Column | Type | Notes |

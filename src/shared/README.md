@@ -19,13 +19,18 @@ shared/
 | `AnimatedList` | Staggered entrance animation wrapper for lists. Uses `motion/react`. Respects `prefers-reduced-motion`. |
 | `BackToTop` | Floating button that scrolls the page to the top when clicked. |
 | `BookingListSkeleton` | Loading skeleton specifically for booking list layouts. |
-| `BookingMeta` | Displays booking metadata (dates, status, price) in a compact format. |
 | `ConfirmDialog` | Modal confirmation dialog for destructive actions. |
 | `EmptyState` | Placeholder for empty states (can also use `design` EmptyState for design-system-only cases). |
 | `FadeInSection` | Scroll-triggered fade-in animation wrapper using Intersection Observer. |
 | `ListingThumbnail` | Small listing image thumbnail with fallback. |
-| `RenterInfo` | Displays renter profile info in a compact card. |
 | `ScrollToTop` | Scrolls to top on route change. Used in the router. |
+
+### Removed
+
+`BookingMeta` and `RenterInfo` were consumed only by the deleted dashboard tabs
+(`MyRentalsTab` / `RequestsTab` / `RentedOutTab`). `pages/dashboard/Bookings.jsx`
+superseded them with its own row/card markup, so both were removed rather than
+left as dead code.
 
 ## Contexts
 

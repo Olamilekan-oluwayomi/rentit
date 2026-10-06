@@ -31,7 +31,6 @@ listings/
 ├── components/
 │   ├── ActiveFilters.jsx
 │   ├── CategoryFilter.jsx
-│   ├── ImageGallery.jsx
 │   ├── ListingCard.jsx
 │   ├── ListingForm.jsx
 │   └── ...
