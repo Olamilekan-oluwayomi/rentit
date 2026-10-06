@@ -52,6 +52,7 @@ import { supabase } from '../../shared/lib/supabase'
 vi.mock('../../utils/storage', () => ({
   getListingImageUrl: () => '/mock-image.jpg',
   getAvatarUrl: () => 'https://placeholder.test/avatar.png',
+  handleImageError: () => {},
 }))
 
 import ListingDetailPage from '../../features/listings/components/ListingDetailPage'

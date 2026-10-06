@@ -24,7 +24,7 @@ import { useSendMessage } from "../features/messages/hooks/useSendMessage";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useRequireCompleteProfile } from "../features/profile/hooks/useRequireCompleteProfile";
 import { supabase } from "../shared/lib/supabase";
-import { getAvatarUrl } from "../utils/storage";
+import { getAvatarUrl, handleImageError } from "../utils/storage";
 import MessageThread from "../features/messages/components/MessageThread";
 import MessageInput from "../features/messages/components/MessageInput";
 
@@ -144,6 +144,7 @@ export default function BookingChatPage() {
             <img
               src={counterpartyAvatar}
               alt=""
+              onError={handleImageError}
               className="w-full h-full object-cover"
             />
           ) : (

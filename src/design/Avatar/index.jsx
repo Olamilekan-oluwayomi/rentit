@@ -10,9 +10,12 @@
  *
  * Accessibility:
  *   - Falls back to initials computed from name or alt when no image src
+ *   - Falls back to initials if the image fails to load
  *   - Status dot has an aria-label describing the status
  *   - Image renders with alt or name as descriptive text
  */
+
+import { useState } from "react";
 
 // ==== Sizes ====
 
@@ -60,6 +63,11 @@ function Avatar({
   ...props
 }) {
   const initials = getInitials(name || alt);
+  // A broken src (e.g. an unavailable image transform URL) degrades to initials
+  // rather than showing the browser's broken-image glyph. Tracking the failed
+  // URL instead of a boolean means a new src recovers automatically.
+  const [failedSrc, setFailedSrc] = useState(null);
+  const showImage = Boolean(src) && src !== failedSrc;
 
   return (
     <div
@@ -75,10 +83,12 @@ function Avatar({
           SIZES[size] || SIZES.md,
         ].join(" ")}
       >
-        {src ? (
+        {showImage ? (
           <img
             src={src}
             alt={alt || name || "Avatar"}
+            loading="lazy"
+            onError={() => setFailedSrc(src)}
             className="w-full h-full object-cover"
           />
         ) : (

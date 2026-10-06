@@ -29,7 +29,7 @@ import { useFavorites } from "../../favorites/hooks/useFavorites";
 import { useCreateBooking } from "../../bookings/hooks/useCreateBooking";
 import { useContactOwner } from "../../messages/hooks/useContactOwner";
 import { supabase } from "../../../shared/lib/supabase";
-import { getListingImageUrl } from "../../../utils/storage";
+import { getListingImageUrl, handleImageError } from "../../../utils/storage";
 import { Button, EmptyState, Badge, StarRatingInput } from "../../../design";
 import ReviewsSection from "../../reviews/components/ReviewsSection";
 import ListingGallery from "./ListingGallery";
@@ -446,6 +446,7 @@ function RelatedListingCard({ listing }) {
             src={imageUrl}
             alt={listing.title}
             loading="lazy"
+            onError={handleImageError}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (

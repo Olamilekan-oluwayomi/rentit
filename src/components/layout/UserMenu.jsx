@@ -10,7 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";
-import { getAvatarUrl } from "../../utils/storage";
+import { getAvatarUrl, handleImageError } from "../../utils/storage";
 
 /**
  * @returns {JSX.Element} The avatar button and its associated dropdown menu.
@@ -71,6 +71,7 @@ export default function UserMenu() {
           <img
             src={avatarSrc}
             alt={`${displayName}'s avatar`}
+            onError={handleImageError}
             className="w-full h-full object-cover"
           />
         ) : (

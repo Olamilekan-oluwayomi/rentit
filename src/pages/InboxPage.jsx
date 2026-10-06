@@ -22,7 +22,7 @@ import { Trash2 } from "lucide-react";
 import { useConversations } from "../features/messages/hooks/useConversations";
 import { useDeleteConversation } from "../features/messages/hooks/useDeleteConversation";
 import ConfirmDialog from "../shared/components/ConfirmDialog";
-import { getAvatarUrl } from "../utils/storage";
+import { getAvatarUrl, handleImageError } from "../utils/storage";
 import AnimatedList, { AnimatedListItem } from "../shared/components/AnimatedList";
 import FadeInSection from "../shared/components/FadeInSection";
 
@@ -148,6 +148,7 @@ export default function InboxPage() {
                       <img
                         src={getAvatarUrl(conv.counterparty.avatar_url, { width: 44, height: 44 })}
                         alt=""
+                        onError={handleImageError}
                         className="w-full h-full object-cover"
                       />
                     ) : (

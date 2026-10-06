@@ -39,6 +39,7 @@ vi.mock("../../features/messages/hooks/useDeleteConversation", () => ({
 
 vi.mock("../../utils/storage", () => ({
   getAvatarUrl: () => null,
+  handleImageError: () => {},
 }));
 
 vi.mock("../../shared/components/AnimatedList", () => ({

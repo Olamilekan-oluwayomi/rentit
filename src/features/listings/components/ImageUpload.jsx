@@ -17,7 +17,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { X } from "lucide-react";
-import { getListingImageUrl } from "../../../utils/storage";
+import { getListingImageUrl, handleImageError } from "../../../utils/storage";
 
 // ── Upload Constraints ─────────────────────────────────────────────
 const MAX_FILES = 5;
@@ -139,6 +139,7 @@ export default function ImageUpload({
               <img
                 src={getListingImageUrl(path, { width: 96, height: 96 })}
                 alt={`Existing ${i + 1}`}
+                onError={handleImageError}
                 className="w-full h-full object-cover"
               />
               {/* Remove button — visible on hover for desktop, always accessible */}

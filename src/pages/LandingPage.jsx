@@ -26,7 +26,11 @@ import { useLandingStats } from "../features/landing/hooks/useLandingStats";
 import { useCategoryCounts } from "../features/landing/hooks/useCategoryCounts";
 // import { CATEGORIES } from "../shared/lib/constants";
 import { Button, Badge, Avatar } from "../design";
-import { getListingImageUrl, getAvatarUrl } from "../utils/storage";
+import {
+  getListingImageUrl,
+  getAvatarUrl,
+  handleImageError,
+} from "../utils/storage";
 import { Suspense, lazy } from "react";
 import FadeInSection from "../shared/components/FadeInSection";
 
@@ -182,6 +186,7 @@ export default function LandingPage() {
                     <img
                       src={getListingImageUrl(heroListing.images[0], { width: 600, height: 450 })}
                       alt={heroListing.title}
+                      onError={handleImageError}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
@@ -350,6 +355,7 @@ export default function LandingPage() {
                               src={imageUrl}
                               alt={listing.title}
                               loading="lazy"
+                              onError={handleImageError}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (

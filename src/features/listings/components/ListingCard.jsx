@@ -13,7 +13,11 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { Badge, Avatar } from "../../../design";
-import { getListingImageUrl, getAvatarUrl } from "../../../utils/storage";
+import {
+  getListingImageUrl,
+  getAvatarUrl,
+  handleImageError,
+} from "../../../utils/storage";
 import { useFavorites } from "../../favorites/hooks/useFavorites";
 
 const ListingCard = memo(function ListingCard({ listing }) {
@@ -34,6 +38,7 @@ const ListingCard = memo(function ListingCard({ listing }) {
             src={imageUrl}
             alt={listing.title}
             loading="lazy"
+            onError={handleImageError}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (

@@ -12,7 +12,7 @@
 
 import { useRef } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
-import { getAvatarUrl } from "../../../utils/storage";
+import { getAvatarUrl, handleImageError } from "../../../utils/storage";
 import { getInitials, validateAvatar } from "../../../utils/avatar";
 
 export default function ProfileAvatar({
@@ -55,6 +55,7 @@ export default function ProfileAvatar({
             <img
               src={avatarSrc}
               alt={`${displayName}'s avatar`}
+              onError={handleImageError}
               className="w-full h-full object-cover"
             />
           ) : (

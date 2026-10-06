@@ -22,6 +22,7 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { useListings } from "../../features/listings/hooks/useListings";
 import { useToast } from "../../shared/contexts/ToastContext";
 import { supabase } from "../../shared/lib/supabase";
+import { getListingImageUrl, handleImageError } from "../../utils/storage";
 import { Button } from "../../design";
 import MyListingsTab from "../../components/dashboard/MyListingsTab";
 import FadeInSection from "../../shared/components/FadeInSection";
@@ -161,8 +162,10 @@ function GridView() {
             <div className="relative aspect-4/3 bg-surface-tertiary/40">
               {listing.images?.[0] ? (
                 <img
-                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/listing-images/${listing.images[0]}`}
+                  src={getListingImageUrl(listing.images[0], { width: 480, height: 360 })}
                   alt={listing.title}
+                  loading="lazy"
+                  onError={handleImageError}
                   className="w-full h-full object-cover"
                 />
               ) : (

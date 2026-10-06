@@ -23,7 +23,7 @@ import { X, Home, User, Plus, LayoutDashboard, Mail, Heart, LogOut, Sun, Moon } 
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useProfileContext } from "../features/profile/context/ProfileContext";
 import { useTheme } from "../shared/contexts/ThemeContext";
-import { getAvatarUrl } from "../utils/storage";
+import { getAvatarUrl, handleImageError } from "../utils/storage";
 import { Button, IconButton } from "../design";
 import Logo from "../components/layout/Logo";
 
@@ -135,7 +135,7 @@ export default function MobileNav({ open, onClose }) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-sm font-semibold overflow-hidden shrink-0">
                 {avatarSrc ? (
-                  <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
+                  <img src={avatarSrc} alt="Avatar" onError={handleImageError} className="w-full h-full object-cover" />
                 ) : (
                   initials
                 )}

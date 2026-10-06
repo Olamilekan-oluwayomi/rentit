@@ -13,11 +13,13 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { getListingImageUrl } from "../../../utils/storage";
+import { getListingImageUrl, handleImageError } from "../../../utils/storage";
 
 export default function ListingGallery({ images = [] }) {
   // ── State ────────────────────────────────────────────────────────────
-  const urls = images.map((p) => getListingImageUrl(p, { width: 960, height: 540 })).filter(Boolean);
+  const urls = images
+    .map((p) => getListingImageUrl(p, { width: 960, height: 540 }))
+    .filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
@@ -76,7 +78,7 @@ function DesktopGallery({ urls, onImageClick }) {
   if (count === 1) {
     return (
       <div className="rounded-2xl overflow-hidden cursor-pointer" onClick={() => onImageClick(0)}>
-        <img src={urls[0]} alt="Listing" className="w-full aspect-[16/9] object-cover" />
+        <img src={urls[0]} alt="Listing" onError={handleImageError} className="w-full aspect-[16/9] object-cover" />
       </div>
     );
   }
@@ -85,10 +87,10 @@ function DesktopGallery({ urls, onImageClick }) {
     return (
       <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden">
         <div className="cursor-pointer overflow-hidden" onClick={() => onImageClick(0)}>
-          <img src={urls[0]} alt="Listing" className="w-full h-full object-cover" />
+          <img src={urls[0]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover" />
         </div>
         <div className="cursor-pointer overflow-hidden" onClick={() => onImageClick(1)}>
-          <img src={urls[1]} alt="Listing" className="w-full h-full object-cover" />
+          <img src={urls[1]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover" />
         </div>
       </div>
     );
@@ -98,13 +100,13 @@ function DesktopGallery({ urls, onImageClick }) {
     return (
       <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden h-[420px] lg:h-[500px]">
         <div className="cursor-pointer overflow-hidden row-span-2" onClick={() => onImageClick(0)}>
-          <img src={urls[0]} alt="Listing" className="w-full h-full object-cover" />
+          <img src={urls[0]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover" />
         </div>
         <div className="cursor-pointer overflow-hidden" onClick={() => onImageClick(1)}>
-          <img src={urls[1]} alt="Listing" className="w-full h-full object-cover" />
+          <img src={urls[1]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover" />
         </div>
         <div className="cursor-pointer overflow-hidden" onClick={() => onImageClick(2)}>
-          <img src={urls[2]} alt="Listing" className="w-full h-full object-cover" />
+          <img src={urls[2]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover" />
         </div>
       </div>
     );
@@ -113,11 +115,11 @@ function DesktopGallery({ urls, onImageClick }) {
   return (
     <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-2xl overflow-hidden h-[420px] lg:h-[500px]">
       <div className="col-span-2 row-span-2 cursor-pointer overflow-hidden relative group" onClick={() => onImageClick(0)}>
-        <img src={urls[0]} alt="Listing" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img src={urls[0]} alt="Listing" onError={handleImageError} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       </div>
       {urls.slice(1, Math.min(5, count)).map((url, i) => (
         <div key={i} className="cursor-pointer overflow-hidden relative group" onClick={() => onImageClick(i + 1)}>
-          <img src={url} alt={`Listing ${i + 2}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img src={url} alt={`Listing ${i + 2}`} onError={handleImageError} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
           {i === 3 && count > 5 && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer" onClick={() => onImageClick(4)}>
               <span className="text-white text-sm font-medium">+{count - 5} more</span>
@@ -135,6 +137,7 @@ function MobileGallery({ urls, active, onPrev, onNext, onOpen }) {
       <img
         src={urls[active]}
         alt={`Listing ${active + 1}`}
+        onError={handleImageError}
         className="w-full h-full object-cover"
         loading={active === 0 ? "eager" : "lazy"}
       />
@@ -178,6 +181,7 @@ function Lightbox({ urls, active, onClose, onPrev, onNext }) {
       <img
         src={urls[active]}
         alt={`Listing ${active + 1}`}
+        onError={handleImageError}
         className="max-w-[90vw] max-h-[85vh] object-contain"
       />
 

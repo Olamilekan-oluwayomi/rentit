@@ -20,7 +20,7 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { useProfileContext } from "../../features/profile/context/ProfileContext";
 import { usePushNotifications } from "../../features/notifications/hooks/usePushNotifications";
 import { useToast } from "../../shared/contexts/ToastContext";
-import { getAvatarUrl } from "../../utils/storage";
+import { getAvatarUrl, handleImageError } from "../../utils/storage";
 import { Button } from "../../design";
 import FadeInSection from "../../shared/components/FadeInSection";
 
@@ -77,7 +77,7 @@ export default function DashboardSettings() {
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center text-lg font-semibold overflow-hidden shrink-0">
                 {avatarSrc ? (
-                  <img src={avatarSrc} alt="" className="w-full h-full object-cover" />
+                  <img src={avatarSrc} alt="" onError={handleImageError} className="w-full h-full object-cover" />
                 ) : (
                   initials
                 )}
